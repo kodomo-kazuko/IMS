@@ -1,15 +1,15 @@
 import express, { Request, Response } from "express";
-import UserRoute from "./routes/UserRoute";
+import StudentRoute from "./routes/StudentRoute";
+import CompanyRoute from "./routes/CompanyRoute";
+import EmployeeRoute from "./routes/EmployeeRoute";
 
 const app = express();
 
 app.use(express.json());
 
-app.use("/user", UserRoute);
-
-app.get("/", (req: Request, res: Response) => {
-  res.status(200).json({ success: true, message: "its working" });
-});
+app.use("/student", StudentRoute);
+app.use("/company", CompanyRoute);
+app.use("/employee", EmployeeRoute);
 
 app.listen(8080, () => {
   console.log("server is running");
