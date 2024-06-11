@@ -2,9 +2,17 @@
 import Image from "next/image";
 
 import { ListFilter, MoreHorizontal, PlusCircle, Search } from "lucide-react";
-
+import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge";
-
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -27,93 +35,31 @@ import { Input } from "@/components/ui/input";
 import {
     Table,
     TableBody,
+    TableCaption,
     TableCell,
+    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import router, { useRouter } from "next/navigation";
+const invoices = [
+    {
+        invoice: "INV001",
+        paymentStatus: "Paid",
+        totalAmount: "$250.00",
+        paymentMethod: "Credit Card",
+    },
 
+]
 export default function Dashboard() {
     const router = useRouter();
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
                 <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                    {/* <Sheet>
-                        <SheetTrigger asChild>
-                            <Button size="icon" variant="outline" className="sm:hidden">
-                                <PanelLeft className="h-5 w-5" />
-                                <span className="sr-only">Toggle Menu</span>
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="left" className="sm:max-w-xs">
-                            <nav className="grid gap-6 text-lg font-medium">
-                                <Link
-                                    href="#"
-                                    className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-                                >
-                                    <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
-                                    <span className="sr-only">Acme Inc</span>
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                >
-                                    <Home className="h-5 w-5" />
-                                    Dashboard
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                >
-                                    <ShoppingCart className="h-5 w-5" />
-                                    Orders
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-foreground"
-                                >
-                                    <Package className="h-5 w-5" />
-                                    Products
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                >
-                                    <Users2 className="h-5 w-5" />
-                                    Customers
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                >
-                                    <LineChart className="h-5 w-5" />
-                                    Settings
-                                </Link>
-                            </nav>
-                        </SheetContent>
-                    </Sheet> */}
-                    {/* <Breadcrumb className="hidden md:flex">
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink asChild>
-                                    <Link href="#">Dashboard</Link>
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink asChild>
-                                    <Link href="#">Products</Link>
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>All Products</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb> */}
+
                     <div className="relative ml-auto flex-1 md:grow-0">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -152,40 +98,55 @@ export default function Dashboard() {
                     <Tabs defaultValue="all">
                         <div className="flex items-center">
                             <div className="ml-auto flex items-center gap-2">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" size="sm" className="h-8 gap-1">
-                                            <ListFilter className="h-3.5 w-3.5" />
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button size="sm" className="h-8 gap-1">
+                                            <PlusCircle className="h-3.5 w-3.5" />
                                             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                                Filter
+                                                Add Company
                                             </span>
                                         </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuCheckboxItem checked>
-                                            Active
-                                        </DropdownMenuCheckboxItem>
-                                        <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-                                        <DropdownMenuCheckboxItem>
-                                            Archived
-                                        </DropdownMenuCheckboxItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-
-                                <Button size="sm" className="h-8 gap-1">
-                                    <PlusCircle className="h-3.5 w-3.5" />
-                                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                        Add Product
-                                    </span>
-                                </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-[425px]">
+                                        <DialogHeader>
+                                            <DialogTitle>Add Company</DialogTitle>
+                                            <DialogDescription>
+                                                Make changes to your profile here. Click save when you're done.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="grid gap-4 py-4">
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="name" className="text-right">
+                                                    Name
+                                                </Label>
+                                                <Input
+                                                    id="name"
+                                                    defaultValue="ACMA"
+                                                    className="col-span-3"
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="username" className="text-right">
+                                                    Email
+                                                </Label>
+                                                <Input
+                                                    id="username"
+                                                    defaultValue="@ACMA"
+                                                    className="col-span-3"
+                                                />
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <Button type="submit">Save changes</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
                             </div>
                         </div>
                         <TabsContent value="all">
                             <Card x-chunk="dashboard-06-chunk-0">
                                 <CardHeader>
-                                    <CardTitle>Products</CardTitle>
+                                    <CardTitle>Байгууллага</CardTitle>
                                     <CardDescription>
                                         Manage your products and view their sales performance.
                                     </CardDescription>
@@ -214,55 +175,101 @@ export default function Dashboard() {
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            <TableRow
-                                                onClick={() => {
-                                                    router.push(`/dashboard/companyDetail`);
-                                                }}
-                                            >
-                                                <TableCell className="hidden sm:table-cell">
-                                                    <Image
-                                                        alt="Product image"
-                                                        className="aspect-square rounded-md object-cover"
-                                                        height="64"
-                                                        src="/placeholder.svg"
-                                                        width="64"
-                                                    />
-                                                </TableCell>
-                                                <TableCell className="font-medium">
-                                                    Laser Lemonade Machine
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge variant="outline">Draft</Badge>
-                                                </TableCell>
-                                                <TableCell className="hidden md:table-cell">
-                                                    $499.99
-                                                </TableCell>
-                                                <TableCell className="hidden md:table-cell">
-                                                    25
-                                                </TableCell>
-                                                <TableCell className="hidden md:table-cell">
-                                                    2023-07-12 10:42 AM
-                                                </TableCell>
-                                                <TableCell>
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <Button
-                                                                aria-haspopup="true"
-                                                                size="icon"
-                                                                variant="ghost"
-                                                            >
-                                                                <MoreHorizontal className="h-4 w-4" />
-                                                                <span className="sr-only">Toggle menu</span>
-                                                            </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end">
-                                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                </TableCell>
-                                            </TableRow>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <TableRow>
+                                                        <TableCell className="hidden sm:table-cell">
+                                                            <Image
+                                                                alt="Product image"
+                                                                className="aspect-square rounded-md object-cover"
+                                                                height="64"
+                                                                src="/placeholder.svg"
+                                                                width="64"
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell className="font-medium">
+                                                            Laser Lemonade Machine
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge variant="outline">Draft</Badge>
+                                                        </TableCell>
+                                                        <TableCell className="hidden md:table-cell">
+                                                            $499.99
+                                                        </TableCell>
+                                                        <TableCell className="hidden md:table-cell">
+                                                            25
+                                                        </TableCell>
+                                                        <TableCell className="hidden md:table-cell">
+                                                            2023-07-12 10:42 AM
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <DropdownMenu>
+                                                                <DropdownMenuTrigger asChild>
+                                                                    <Button
+                                                                        aria-haspopup="true"
+                                                                        size="icon"
+                                                                        variant="ghost"
+                                                                    >
+                                                                        <MoreHorizontal className="h-4 w-4" />
+                                                                        <span className="sr-only">Toggle menu</span>
+                                                                    </Button>
+                                                                </DropdownMenuTrigger>
+                                                                <DropdownMenuContent align="end">
+                                                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                                                                </DropdownMenuContent>
+                                                            </DropdownMenu>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-[625px]">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Add Company</DialogTitle>
+                                                        <DialogDescription>
+                                                            Add students here. Click save when you're done.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <Table>
+                                                        <TableCaption>A list of your recent invoices.</TableCaption>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead className="w-[100px]">Invoice</TableHead>
+                                                                <TableHead>Status</TableHead>
+                                                                <TableHead>Method</TableHead>
+                                                                <TableHead className="text-right">Amount</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {invoices.map((invoice) => (
+                                                                <TableRow key={invoice.invoice}>
+                                                                    <TableCell className="font-medium">{invoice.invoice}</TableCell>
+                                                                    <TableCell>{invoice.paymentStatus}</TableCell>
+                                                                    <TableCell>{invoice.paymentMethod}</TableCell>
+                                                                    <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                                                                    <TableCell className="text-right">
+                                                                        <Button size="sm" className="h-8 gap-1">
+                                                                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                                                                Add Student
+                                                                            </span>
+                                                                        </Button>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                        {/* <TableFooter>
+                                                            <TableRow>
+                                                                <TableCell colSpan={3}>Total</TableCell>
+                                                                <TableCell className="text-right">$2,500.00</TableCell>
+                                                            </TableRow>
+                                                        </TableFooter> */}
+                                                    </Table>
+                                                    <DialogFooter>
+                                                        <Button type="submit">Save changes</Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
+
                                         </TableBody>
                                     </Table>
                                 </CardContent>
