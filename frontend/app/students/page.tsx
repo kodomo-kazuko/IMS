@@ -4,6 +4,15 @@ import Image from "next/image";
 import { ListFilter, MoreHorizontal, PlusCircle, Search } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +36,7 @@ import { Input } from "@/components/ui/input";
 import {
     Table,
     TableBody,
+    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -34,6 +44,15 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import router, { useRouter } from "next/navigation";
+const students = [
+    {
+        invoice: "INV001",
+        paymentStatus: "Paid",
+        totalAmount: "$250.00",
+        paymentMethod: "Credit Card",
+    },
+
+]
 
 export default function Students() {
     const router = useRouter();
@@ -214,55 +233,94 @@ export default function Students() {
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            <TableRow
-                                                onClick={() => {
-                                                    router.push(`/dashboard/companyDetail`);
-                                                }}
-                                            >
-                                                <TableCell className="hidden sm:table-cell">
-                                                    <Image
-                                                        alt="Product image"
-                                                        className="aspect-square rounded-md object-cover"
-                                                        height="64"
-                                                        src="/placeholder.svg"
-                                                        width="64"
-                                                    />
-                                                </TableCell>
-                                                <TableCell className="font-medium">
-                                                    Laser Lemonade Machine
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge variant="outline">Draft</Badge>
-                                                </TableCell>
-                                                <TableCell className="hidden md:table-cell">
-                                                    $499.99
-                                                </TableCell>
-                                                <TableCell className="hidden md:table-cell">
-                                                    25
-                                                </TableCell>
-                                                <TableCell className="hidden md:table-cell">
-                                                    2023-07-12 10:42 AM
-                                                </TableCell>
-                                                <TableCell>
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <Button
-                                                                aria-haspopup="true"
-                                                                size="icon"
-                                                                variant="ghost"
-                                                            >
-                                                                <MoreHorizontal className="h-4 w-4" />
-                                                                <span className="sr-only">Toggle menu</span>
-                                                            </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end">
-                                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                </TableCell>
-                                            </TableRow>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <TableRow>
+                                                        <TableCell className="hidden sm:table-cell">
+                                                            <Image
+                                                                alt="Product image"
+                                                                className="aspect-square rounded-md object-cover"
+                                                                height="64"
+                                                                src="/placeholder.svg"
+                                                                width="64"
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell className="font-medium">
+                                                            Laser Lemonade Machine
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge variant="outline">Draft</Badge>
+                                                        </TableCell>
+                                                        <TableCell className="hidden md:table-cell">
+                                                            $499.99
+                                                        </TableCell>
+                                                        <TableCell className="hidden md:table-cell">
+                                                            25
+                                                        </TableCell>
+                                                        <TableCell className="hidden md:table-cell">
+                                                            2023-07-12 10:42 AM
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <DropdownMenu>
+                                                                <DropdownMenuTrigger asChild>
+                                                                    <Button
+                                                                        aria-haspopup="true"
+                                                                        size="icon"
+                                                                        variant="ghost"
+                                                                    >
+                                                                        <MoreHorizontal className="h-4 w-4" />
+                                                                        <span className="sr-only">Toggle menu</span>
+                                                                    </Button>
+                                                                </DropdownMenuTrigger>
+                                                                <DropdownMenuContent align="end">
+                                                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                                                                </DropdownMenuContent>
+                                                            </DropdownMenu>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-[625px]">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Add Company</DialogTitle>
+                                                        <DialogDescription>
+                                                            Add students here. Click save when you're done.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <Table>
+                                                        <TableCaption>A list of your recent invoices.</TableCaption>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead className="w-[100px]">Company</TableHead>
+                                                                <TableHead>Status</TableHead>
+                                                                <TableHead>Duration</TableHead>
+                                                                <TableHead className="text-right">Intern position</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {students.map((student) => (
+                                                                <TableRow key={student.invoice}>
+                                                                    <TableCell className="font-medium">{student.invoice}</TableCell>
+                                                                    <TableCell>{student.paymentStatus}</TableCell>
+                                                                    <TableCell>{student.paymentMethod}</TableCell>
+                                                                    <TableCell className="text-right">{student.totalAmount}</TableCell>
+
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                        {/* <TableFooter>
+                                                            <TableRow>
+                                                                <TableCell colSpan={3}>Total</TableCell>
+                                                                <TableCell className="text-right">$2,500.00</TableCell>
+                                                            </TableRow>
+                                                        </TableFooter> */}
+                                                    </Table>
+                                                    <DialogFooter>
+                                                        <Button type="submit">Save changes</Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
                                         </TableBody>
                                     </Table>
                                 </CardContent>
