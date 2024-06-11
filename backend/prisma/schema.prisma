@@ -7,8 +7,70 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model Student {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  majorId      Int
+  major        Major         @relation(fields: [majorId], references: [id])
+  applications Application[]
+  internships  Internship[]
+}
+
+model Company {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  applications Application[]
+  posts        Post[]
+  internships  Internship[]
+}
+
+model Application {
+  id         Int      @id @default(autoincrement())
+  studentId  Int
+  companyId  Int
+  employeeId Int
+  status     String
+  student    Student  @relation(fields: [studentId], references: [id])
+  company    Company  @relation(fields: [companyId], references: [id])
+  employee   Employee @relation(fields: [employeeId], references: [id])
+}
+
+model Major {
+  id       Int       @id @default(autoincrement())
+  name     String
+  students Student[]
+}
+
+model Employee {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  roleId       Int
+  role         Role          @relation(fields: [roleId], references: [id])
+  applications Application[]
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+}
+
+model Role {
+  id        Int        @id @default(autoincrement())
+  name      String
+  employees Employee[]
+}
+
+model Internship {
+  id        Int     @id @default(autoincrement())
+  title     String
+  companyId Int
+  studentId Int
+  company   Company @relation(fields: [companyId], references: [id])
+  student   Student @relation(fields: [studentId], references: [id])
 }
