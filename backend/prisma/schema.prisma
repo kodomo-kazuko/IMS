@@ -3,38 +3,61 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum InternshipType {
+  PROFESSIONAL
+  INTRODUCTION
+}
+
+enum InternshipStatus {
+  PENDING
+  DOING
+  FINISHED
 }
 
 model Student {
-  id           Int           @id @default(autoincrement())
+  id           Int                 @id @default(autoincrement())
   name         String
-  email        String        @unique
+  email        String              @unique
+  password     String
   majorId      Int
-  major        Major         @relation(fields: [majorId], references: [id])
+  major        Major               @relation(fields: [majorId], references: [id])
   applications Application[]
-  internships  Internship[]
+  internships  StudentInternship[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @default(now()) @updatedAt
 }
 
 model Company {
-  id           Int           @id @default(autoincrement())
-  name         String
-  email        String        @unique
-  applications Application[]
-  posts        Post[]
-  internships  Internship[]
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  password    String
+  isApproved  Boolean      @default(false)
+  posts       Post[]
+  internships Internship[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model Application {
-  id         Int      @id @default(autoincrement())
-  studentId  Int
-  companyId  Int
-  employeeId Int
-  status     String
-  student    Student  @relation(fields: [studentId], references: [id])
-  company    Company  @relation(fields: [companyId], references: [id])
-  employee   Employee @relation(fields: [employeeId], references: [id])
+  id           Int               @id @default(autoincrement())
+  studentId    Int
+  internshipId Int
+  status       ApplicationStatus @default(PENDING)
+  student      Student           @relation(fields: [studentId], references: [id])
+  internship   Internship        @relation(fields: [internshipId], references: [id])
+  appliedAt    DateTime          @default(now())
 }
 
 model Major {
@@ -44,33 +67,50 @@ model Major {
 }
 
 model Employee {
-  id           Int           @id @default(autoincrement())
-  name         String
-  email        String        @unique
-  roleId       Int
-  role         Role          @relation(fields: [roleId], references: [id])
-  applications Application[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  password  String
+  email     String   @unique
+  roleId    Int
+  role      Role     @relation(fields: [roleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Post {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   title     String
   content   String
   companyId Int
-  company   Company @relation(fields: [companyId], references: [id])
+  views     Int      @default(0)
+  company   Company  @relation(fields: [companyId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 model Role {
-  id        Int        @id @default(autoincrement())
-  name      String
-  employees Employee[]
+  id       Int        @id @default(autoincrement())
+  name     String
+  employee Employee[]
 }
 
 model Internship {
-  id        Int     @id @default(autoincrement())
-  title     String
-  companyId Int
-  studentId Int
-  company   Company @relation(fields: [companyId], references: [id])
-  student   Student @relation(fields: [studentId], references: [id])
+  id           Int                 @id @default(autoincrement())
+  title        String
+  type         InternshipType
+  companyId    Int
+  company      Company             @relation(fields: [companyId], references: [id])
+  applications Application[]
+  createdAt    DateTime            @default(now())
+  students     StudentInternship[]
+}
+
+model StudentInternship {
+  studentId    Int
+  internshipId Int
+  type         InternshipType
+  status       InternshipStatus
+  student      Student          @relation(fields: [studentId], references: [id])
+  internship   Internship       @relation(fields: [internshipId], references: [id])
+
+  @@id([studentId, internshipId])
 }
