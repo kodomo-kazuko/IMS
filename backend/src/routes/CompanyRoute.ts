@@ -1,13 +1,14 @@
 import { Router } from "express";
 import CompanyController from "../controllers/CompanyController";
+import tokenMiddleware from "../middleware/tokenMiddleware";
 
 const router = Router();
 const companyController = new CompanyController();
 
-router.get("/all", (req, res) => companyController.index(req, res));
+router.get("/all", tokenMiddleware, companyController.index);
 
-router.post("/signup", (req, res) => companyController.signup(req, res));
+router.post("/signup", companyController.signup);
 
-router.post("/signin", (req, res) => companyController.signin(req, res));
+router.post("/signin", companyController.signin);
 
 export default router;

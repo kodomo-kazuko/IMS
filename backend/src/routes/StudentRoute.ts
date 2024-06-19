@@ -1,13 +1,14 @@
 import { Router } from "express";
 import StudentController from "../controllers/StudentController";
+import tokenMiddleware from "../middleware/tokenMiddleware";
 
 const router = Router();
 const studentController = new StudentController();
 
-router.get("/all", (req, res) => studentController.index(req, res));
+router.get("/all", tokenMiddleware, studentController.index);
 
-router.post("/signup", (req, res) => studentController.signup(req, res));
+router.post("/signup", studentController.signup);
 
-router.post("/signin", (req, res) => studentController.signin(req, res));
+router.post("/signin", studentController.signin);
 
 export default router;
