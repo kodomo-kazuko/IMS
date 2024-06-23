@@ -18,7 +18,7 @@ interface SigninRequestBody {
 }
 
 export default class EmployeeController {
-  public async signup(req: Request, res: Response): Promise<Response> {
+  public async signup(req: Request, res: Response) {
     const { name, email, password, roleId } = req.body as SignupRequestBody;
     try {
       // Hash password
@@ -37,7 +37,6 @@ export default class EmployeeController {
       return res.status(201).json({
         success: true,
         message: "Employee created successfully",
-        data: employee,
       });
     } catch (error) {
       return res.status(400).json({
@@ -47,7 +46,7 @@ export default class EmployeeController {
     }
   }
 
-  public async signin(req: Request, res: Response): Promise<Response> {
+  public async signin(req: Request, res: Response) {
     const { email, password } = req.body as SigninRequestBody;
     try {
       // Find employee by email
@@ -78,9 +77,13 @@ export default class EmployeeController {
         throw new Error("JWT_SECRET is not defined");
       }
 
-      const token = jwt.sign({ id: employee.id }, jwtSecret, {
-        expiresIn: "7d",
-      });
+      const token = jwt.sign(
+        { id: employee.id, account: "employee" },
+        jwtSecret,
+        {
+          expiresIn: "7d",
+        }
+      );
 
       return res.status(200).json({
         success: true,
@@ -95,7 +98,7 @@ export default class EmployeeController {
     }
   }
 
-  public async index(req: Request, res: Response): Promise<Response> {
+  public async index(req: Request, res: Response) {
     try {
       // Get all employees
       const employees = await prisma.employee.findMany();

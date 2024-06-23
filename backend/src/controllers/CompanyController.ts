@@ -58,9 +58,13 @@ export default class CompanyController {
         throw new Error("JWT_SECRET is not defined");
       }
 
-      const token = jwt.sign({ id: company.id }, jwtSecret, {
-        expiresIn: "7d",
-      });
+      const token = jwt.sign(
+        { id: company.id, account: "company" },
+        jwtSecret,
+        {
+          expiresIn: "7d",
+        }
+      );
 
       return res.status(200).json({
         success: true,
@@ -88,6 +92,27 @@ export default class CompanyController {
         success: false,
         message: "Failed to retrieve companies",
       });
+    }
+  }
+  public async approve(req: Request, res: Response) {
+    try {
+      const { companyId } = req.body;
+
+      // Update the company's 'approve' field
+      await prisma.company.update({
+        where: { id: companyId },
+        data: { isApproved: true },
+      });
+
+      // Send a success response
+      res.status(200).json({
+        success: true,
+        message: "Company approval updated successfully",
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ success: false, message: (error as Error).message });
     }
   }
 }

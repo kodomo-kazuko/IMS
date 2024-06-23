@@ -1,14 +1,24 @@
 import { Router } from "express";
 import CompanyController from "../controllers/CompanyController";
-import tokenMiddleware from "../middleware/tokenMiddleware";
+import accessMiddleware from "../middleware/accessMiddleware";
 
 const router = Router();
 const companyController = new CompanyController();
 
-router.get("/all", tokenMiddleware, companyController.index);
-
-router.post("/signup", companyController.signup);
-
 router.post("/signin", companyController.signin);
+
+router.get("/all", accessMiddleware(["employee"]), companyController.index);
+
+router.post(
+  "/signup",
+  accessMiddleware(["employee"]),
+  companyController.signup
+);
+
+router.patch(
+  "/approve",
+  accessMiddleware(["employee"]),
+  companyController.approve
+);
 
 export default router;
