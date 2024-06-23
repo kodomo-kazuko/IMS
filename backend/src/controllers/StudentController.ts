@@ -10,6 +10,8 @@ interface SignupRequestBody {
   email: string;
   password: string;
   majorId: number;
+  phone: string;
+  address: string;
 }
 
 interface SigninRequestBody {
@@ -20,7 +22,8 @@ interface SigninRequestBody {
 export default class StudentController {
   public async signup(req: Request, res: Response) {
     try {
-      const { name, email, password, majorId } = req.body as SignupRequestBody;
+      const { name, email, password, majorId, phone, address } =
+        req.body as SignupRequestBody;
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -30,6 +33,8 @@ export default class StudentController {
           email,
           password: hashedPassword,
           majorId,
+          phone,
+          address,
         },
       });
 
@@ -91,5 +96,26 @@ export default class StudentController {
     }
   }
 
-  public async index(req: Request, res: Response) {}
+  public async index(req: Request, res: Response) {
+    try {
+      const students = await prisma.student.findMany();
+
+      if (!students) {
+        return res
+          .status(404)
+          .json({ success: false, message: "no students found" });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "retrieved successfully",
+        data: students,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: (error as Error).message,
+      });
+    }
+  }
 }

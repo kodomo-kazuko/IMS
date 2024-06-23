@@ -30,6 +30,8 @@ model Student {
   name         String
   email        String              @unique
   password     String
+  phone        String
+  address      String
   majorId      Int
   major        Major               @relation(fields: [majorId], references: [id])
   applications Application[]
@@ -43,11 +45,13 @@ model Company {
   name        String
   email       String       @unique
   password    String
+  phone       String
+  address     String
   isApproved  Boolean      @default(false)
   posts       Post[]
   internships Internship[]
   createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  updatedAt   DateTime     @default(now()) @updatedAt
 }
 
 model Application {
@@ -58,6 +62,8 @@ model Application {
   student      Student           @relation(fields: [studentId], references: [id])
   internship   Internship        @relation(fields: [internshipId], references: [id])
   appliedAt    DateTime          @default(now())
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @default(now()) @updatedAt
 }
 
 model Major {
@@ -78,13 +84,17 @@ model Employee {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  companyId Int
-  views     Int      @default(0)
-  company   Company  @relation(fields: [companyId], references: [id])
-  createdAt DateTime @default(now())
+  id           Int        @id @default(autoincrement())
+  title        String
+  content      String
+  image        String
+  companyId    Int
+  internshipId Int
+  views        Int        @default(0)
+  company      Company    @relation(fields: [companyId], references: [id])
+  internship   Internship @relation(fields: [internshipId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
 }
 
 model Role {
@@ -94,14 +104,19 @@ model Role {
 }
 
 model Internship {
-  id           Int                 @id @default(autoincrement())
-  title        String
-  type         InternshipType
-  companyId    Int
-  company      Company             @relation(fields: [companyId], references: [id])
-  applications Application[]
-  createdAt    DateTime            @default(now())
-  students     StudentInternship[]
+  id                Int                 @id @default(autoincrement())
+  title             String
+  type              InternshipType
+  companyId         Int
+  company           Company             @relation(fields: [companyId], references: [id])
+  createdAt         DateTime            @default(now())
+  enrollmentEndDate DateTime
+  startDate         DateTime
+  endDate           DateTime
+  posts             Post[]
+  applications      Application[]
+  students          StudentInternship[]
+  updatedAt         DateTime            @default(now()) @updatedAt
 }
 
 model StudentInternship {
