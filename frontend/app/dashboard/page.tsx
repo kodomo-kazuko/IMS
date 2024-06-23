@@ -53,6 +53,23 @@ const invoices = [
     },
 
 ]
+const companys = [
+    {
+        id: 1,
+        image: "",
+        name: "MEZORN",
+        email: "Working",
+        createdAt: "2024-11-11",
+    },
+    {
+        id: 2,
+        image: "",
+        name: "MEZORN",
+        email: "Working",
+        createdAt: "2024-11-11",
+    },
+
+]
 export default function Dashboard() {
     const router = useRouter();
     return (
@@ -159,13 +176,7 @@ export default function Dashboard() {
                                                     <span className="sr-only">Image</span>
                                                 </TableHead>
                                                 <TableHead>Name</TableHead>
-                                                <TableHead>Status</TableHead>
-                                                <TableHead className="hidden md:table-cell">
-                                                    Price
-                                                </TableHead>
-                                                <TableHead className="hidden md:table-cell">
-                                                    Total Sales
-                                                </TableHead>
+                                                <TableHead>Email</TableHead>
                                                 <TableHead className="hidden md:table-cell">
                                                     Created at
                                                 </TableHead>
@@ -176,8 +187,8 @@ export default function Dashboard() {
                                         </TableHeader>
                                         <TableBody>
                                             <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <TableRow>
+
+                                                {/* <TableRow>
                                                         <TableCell className="hidden sm:table-cell">
                                                             <Image
                                                                 alt="Product image"
@@ -221,8 +232,48 @@ export default function Dashboard() {
                                                                 </DropdownMenuContent>
                                                             </DropdownMenu>
                                                         </TableCell>
-                                                    </TableRow>
-                                                </DialogTrigger>
+                                                    </TableRow> */}
+
+                                                {companys.map((company) => (
+                                                    <DialogTrigger asChild>
+                                                        <TableRow key={company.id}>
+                                                            <TableCell className="hidden sm:table-cell">
+                                                                <Image
+                                                                    alt="Product image"
+                                                                    className="aspect-square rounded-md object-cover"
+                                                                    height="64"
+                                                                    src={company.image}
+                                                                    width="64"
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell className="font-medium">{company.name}</TableCell>
+                                                            <TableCell>
+                                                                <Badge variant="outline">{company.email}</Badge>
+                                                            </TableCell>
+                                                            <TableCell className="hidden md:table-cell">{company.createdAt}</TableCell>
+                                                            <TableCell>
+                                                                <DropdownMenu>
+                                                                    <DropdownMenuTrigger asChild>
+                                                                        <Button
+                                                                            aria-haspopup="true"
+                                                                            size="icon"
+                                                                            variant="ghost"
+                                                                        >
+                                                                            <MoreHorizontal className="h-4 w-4" />
+                                                                            <span className="sr-only">Toggle menu</span>
+                                                                        </Button>
+                                                                    </DropdownMenuTrigger>
+                                                                    <DropdownMenuContent align="end">
+                                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                                                                    </DropdownMenuContent>
+                                                                </DropdownMenu>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    </DialogTrigger>
+                                                ))}
+
                                                 <DialogContent className="sm:max-w-[625px]">
                                                     <DialogHeader>
                                                         <DialogTitle>Add Company</DialogTitle>

@@ -44,15 +44,28 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import router, { useRouter } from "next/navigation";
-const students = [
+const studentsApply = [
     {
-        invoice: "INV001",
-        paymentStatus: "Paid",
-        totalAmount: "$250.00",
-        paymentMethod: "Credit Card",
+        id: 1,
+        company: "MEZORN",
+        status: "Working",
+        duration: "3 months",
+        internposition: "Software develpoper",
     },
 
 ]
+const students = [
+    {
+        id: 1,
+        image: '',
+        name: 'JOHN DOE',
+        status: 'Working',
+        email: 'johndoe@example.com',
+        major: 'IT',
+        createdAt: '2024-11-11',
+    }
+]
+
 
 export default function Students() {
     const router = useRouter();
@@ -234,62 +247,48 @@ export default function Students() {
                                         </TableHeader>
                                         <TableBody>
                                             <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <TableRow>
-                                                        <TableCell className="hidden sm:table-cell">
-                                                            <Image
-                                                                alt="Product image"
-                                                                className="aspect-square rounded-md object-cover"
-                                                                height="64"
-                                                                src="/placeholder.svg"
-                                                                width="64"
-                                                            />
-                                                        </TableCell>
-                                                        <TableCell className="font-medium">
-                                                            Laser Lemonade Machine
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Badge variant="outline">Draft</Badge>
-                                                        </TableCell>
-                                                        <TableCell className="hidden md:table-cell">
-                                                            $499.99
-                                                        </TableCell>
-                                                        <TableCell className="hidden md:table-cell">
-                                                            25
-                                                        </TableCell>
-                                                        <TableCell className="hidden md:table-cell">
-                                                            2023-07-12 10:42 AM
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <DropdownMenu>
-                                                                <DropdownMenuTrigger asChild>
-                                                                    <Button
-                                                                        aria-haspopup="true"
-                                                                        size="icon"
-                                                                        variant="ghost"
-                                                                    >
-                                                                        <MoreHorizontal className="h-4 w-4" />
-                                                                        <span className="sr-only">Toggle menu</span>
-                                                                    </Button>
-                                                                </DropdownMenuTrigger>
-                                                                <DropdownMenuContent align="end">
-                                                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                                                                </DropdownMenuContent>
-                                                            </DropdownMenu>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                </DialogTrigger>
+
+
+                                                {students.map((student) => (
+                                                    <DialogTrigger asChild>
+                                                        <TableRow key={student.id}>
+                                                            <TableCell className="hidden sm:table-cell">
+                                                                <Image
+                                                                    alt="Product image"
+                                                                    className="aspect-square rounded-md object-cover"
+                                                                    height="64"
+                                                                    src={student.image}
+                                                                    width="64"
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell className="font-medium">
+                                                                {student.name}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {student.status}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {student.email}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {student.major}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {student.createdAt}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    </DialogTrigger>
+                                                ))}
+
                                                 <DialogContent className="sm:max-w-[625px]">
                                                     <DialogHeader>
-                                                        <DialogTitle>Add Company</DialogTitle>
+                                                        <DialogTitle>Applications</DialogTitle>
                                                         <DialogDescription>
-                                                            Add students here. Click save when you're done.
+                                                            Applied internships
                                                         </DialogDescription>
                                                     </DialogHeader>
                                                     <Table>
-                                                        <TableCaption>A list of your recent invoices.</TableCaption>
+                                                        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                                                         <TableHeader>
                                                             <TableRow>
                                                                 <TableHead className="w-[100px]">Company</TableHead>
@@ -299,12 +298,12 @@ export default function Students() {
                                                             </TableRow>
                                                         </TableHeader>
                                                         <TableBody>
-                                                            {students.map((student) => (
-                                                                <TableRow key={student.invoice}>
-                                                                    <TableCell className="font-medium">{student.invoice}</TableCell>
-                                                                    <TableCell>{student.paymentStatus}</TableCell>
-                                                                    <TableCell>{student.paymentMethod}</TableCell>
-                                                                    <TableCell className="text-right">{student.totalAmount}</TableCell>
+                                                            {studentsApply.map((apply) => (
+                                                                <TableRow key={apply.id}>
+                                                                    <TableCell className="font-medium">{apply.company}</TableCell>
+                                                                    <TableCell>{apply.status}</TableCell>
+                                                                    <TableCell>{apply.duration}</TableCell>
+                                                                    <TableCell className="text-right">{apply.internposition}</TableCell>
 
                                                                 </TableRow>
                                                             ))}
