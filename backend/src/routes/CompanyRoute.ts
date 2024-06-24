@@ -9,16 +9,8 @@ router.post("/signin", companyController.signin);
 
 router.get("/all", accessMiddleware(["employee"]), companyController.index);
 
-router.post(
-  "/signup",
-  accessMiddleware(["employee"]),
-  companyController.signup
-);
+router.post("/signup", accessMiddleware(["employee"]), companyController.signup);
 
-router.patch(
-  "/approve",
-  accessMiddleware(["employee"]),
-  companyController.approve
-);
+router.patch("/approve", accessMiddleware(["employee"]), companyController.approve);
 
 export default router;

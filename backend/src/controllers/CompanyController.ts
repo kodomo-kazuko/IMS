@@ -28,7 +28,7 @@ export default class CompanyController {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: "Failed to register company",
+        message: (error as Error).message,
       });
     }
   }
@@ -60,13 +60,9 @@ export default class CompanyController {
         throw new Error("JWT_SECRET is not defined");
       }
 
-      const token = jwt.sign(
-        { id: company.id, account: "company" },
-        jwtSecret,
-        {
-          expiresIn: "7d",
-        }
-      );
+      const token = jwt.sign({ id: company.id, account: "company" }, jwtSecret, {
+        expiresIn: "7d",
+      });
 
       return res.status(200).json({
         success: true,
@@ -76,7 +72,7 @@ export default class CompanyController {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: "Authentication failed",
+        message: (error as Error).message,
       });
     }
   }
@@ -112,9 +108,7 @@ export default class CompanyController {
         message: "Company approval updated successfully",
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({ success: false, message: (error as Error).message });
+      res.status(500).json({ success: false, message: (error as Error).message });
     }
   }
 }

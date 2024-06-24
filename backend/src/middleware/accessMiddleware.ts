@@ -11,16 +11,15 @@ interface DecodedToken {
   exp: number;
 }
 
-export default function accessMiddleware(
-  requiredAccounts: Array<"employee" | "company" | "student"> | "none"
-) {
-  if (
-    requiredAccounts !== "none" &&
-    (!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)
-  ) {
-    throw new Error(
-      "requiredAccounts must be 'none' or a non-empty array of valid account types"
-    );
+const findUserMethods = {
+  employee: (id: number) => prisma.employee.findUnique({ where: { id } }),
+  company: (id: number) => prisma.company.findUnique({ where: { id, isApproved: true } }),
+  student: (id: number) => prisma.student.findUnique({ where: { id } }),
+};
+
+export default function accessMiddleware(requiredAccounts: Array<"employee" | "company" | "student"> | "none") {
+  if (requiredAccounts !== "none" && (!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)) {
+    throw new Error("requiredAccounts must be 'none' or a non-empty array of valid account types");
   }
 
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -38,15 +37,11 @@ export default function accessMiddleware(
       if (!jwtSecret) {
         return res.status(500).json({
           success: false,
-          message:
-            "Missing JWT secret. Please set the JWT_SECRET environment variable.",
+          message: "Missing JWT secret. Please set the JWT_SECRET environment variable.",
         });
       }
 
-      const decoded: DecodedToken = jwt.verify(
-        token,
-        jwtSecret
-      ) as DecodedToken;
+      const decoded: DecodedToken = jwt.verify(token, jwtSecret) as DecodedToken;
 
       if (requiredAccounts === "none") {
         // If requiredAccounts is "none", only validate the token
@@ -60,29 +55,15 @@ export default function accessMiddleware(
         });
       }
 
-      let user;
-      switch (decoded.account) {
-        case "employee":
-          user = await prisma.employee.findUnique({
-            where: { id: decoded.id },
-          });
-          break;
-        case "company":
-          user = await prisma.company.findUnique({
-            where: { id: decoded.id },
-          });
-          break;
-        case "student":
-          user = await prisma.student.findUnique({
-            where: { id: decoded.id },
-          });
-          break;
-        default:
-          return res.status(400).json({
-            success: false,
-            message: "Invalid account type",
-          });
+      const findUserMethod = findUserMethods[decoded.account];
+      if (!findUserMethod) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid account type",
+        });
       }
+
+      const user = await findUserMethod(decoded.id);
 
       if (!user) {
         return res.status(404).json({
@@ -90,6 +71,8 @@ export default function accessMiddleware(
           message: `${decoded.account} not found`,
         });
       }
+
+      req.cookies = decoded.id;
 
       next();
     } catch (error) {

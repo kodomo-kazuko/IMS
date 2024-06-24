@@ -7,11 +7,7 @@ const studentController = new StudentController();
 
 router.get("/all", accessMiddleware(["employee"]), studentController.index);
 
-router.post(
-  "/signup",
-  accessMiddleware(["employee"]),
-  studentController.signup
-);
+router.post("/signup", accessMiddleware(["employee"]), studentController.signup);
 
 router.post("/signin", studentController.signin);
 

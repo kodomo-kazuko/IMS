@@ -5,14 +5,9 @@ import accessMiddleware from "../middleware/accessMiddleware";
 const router = Router();
 const employeeController = new EmployeeController();
 
-// Auth routes
-router.post(
-  "/signup",
-  accessMiddleware(["employee"]),
-  employeeController.signup
-);
-
 router.post("/signin", employeeController.signin);
+
+router.post("/signup", accessMiddleware(["employee"]), employeeController.signup);
 
 router.get("/all", accessMiddleware(["employee"]), employeeController.index);
 

@@ -22,8 +22,7 @@ interface SigninRequestBody {
 export default class StudentController {
   public async signup(req: Request, res: Response) {
     try {
-      const { name, email, password, majorId, phone, address } =
-        req.body as SignupRequestBody;
+      const { name, email, password, majorId, phone, address } = req.body as SignupRequestBody;
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -38,13 +37,9 @@ export default class StudentController {
         },
       });
 
-      return res
-        .status(200)
-        .json({ success: true, message: "new Student created successfully" });
+      return res.status(200).json({ success: true, message: "new Student created successfully" });
     } catch (error) {
-      return res
-        .status(500)
-        .json({ success: false, message: (error as Error).message });
+      return res.status(500).json({ success: false, message: (error as Error).message });
     }
   }
 
@@ -56,17 +51,13 @@ export default class StudentController {
         where: { email },
       });
       if (!student) {
-        return res
-          .status(404)
-          .json({ success: false, message: "email or password Invalid" });
+        return res.status(404).json({ success: false, message: "email or password Invalid" });
       }
 
       const ValidPassword = await bcrypt.compare(password, student.password);
 
       if (!ValidPassword) {
-        return res
-          .status(404)
-          .json({ success: false, message: "email or password Invalid" });
+        return res.status(404).json({ success: false, message: "email or password Invalid" });
       }
 
       const jwtSecret = process.env.JWT_SECRET;
@@ -75,13 +66,9 @@ export default class StudentController {
         throw new Error("JWT_SECRET is not defined");
       }
 
-      const token = jwt.sign(
-        { id: student.id, account: "student" },
-        jwtSecret,
-        {
-          expiresIn: "7d",
-        }
-      );
+      const token = jwt.sign({ id: student.id, account: "student" }, jwtSecret, {
+        expiresIn: "7d",
+      });
 
       return res.status(200).json({
         success: true,
@@ -100,10 +87,8 @@ export default class StudentController {
     try {
       const students = await prisma.student.findMany();
 
-      if (!students) {
-        return res
-          .status(404)
-          .json({ success: false, message: "no students found" });
+      if (students.length === 0) {
+        return res.status(404).json({ success: false, message: "no students found" });
       }
 
       return res.status(200).json({

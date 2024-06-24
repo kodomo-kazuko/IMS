@@ -77,13 +77,9 @@ export default class EmployeeController {
         throw new Error("JWT_SECRET is not defined");
       }
 
-      const token = jwt.sign(
-        { id: employee.id, account: "employee" },
-        jwtSecret,
-        {
-          expiresIn: "7d",
-        }
-      );
+      const token = jwt.sign({ id: employee.id, account: "employee" }, jwtSecret, {
+        expiresIn: "7d",
+      });
 
       return res.status(200).json({
         success: true,
