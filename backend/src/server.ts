@@ -1,5 +1,6 @@
-import express from "express";
 import path from "path";
+import Redis from "ioredis";
+import express from "express";
 
 import PostRoute from "./routes/PostRoute";
 import UserRoute from "./routes/UserRoute";
@@ -10,6 +11,13 @@ import InternshipRoute from "./routes/InternshipRoute";
 
 const IP = process.env.IP || "localhost";
 const PORT = parseInt(process.env.PORT || "8080", 10);
+
+const REDIS_PORT = parseInt(process.env.REDIS_PORT || "6379", 10);
+
+const redisClient = new Redis({
+  host: IP,
+  port: REDIS_PORT,
+});
 
 const app = express();
 

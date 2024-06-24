@@ -4,6 +4,6 @@ import UserController from "../controllers/UserController";
 const router = Router();
 const userController = new UserController();
 
-router.get("/check", (req, res) => userController.checkToken(req, res));
+router.get("/check", userController.checkToken);
 
 export default router;
