@@ -25,7 +25,7 @@ export default class EmployeeController {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // Create employee
-      const employee = await prisma.employee.create({
+      await prisma.employee.create({
         data: {
           name,
           email,

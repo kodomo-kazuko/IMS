@@ -46,10 +46,12 @@ model Company {
   email       String       @unique
   password    String
   phone       String
+  weburl      String
   address     String
   isApproved  Boolean      @default(false)
   posts       Post[]
   internships Internship[]
+  mentors     Mentor[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
 }
@@ -68,7 +70,7 @@ model Application {
 
 model Major {
   id       Int       @id @default(autoincrement())
-  name     String
+  name     String    @unique
   students Student[]
 }
 
@@ -99,7 +101,7 @@ model Post {
 
 model Role {
   id       Int        @id @default(autoincrement())
-  name     String
+  name     String     @unique
   employee Employee[]
 }
 
@@ -122,10 +124,26 @@ model Internship {
 model StudentInternship {
   studentId    Int
   internshipId Int
+  mentorId     Int
   type         InternshipType
   status       InternshipStatus
   student      Student          @relation(fields: [studentId], references: [id])
   internship   Internship       @relation(fields: [internshipId], references: [id])
+  mentor       Mentor           @relation(fields: [mentorId], references: [id])
 
   @@id([studentId, internshipId])
+}
+
+model Mentor {
+  id          Int                 @id @default(autoincrement())
+  name        String
+  position    String
+  email       String              @unique
+  phone       String
+  companyId   Int
+  company     Company             @relation(fields: [companyId], references: [id])
+  internships StudentInternship[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }

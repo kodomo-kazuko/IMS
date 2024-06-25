@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const prisma = new PrismaClient();
 
 export default class UserController {
-  public async checkToken(req: Request, res: Response): Promise<Response> {
+  public async tokenRenew(req: Request, res: Response): Promise<Response> {
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
@@ -28,9 +28,7 @@ export default class UserController {
       }
 
       const issuedAt = new Date(decoded.iat * 1000);
-      const threeAndHalfDaysAgo = new Date(
-        Date.now() - 3.5 * 24 * 60 * 60 * 1000
-      );
+      const threeAndHalfDaysAgo = new Date(Date.now() - 3.5 * 24 * 60 * 60 * 1000);
 
       if (issuedAt < threeAndHalfDaysAgo) {
         const newToken = jwt.sign({ id: decoded.id }, jwtSecret, {
@@ -53,6 +51,13 @@ export default class UserController {
         success: false,
         message: (error as Error).message,
       });
+    }
+  }
+  public async check(req: Request, res: Response) {
+    try {
+      return res.status(200).json({ success: true, message: "backend is running" });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: (error as Error).message });
     }
   }
 }

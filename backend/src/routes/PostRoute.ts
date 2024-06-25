@@ -8,8 +8,8 @@ const postController = new PostController();
 
 router.post("/upload", accessMiddleware(["company"]), upload("images"), postController.create);
 
-router.get("/all", accessMiddleware("none"), postController.all);
+router.get("/all", accessMiddleware("all"), postController.all);
 
-router.get("/:id", accessMiddleware("none"), postController.single);
+router.get("/:id", accessMiddleware("all"), postController.single);
 
 export default router;

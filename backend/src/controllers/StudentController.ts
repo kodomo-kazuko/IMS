@@ -26,7 +26,7 @@ export default class StudentController {
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const newStudent = await prisma.student.create({
+      await prisma.student.create({
         data: {
           name,
           email,

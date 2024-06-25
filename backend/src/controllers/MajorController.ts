@@ -11,6 +11,7 @@ export default class MajorController {
   public async create(req: Request, res: Response) {
     try {
       const { name } = req.body;
+
       const newMajor = await prisma.major.create({
         data: {
           name,

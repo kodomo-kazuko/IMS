@@ -12,7 +12,7 @@ export default class PostController {
       const image = req.url;
       const companyId = req.cookies;
 
-      const newPost = await prisma.post.create({
+      await prisma.post.create({
         data: {
           title,
           content,
@@ -25,7 +25,6 @@ export default class PostController {
       return res.status(201).json({
         success: true,
         message: "Post created successfully",
-        data: newPost,
       });
     } catch (error) {
       return res.status(500).json({ success: false, message: (error as Error).message });

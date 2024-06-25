@@ -29,6 +29,7 @@ CREATE TABLE "Company" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
+    "weburl" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "isApproved" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -113,10 +114,25 @@ CREATE TABLE "Internship" (
 CREATE TABLE "StudentInternship" (
     "studentId" INTEGER NOT NULL,
     "internshipId" INTEGER NOT NULL,
+    "mentorId" INTEGER NOT NULL,
     "type" "InternshipType" NOT NULL,
     "status" "InternshipStatus" NOT NULL,
 
     CONSTRAINT "StudentInternship_pkey" PRIMARY KEY ("studentId","internshipId")
+);
+
+-- CreateTable
+CREATE TABLE "Mentor" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "position" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
+    "companyId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Mentor_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -127,6 +143,9 @@ CREATE UNIQUE INDEX "Company_email_key" ON "Company"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Mentor_email_key" ON "Mentor"("email");
 
 -- AddForeignKey
 ALTER TABLE "Student" ADD CONSTRAINT "Student_majorId_fkey" FOREIGN KEY ("majorId") REFERENCES "Major"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -154,3 +173,9 @@ ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_studentId_fkey
 
 -- AddForeignKey
 ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_internshipId_fkey" FOREIGN KEY ("internshipId") REFERENCES "Internship"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "Mentor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Mentor" ADD CONSTRAINT "Mentor_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

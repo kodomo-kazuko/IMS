@@ -5,7 +5,7 @@ import accessMiddleware from "../middleware/accessMiddleware";
 const router = Router();
 const majorController = new MajorController();
 
-router.get("/all", accessMiddleware("none"), majorController.all);
+router.get("/all", accessMiddleware("all"), majorController.all);
 
 router.post("/create", accessMiddleware(["employee"]), majorController.create);
 

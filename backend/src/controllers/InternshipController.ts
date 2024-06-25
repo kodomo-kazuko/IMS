@@ -12,7 +12,7 @@ export default class InternshipController {
       const startISO = new Date(startDate).toISOString();
       const endISO = new Date(endDate).toISOString();
 
-      const internship = await prisma.internship.create({
+      await prisma.internship.create({
         data: {
           title,
           type,

@@ -11,6 +11,7 @@ import StudentRoute from "./routes/StudentRoute";
 import CompanyRoute from "./routes/CompanyRoute";
 import EmployeeRoute from "./routes/EmployeeRoute";
 import InternshipRoute from "./routes/InternshipRoute";
+import ApplicationRoute from "./routes/ApplicationRoute";
 
 const IP = process.env.IP || "localhost";
 const PORT = parseInt(process.env.PORT || "8080", 10);
@@ -28,6 +29,7 @@ app.use("/company", CompanyRoute);
 app.use("/student", StudentRoute);
 app.use("/employee", EmployeeRoute);
 app.use("/internship", InternshipRoute);
+app.use("/application", ApplicationRoute);
 
 app.listen(PORT, IP, () => {
   console.log(`server is running on http://${IP}:${PORT}/`);

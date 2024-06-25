@@ -8,17 +8,18 @@ const prisma = new PrismaClient();
 export default class CompanyController {
   public async signup(req: Request, res: Response) {
     try {
-      const { name, email, password, phone, address } = req.body;
+      const { name, email, password, phone, address, weburl } = req.body;
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const company = await prisma.company.create({
+      await prisma.company.create({
         data: {
           name,
           email,
           password: hashedPassword,
           phone,
           address,
+          weburl,
         },
       });
       return res.status(201).json({

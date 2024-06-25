@@ -7,6 +7,6 @@ const internshipController = new InternshipController();
 
 router.post("/create", accessMiddleware(["company"]), internshipController.create);
 
-router.get("/all", accessMiddleware("none"), internshipController.all);
+router.get("/all", accessMiddleware("all"), internshipController.all);
 
 export default router;

@@ -17,9 +17,9 @@ const findUserMethods = {
   student: (id: number) => prisma.student.findUnique({ where: { id } }),
 };
 
-export default function accessMiddleware(requiredAccounts: Array<"employee" | "company" | "student"> | "none") {
-  if (requiredAccounts !== "none" && (!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)) {
-    throw new Error("requiredAccounts must be 'none' or a non-empty array of valid account types");
+export default function accessMiddleware(requiredAccounts: Array<"employee" | "company" | "student"> | "all") {
+  if (requiredAccounts !== "all" && (!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)) {
+    throw new Error("requiredAccounts must be 'all' or a non-empty array of valid account types");
   }
 
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -43,8 +43,8 @@ export default function accessMiddleware(requiredAccounts: Array<"employee" | "c
 
       const decoded: DecodedToken = jwt.verify(token, jwtSecret) as DecodedToken;
 
-      if (requiredAccounts === "none") {
-        // If requiredAccounts is "none", only validate the token
+      if (requiredAccounts === "all") {
+        // If requiredAccounts is "all", only validate the token
         return next();
       }
 
