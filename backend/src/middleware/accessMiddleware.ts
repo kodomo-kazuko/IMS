@@ -12,11 +12,12 @@ interface DecodedToken {
   exp: number;
 }
 
-const findUserMethods = {
-  employee: (id: number) => prisma.employee.findUnique({ where: { id } }),
-  company: (id: number) => prisma.company.findUnique({ where: { id } }),
-  student: (id: number) => prisma.student.findUnique({ where: { id } }),
-};
+// const findUserMethods = {
+//   employee: (id: number) => prisma.employee.findUnique({ where: { id } }),
+//   company: (id: number) => prisma.company.findUnique({ where: { id } }),
+//   student: (id: number) => prisma.student.findUnique({ where: { id } }),
+//   mentor: (id: number) => prisma.mentor.findUnique({ where: { id } }),
+// };
 
 export default function accessMiddleware(requiredAccounts: AccountType[] | "all") {
   if (requiredAccounts !== "all" && (!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)) {
@@ -55,22 +56,22 @@ export default function accessMiddleware(requiredAccounts: AccountType[] | "all"
         });
       }
 
-      const findUserMethod = findUserMethods[decoded.account];
-      if (!findUserMethod) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid account type",
-        });
-      }
+      // const findUserMethod = findUserMethods[decoded.account];
+      // if (!findUserMethod) {
+      //   return res.status(400).json({
+      //     success: false,
+      //     message: "Invalid account type",
+      //   });
+      // }
 
-      const user = await findUserMethod(decoded.id);
+      // const user = await findUserMethod(decoded.id);
 
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: `${decoded.account} not found`,
-        });
-      }
+      // if (!user) {
+      //   return res.status(404).json({
+      //     success: false,
+      //     message: `${decoded.account} not found`,
+      //   });
+      // }
       req.cookies = decoded;
 
       next();
