@@ -71,8 +71,7 @@ export default function accessMiddleware(requiredAccounts: Array<"employee" | "c
           message: `${decoded.account} not found`,
         });
       }
-
-      req.cookies = decoded.id;
+      req.cookies = decoded;
 
       next();
     } catch (error) {

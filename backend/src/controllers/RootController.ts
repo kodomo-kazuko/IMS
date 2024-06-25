@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-export default class UserController {
+export default class RootController {
   public async tokenRenew(req: Request, res: Response): Promise<Response> {
     const token = req.headers.authorization?.split(" ")[1];
 

@@ -45,7 +45,7 @@ const upload = (allowedTypes: "images" | "documents") => {
         return res.status(500).json({ error: err as Error });
       }
       if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded" });
+        return res.status(400).json({ error: err });
       }
 
       // Construct the complete file path

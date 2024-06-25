@@ -30,7 +30,7 @@ model Student {
   name         String
   email        String              @unique
   password     String
-  phone        String
+  phone        String              @unique
   address      String
   majorId      Int
   major        Major               @relation(fields: [majorId], references: [id])
@@ -45,7 +45,7 @@ model Company {
   name        String
   email       String       @unique
   password    String
-  phone       String
+  phone       String       @unique
   weburl      String
   address     String
   isApproved  Boolean      @default(false)
@@ -138,8 +138,9 @@ model Mentor {
   id          Int                 @id @default(autoincrement())
   name        String
   position    String
+  password    String
   email       String              @unique
-  phone       String
+  phone       String              @unique
   companyId   Int
   company     Company             @relation(fields: [companyId], references: [id])
   internships StudentInternship[]

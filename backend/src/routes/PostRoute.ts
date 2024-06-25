@@ -1,8 +1,9 @@
-import express from "express";
-const router = express.Router();
+import { Router } from "express";
 import PostController from "../controllers/PostController";
 import accessMiddleware from "../middleware/accessMiddleware";
 import upload from "../middleware/multerMiddleware";
+
+const router = Router();
 
 const postController = new PostController();
 

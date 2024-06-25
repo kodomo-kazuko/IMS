@@ -1,7 +1,7 @@
-import express from "express";
 import accessMiddleware from "../middleware/accessMiddleware";
 import upload from "../middleware/multerMiddleware";
-const router = express.Router();
+import { Router } from "express";
+const router = Router();
 
 router.post("/create", accessMiddleware(["company"]), upload("documents"));
 

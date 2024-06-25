@@ -1,4 +1,4 @@
-import express, { Router } from "express";
+import { Router } from "express";
 import EmployeeController from "../controllers/EmployeeController";
 import accessMiddleware from "../middleware/accessMiddleware";
 
