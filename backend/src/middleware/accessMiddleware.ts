@@ -1,11 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import type { AccountType } from "../types/account";
 
 const prisma = new PrismaClient();
 
 interface DecodedToken {
-  account: "employee" | "company" | "student";
+  account: AccountType;
   id: number;
   iat: number;
   exp: number;
@@ -17,7 +18,7 @@ const findUserMethods = {
   student: (id: number) => prisma.student.findUnique({ where: { id } }),
 };
 
-export default function accessMiddleware(requiredAccounts: Array<"employee" | "company" | "student"> | "all") {
+export default function accessMiddleware(requiredAccounts: AccountType[] | "all") {
   if (requiredAccounts !== "all" && (!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)) {
     throw new Error("requiredAccounts must be 'all' or a non-empty array of valid account types");
   }
@@ -44,7 +45,6 @@ export default function accessMiddleware(requiredAccounts: Array<"employee" | "c
       const decoded: DecodedToken = jwt.verify(token, jwtSecret) as DecodedToken;
 
       if (requiredAccounts === "all") {
-        // If requiredAccounts is "all", only validate the token
         return next();
       }
 
