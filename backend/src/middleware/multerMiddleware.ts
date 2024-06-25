@@ -36,8 +36,8 @@ const storage = multer.diskStorage({
 });
 
 // Create the combined Multer middleware
-const upload = (fieldName: string) => {
-  const multerUpload = multer({ storage }).single(fieldName);
+const upload = (allowedTypes: "images" | "documents") => {
+  const multerUpload = multer({ storage }).single(allowedTypes);
 
   return (req: Request, res: Response, next: NextFunction) => {
     multerUpload(req, res, (err: any) => {
@@ -51,7 +51,7 @@ const upload = (fieldName: string) => {
       // Construct the complete file path
       const extension = path.extname(req.file.originalname).toLowerCase();
       const subdirectory = getSubdirectory(extension);
-      const filePath = path.join("uploads", subdirectory, req.file.filename).replace(/\\/g, "/");
+      const filePath = path.join("/uploads", subdirectory, req.file.filename).replace(/\\/g, "/");
 
       // Store the file path in the request object
       req.url = filePath;

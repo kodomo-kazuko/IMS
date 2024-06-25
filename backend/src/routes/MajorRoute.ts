@@ -1,9 +1,12 @@
 import { Router } from "express";
 import MajorController from "../controllers/MajorController";
+import accessMiddleware from "../middleware/accessMiddleware";
 
 const router = Router();
 const majorController = new MajorController();
 
-router.get("/all", majorController.all);
+router.get("/all", accessMiddleware("none"), majorController.all);
+
+router.post("/create", accessMiddleware(["employee"]), majorController.create);
 
 export default router;

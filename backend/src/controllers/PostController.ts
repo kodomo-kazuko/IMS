@@ -8,8 +8,9 @@ const SERVER_PORT = process.env.PORT || 8080;
 export default class PostController {
   public async create(req: Request, res: Response) {
     try {
-      const { title, content, companyId, internshipId } = req.body;
+      const { title, content, internshipId } = req.body;
       const image = req.url;
+      const companyId = req.cookies;
 
       const newPost = await prisma.post.create({
         data: {
@@ -44,7 +45,7 @@ export default class PostController {
       }
 
       // Construct the complete image URL
-      const imageUrl = `http://${SERVER_IP}:${SERVER_PORT}/${post.image}`;
+      const imageUrl = `http://${SERVER_IP}:${SERVER_PORT}${post.image}`;
 
       return res.status(200).json({
         success: true,
@@ -53,6 +54,17 @@ export default class PostController {
           image: imageUrl,
         },
       });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: (error as Error).message });
+    }
+  }
+  public async all(req: Request, res: Response) {
+    try {
+      const posts = await prisma.post.findMany();
+      if (posts.length === 0) {
+        return res.status(204).json({ success: true, message: "no posts found" });
+      }
+      return res.status(200).json({ success: true, message: "retrieved all posts", data: posts });
     } catch (error) {
       return res.status(500).json({ success: false, message: (error as Error).message });
     }

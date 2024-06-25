@@ -6,10 +6,10 @@ import upload from "../middleware/multerMiddleware";
 
 const postController = new PostController();
 
-router.post("/upload", accessMiddleware(["company"]), upload("image"), postController.create);
+router.post("/upload", accessMiddleware(["company"]), upload("images"), postController.create);
+
+router.get("/all", accessMiddleware("none"), postController.all);
 
 router.get("/:id", accessMiddleware("none"), postController.single);
-
-router.get("/all", accessMiddleware("none"));
 
 export default router;

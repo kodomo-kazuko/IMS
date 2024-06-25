@@ -13,7 +13,7 @@ interface DecodedToken {
 
 const findUserMethods = {
   employee: (id: number) => prisma.employee.findUnique({ where: { id } }),
-  company: (id: number) => prisma.company.findUnique({ where: { id, isApproved: true } }),
+  company: (id: number) => prisma.company.findUnique({ where: { id } }),
   student: (id: number) => prisma.student.findUnique({ where: { id } }),
 };
 
