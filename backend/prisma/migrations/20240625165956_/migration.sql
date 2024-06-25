@@ -126,6 +126,7 @@ CREATE TABLE "Mentor" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "position" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "companyId" INTEGER NOT NULL,
@@ -139,13 +140,28 @@ CREATE TABLE "Mentor" (
 CREATE UNIQUE INDEX "Student_email_key" ON "Student"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Student_phone_key" ON "Student"("phone");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Company_email_key" ON "Company"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Company_phone_key" ON "Company"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Major_name_key" ON "Major"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Role_name_key" ON "Role"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Mentor_email_key" ON "Mentor"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Mentor_phone_key" ON "Mentor"("phone");
 
 -- AddForeignKey
 ALTER TABLE "Student" ADD CONSTRAINT "Student_majorId_fkey" FOREIGN KEY ("majorId") REFERENCES "Major"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
