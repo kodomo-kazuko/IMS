@@ -1,17 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 const prisma = new PrismaClient();
 
 export default class InternshipController {
-  public async create(req: Request, res: Response) {
+  public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const { title, type, enrollmentEndDate, startDate, endDate } = req.body;
-
       const enrollISO = new Date(enrollmentEndDate).toISOString();
       const startISO = new Date(startDate).toISOString();
       const endISO = new Date(endDate).toISOString();
-
       await prisma.internship.create({
         data: {
           title,
@@ -22,27 +20,22 @@ export default class InternshipController {
           companyId: req.cookies,
         },
       });
-      return res.status(200).json({ success: true, message: "internship created successfully" });
+      res.status(201).json({ success: true, message: "Internship created successfully" });
     } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: (error as Error).message,
-      });
+      next(error);
     }
   }
-  public async all(req: Request, res: Response) {
+
+  public async all(req: Request, res: Response, next: NextFunction) {
     try {
       const internships = await prisma.internship.findMany();
       if (internships.length === 0) {
-        return res.status(204).json({ success: true, message: "no internships found" });
+        res.status(204).json({ success: true, message: "No internships found" });
+        return;
       }
-
-      return res.status(200).json({ success: true, message: "retrieved successfully", data: internships });
+      res.status(200).json({ success: true, message: "Internships retrieved successfully", data: internships });
     } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: (error as Error).message,
-      });
+      next(error);
     }
   }
 }

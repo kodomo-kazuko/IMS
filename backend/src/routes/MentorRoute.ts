@@ -9,9 +9,9 @@ router.post("signin", mentorController.signin);
 
 router.post("/create", accessMiddleware(["company"]), mentorController.create);
 
-router.get("/company", accessMiddleware(["company"]), mentorController.comapny);
+router.get("/company", accessMiddleware(["company"]), mentorController.company);
 
-router.get("/company/:id", accessMiddleware(["company"]), mentorController.comapny);
+router.get("/company/:id", accessMiddleware(["company"]), mentorController.company);
 
 router.get("/all", accessMiddleware(["employee"]), mentorController.all);
 

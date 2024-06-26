@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -18,13 +18,10 @@ interface SigninRequestBody {
 }
 
 export default class EmployeeController {
-  public async signup(req: Request, res: Response) {
+  public async signup(req: Request, res: Response, next: NextFunction) {
     const { name, email, password, roleId } = req.body as SignupRequestBody;
     try {
-      // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
-
-      // Create employee
       await prisma.employee.create({
         data: {
           name,
@@ -33,82 +30,42 @@ export default class EmployeeController {
           password: hashedPassword,
         },
       });
-
-      return res.status(201).json({
-        success: true,
-        message: "Employee created successfully",
-      });
+      res.status(201).json({ success: true, message: "Employee created successfully" });
     } catch (error) {
-      return res.status(400).json({
-        success: false,
-        message: (error as Error).message,
-      });
+      next(error);
     }
   }
 
-  public async signin(req: Request, res: Response) {
+  public async signin(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body as SigninRequestBody;
     try {
-      // Find employee by email
-      const employee = await prisma.employee.findUnique({
-        where: { email },
-      });
-
+      const employee = await prisma.employee.findUnique({ where: { email } });
       if (!employee) {
-        return res.status(404).json({
-          success: false,
-          message: "Employee not found",
-        });
+        res.status(404).json({ success: false, message: "Employee not found" });
+        return;
       }
-
-      // Check password
       const isPasswordValid = await bcrypt.compare(password, employee.password);
-
       if (!isPasswordValid) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid password",
-        });
+        res.status(401).json({ success: false, message: "Invalid password" });
+        return;
       }
-
-      // Generate token
       const jwtSecret = process.env.JWT_SECRET;
       if (!jwtSecret) {
         throw new Error("JWT_SECRET is not defined");
       }
-
-      const token = jwt.sign({ id: employee.id, account: "employee" }, jwtSecret, {
-        expiresIn: "7d",
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: "Authentication successful",
-        token,
-      });
+      const token = jwt.sign({ id: employee.id, account: "employee" }, jwtSecret, { expiresIn: "7d" });
+      res.status(200).json({ success: true, message: "Authentication successful", token });
     } catch (error) {
-      return res.status(400).json({
-        success: false,
-        message: (error as Error).message,
-      });
+      next(error);
     }
   }
 
-  public async index(req: Request, res: Response) {
+  public async index(req: Request, res: Response, next: NextFunction) {
     try {
-      // Get all employees
       const employees = await prisma.employee.findMany();
-
-      return res.status(200).json({
-        success: true,
-        message: "Employees retrieved successfully",
-        data: employees,
-      });
+      res.status(200).json({ success: true, message: "Employees retrieved successfully", data: employees });
     } catch (error) {
-      return res.status(400).json({
-        success: false,
-        message: (error as Error).message,
-      });
+      next(error);
     }
   }
 }

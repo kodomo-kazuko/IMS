@@ -1,17 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
 export default class MentorController {
-  public async create(req: Request, res: Response) {
+  public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, position, email, phone, password } = req.body;
-
       const hashedPassword = await bcrypt.hash(password, 10);
-
       await prisma.mentor.create({
         data: {
           name,
@@ -22,105 +20,95 @@ export default class MentorController {
           companyId: req.cookies,
         },
       });
-      return res.status(201).json({ success: true, message: "mentor created successfully" });
+      res.status(201).json({ success: true, message: "Mentor created successfully" });
     } catch (error) {
-      return res.status(500).json({ success: false, message: (error as Error).message });
+      next(error);
     }
   }
-  public async single(req: Request, res: Response) {
+
+  public async single(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const mentor = await prisma.mentor.findUnique({
         where: { id: Number(id) },
       });
-
       if (!mentor) {
-        return res.status(404).json({ success: false, message: "mentor not found" });
+        res.status(404).json({ success: false, message: "Mentor not found" });
+        return;
       }
-
-      return res.status(201).json({ success: true, message: "mentor retrieved successfully", data: mentor });
+      res.status(200).json({ success: true, message: "Mentor retrieved successfully", data: mentor });
     } catch (error) {
-      return res.status(500).json({ success: false, message: (error as Error).message });
+      next(error);
     }
   }
 
-  public async singleCompany(req: Request, res: Response) {
+  public async singleCompany(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const mentor = await prisma.mentor.findUnique({
         where: { id: Number(id), companyId: req.cookies },
       });
-
       if (!mentor) {
-        return res.status(404).json({ success: false, message: "mentor not found" });
+        res.status(404).json({ success: false, message: "Mentor not found" });
+        return;
       }
-
-      return res.status(201).json({ success: true, message: "mentor retrieved successfully", data: mentor });
+      res.status(200).json({ success: true, message: "Mentor retrieved successfully", data: mentor });
     } catch (error) {
-      return res.status(500).json({ success: false, message: (error as Error).message });
+      next(error);
     }
   }
-  public async signin(req: Request, res: Response) {
+
+  public async signin(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
       const mentor = await prisma.mentor.findUnique({
         where: { email },
       });
-
       if (!mentor) {
-        return res.status(404).json({
-          success: false,
-          message: "mentor not found",
-        });
+        res.status(404).json({ success: false, message: "Mentor not found" });
+        return;
       }
-
       const isPasswordValid = await bcrypt.compare(password, mentor.password);
-
       if (!isPasswordValid) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid password",
-        });
+        res.status(401).json({ success: false, message: "Invalid password" });
+        return;
       }
-
       const jwtSecret = process.env.JWT_SECRET;
       if (!jwtSecret) {
         throw new Error("JWT_SECRET is not defined");
       }
-
-      const token = jwt.sign({ id: mentor.id, account: "mentor" }, jwtSecret, {
-        expiresIn: "7d",
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: "Authentication successful",
-        token,
-      });
-    } catch (error) {}
+      const token = jwt.sign({ id: mentor.id, account: "mentor" }, jwtSecret, { expiresIn: "7d" });
+      res.status(200).json({ success: true, message: "Authentication successful", token });
+    } catch (error) {
+      next(error);
+    }
   }
-  public async comapny(req: Request, res: Response) {
+
+  public async company(req: Request, res: Response, next: NextFunction) {
     try {
       const mentors = await prisma.mentor.findMany({
         where: { companyId: req.cookies.id },
       });
       if (mentors.length === 0) {
-        return res.status(204).json({ success: true, message: "no mentors found" });
+        res.status(204).json({ success: true, message: "No mentors found" });
+        return;
       }
-      return res.status(201).json({ success: true, message: "mentors retrieved successfully", data: mentors });
+      res.status(200).json({ success: true, message: "Mentors retrieved successfully", data: mentors });
     } catch (error) {
-      return res.status(500).json({ success: false, message: (error as Error).message });
+      next(error);
     }
   }
-  public async all(req: Request, res: Response) {
+
+  public async all(req: Request, res: Response, next: NextFunction) {
     try {
       const mentors = await prisma.mentor.findMany();
       if (mentors.length === 0) {
-        return res.status(204).json({ success: true, message: "no mentors found" });
+        res.status(204).json({ success: true, message: "No mentors found" });
+        return;
       }
-      return res.status(201).json({ success: true, message: "mentors retrieved successfully", data: mentors });
+      res.status(200).json({ success: true, message: "Mentors retrieved successfully", data: mentors });
     } catch (error) {
-      return res.status(500).json({ success: false, message: (error as Error).message });
+      next(error);
     }
   }
 }

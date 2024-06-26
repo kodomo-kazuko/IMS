@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import RootRoute from "./RootRoute";
+import RoleRoute from "./RoleRoute";
 import PostRoute from "./PostRoute";
 import MajorRoute from "./MajorRoute";
 import MentorRoute from "./MentorRoute";
@@ -13,6 +14,7 @@ import ApplicationRoute from "./ApplicationRoute";
 const router = Router();
 
 router.use("/", RootRoute);
+router.use("/role", RoleRoute);
 router.use("/post", PostRoute);
 router.use("/major", MajorRoute);
 router.use("/mentor", MentorRoute);
