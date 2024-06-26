@@ -10,7 +10,7 @@ export default class PostController {
     try {
       const { title, content, internshipId } = req.body;
       const image = req.url;
-      const companyId = req.cookies;
+      const companyId = req.cookies.id;
       await prisma.post.create({
         data: {
           title,

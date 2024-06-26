@@ -12,12 +12,12 @@ interface DecodedToken {
   exp: number;
 }
 
-// const findUserMethods = {
-//   employee: (id: number) => prisma.employee.findUnique({ where: { id } }),
-//   company: (id: number) => prisma.company.findUnique({ where: { id } }),
-//   student: (id: number) => prisma.student.findUnique({ where: { id } }),
-//   mentor: (id: number) => prisma.mentor.findUnique({ where: { id } }),
-// };
+const findUserMethods = {
+  employee: (id: number) => prisma.employee.findUnique({ where: { id } }),
+  company: (id: number) => prisma.company.findUnique({ where: { id } }),
+  student: (id: number) => prisma.student.findUnique({ where: { id } }),
+  mentor: (id: number) => prisma.mentor.findUnique({ where: { id } }),
+};
 
 export default function accessMiddleware(requiredAccounts: AccountType[] | "all") {
   if (requiredAccounts !== "all" && (!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)) {
@@ -46,7 +46,8 @@ export default function accessMiddleware(requiredAccounts: AccountType[] | "all"
       const decoded: DecodedToken = jwt.verify(token, jwtSecret) as DecodedToken;
 
       if (requiredAccounts === "all") {
-        return next();
+        next();
+        return;
       }
 
       if (!requiredAccounts.includes(decoded.account)) {
@@ -55,6 +56,8 @@ export default function accessMiddleware(requiredAccounts: AccountType[] | "all"
           message: "Access denied",
         });
       }
+
+      // uncomment for additional check
 
       // const findUserMethod = findUserMethods[decoded.account];
       // if (!findUserMethod) {
@@ -65,18 +68,17 @@ export default function accessMiddleware(requiredAccounts: AccountType[] | "all"
       // }
 
       // const user = await findUserMethod(decoded.id);
-
       // if (!user) {
       //   return res.status(404).json({
       //     success: false,
       //     message: `${decoded.account} not found`,
       //   });
       // }
-      req.cookies = decoded;
 
+      req.cookies = decoded;
       next();
     } catch (error) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: (error as Error).message,
       });

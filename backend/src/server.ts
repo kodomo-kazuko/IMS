@@ -1,12 +1,13 @@
 import path from "path";
 import cors from "cors";
 import dotenv from "dotenv";
+
+dotenv.config();
+
 import express from "express";
 import routes from "./routes";
 import ErrorMiddleware from "./middleware/ErrorMiddleware";
 import accessMiddleware from "./middleware/accessMiddleware";
-
-dotenv.config();
 
 const IP = process.env.IP || "localhost";
 const PORT = parseInt(process.env.PORT || "8080", 10);

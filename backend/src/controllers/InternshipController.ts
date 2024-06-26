@@ -17,7 +17,7 @@ export default class InternshipController {
           enrollmentEndDate: enrollISO,
           startDate: startISO,
           endDate: endISO,
-          companyId: req.cookies,
+          companyId: req.cookies.id,
         },
       });
       res.status(201).json({ success: true, message: "Internship created successfully" });

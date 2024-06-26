@@ -17,7 +17,7 @@ export default class MentorController {
           email,
           phone,
           password: hashedPassword,
-          companyId: req.cookies,
+          companyId: req.cookies.id,
         },
       });
       res.status(201).json({ success: true, message: "Mentor created successfully" });
@@ -46,7 +46,7 @@ export default class MentorController {
     try {
       const { id } = req.params;
       const mentor = await prisma.mentor.findUnique({
-        where: { id: Number(id), companyId: req.cookies },
+        where: { id: Number(id), companyId: req.cookies.id },
       });
       if (!mentor) {
         res.status(404).json({ success: false, message: "Mentor not found" });
