@@ -36,7 +36,7 @@ export default class MajorController {
       }
       const majors = await prisma.major.findMany();
       if (majors.length === 0) {
-        res.status(204).json({ success: true, message: "No majors yet" });
+        res.status(200).json({ success: true, message: "No majors yet" });
         return;
       }
       await redisClient.set("majors", JSON.stringify(majors));

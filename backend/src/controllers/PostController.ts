@@ -9,7 +9,6 @@ export default class PostController {
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const { title, content, internshipId } = req.body;
-      const image = req.url;
       const companyId = req.cookies.id;
       await prisma.post.create({
         data: {
@@ -17,7 +16,7 @@ export default class PostController {
           content,
           companyId: Number(companyId),
           internshipId: Number(internshipId),
-          image,
+          image: req.url,
         },
       });
       res.status(201).json({ success: true, message: "Post created successfully" });
@@ -47,10 +46,15 @@ export default class PostController {
     try {
       const posts = await prisma.post.findMany();
       if (posts.length === 0) {
-        res.status(204).json({ success: true, message: "No posts found" });
+        res.status(200).json({ success: true, message: "No posts found" });
         return;
       }
-      res.status(200).json({ success: true, message: "Retrieved all posts", data: posts });
+      const postsWithFullUrls = posts.map((post) => ({
+        ...post,
+        image: `http://${SERVER_IP}:${SERVER_PORT}${post.image}`,
+      }));
+
+      res.status(200).json({ success: true, message: "Retrieved all posts", data: postsWithFullUrls });
     } catch (error) {
       next(error);
     }

@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 
 const prisma = new PrismaClient();
+const SERVER_IP = process.env.IP || "localhost";
+const SERVER_PORT = process.env.PORT || 8080;
 
 export default class ApplicationController {
   public async create(req: Request, res: Response, next: NextFunction) {
@@ -9,14 +11,14 @@ export default class ApplicationController {
       const { internshipId } = req.body;
       await prisma.application.create({
         data: {
-          internshipId,
+          internshipId: Number(internshipId),
           studentId: req.cookies.id,
+          document: req.url,
         },
       });
       return res.status(201).json({ success: true, message: "Application created successfully." });
     } catch (error) {
       next(error);
-      return res.status(500).json({ success: false, message: "An error occurred while creating the application." });
     }
   }
 
@@ -35,13 +37,28 @@ export default class ApplicationController {
       });
 
       if (!applications || applications.length === 0) {
-        return res.status(204).json({ success: true, message: "No application from this student yet." });
+        return res.status(200).json({ success: true, message: "No application from this student yet." });
       }
 
       return res.status(200).json({ success: true, message: "Applications retrieved successfully.", data: applications });
     } catch (error) {
       next(error);
-      return res.status(500).json({ success: false, message: "An error occurred while retrieving the applications." });
     }
   }
+  public async all(req: Request, res: Response, next: NextFunction) {
+    try {
+      const applications = await prisma.application.findMany();
+      if (applications.length === 0) {
+        return res.status(200).json({ success: true, message: "no applications yet" });
+      }
+      const fullApplications = applications.map((app) => ({
+        ...app,
+        document: `http://${SERVER_IP}:${SERVER_PORT}${app.document}`,
+      }));
+      return res.status(200).json({ success: true, message: "successfully retirved applications", data: fullApplications });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async single(req: Request, res: Response, next: NextFunction) {}
 }

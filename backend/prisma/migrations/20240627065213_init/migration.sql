@@ -43,6 +43,7 @@ CREATE TABLE "Application" (
     "id" SERIAL NOT NULL,
     "studentId" INTEGER NOT NULL,
     "internshipId" INTEGER NOT NULL,
+    "document" TEXT NOT NULL,
     "status" "ApplicationStatus" NOT NULL DEFAULT 'PENDING',
     "appliedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

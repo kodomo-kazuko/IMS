@@ -23,7 +23,6 @@ export default class CompanyController {
       return res.status(201).json({ success: true, message: "Company registered successfully" });
     } catch (error) {
       next(error);
-      return res.status(500).json({ success: false, message: "An error occurred while registering the company." });
     }
   }
 
@@ -46,7 +45,6 @@ export default class CompanyController {
       return res.status(200).json({ success: true, message: "Authentication successful", token });
     } catch (error) {
       next(error);
-      return res.status(500).json({ success: false, message: "An error occurred while signing in." });
     }
   }
 
@@ -56,7 +54,6 @@ export default class CompanyController {
       return res.status(200).json({ success: true, message: "Companies retrieved successfully", data: companies });
     } catch (error) {
       next(error);
-      return res.status(500).json({ success: false, message: "An error occurred while retrieving the companies." });
     }
   }
 
@@ -70,7 +67,6 @@ export default class CompanyController {
       return res.status(200).json({ success: true, message: "Company approval updated successfully" });
     } catch (error) {
       next(error);
-      return res.status(500).json({ success: false, message: "An error occurred while updating the company approval." });
     }
   }
 }

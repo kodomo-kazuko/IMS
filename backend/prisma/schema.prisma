@@ -60,6 +60,7 @@ model Application {
   id           Int               @id @default(autoincrement())
   studentId    Int
   internshipId Int
+  document     String
   status       ApplicationStatus @default(PENDING)
   student      Student           @relation(fields: [studentId], references: [id])
   internship   Internship        @relation(fields: [internshipId], references: [id])

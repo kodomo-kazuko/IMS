@@ -90,7 +90,7 @@ export default class MentorController {
         where: { companyId: req.cookies.id },
       });
       if (mentors.length === 0) {
-        res.status(204).json({ success: true, message: "No mentors found" });
+        res.status(200).json({ success: true, message: "No mentors found" });
         return;
       }
       res.status(200).json({ success: true, message: "Mentors retrieved successfully", data: mentors });
@@ -103,7 +103,7 @@ export default class MentorController {
     try {
       const mentors = await prisma.mentor.findMany();
       if (mentors.length === 0) {
-        res.status(204).json({ success: true, message: "No mentors found" });
+        res.status(200).json({ success: true, message: "No mentors found" });
         return;
       }
       res.status(200).json({ success: true, message: "Mentors retrieved successfully", data: mentors });

@@ -30,7 +30,7 @@ export default class InternshipController {
     try {
       const internships = await prisma.internship.findMany();
       if (internships.length === 0) {
-        res.status(204).json({ success: true, message: "No internships found" });
+        res.status(200).json({ success: true, message: "No internships found" });
         return;
       }
       res.status(200).json({ success: true, message: "Internships retrieved successfully", data: internships });
