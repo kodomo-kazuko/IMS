@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
+import { updateURL } from "../utils/urlUpdate";
 
 const prisma = new PrismaClient();
 const SERVER_IP = process.env.IP || "localhost";
@@ -35,8 +36,8 @@ export default class PostController {
         res.status(404).json({ success: false, message: "Post not found" });
         return;
       }
-      const imageUrl = `http://${SERVER_IP}:${SERVER_PORT}${post.image}`;
-      res.status(200).json({ success: true, data: { ...post, image: imageUrl } });
+      const newPost = updateURL(post, "image");
+      res.status(200).json({ success: true, data: newPost });
     } catch (error) {
       next(error);
     }
@@ -49,10 +50,7 @@ export default class PostController {
         res.status(200).json({ success: true, message: "No posts found" });
         return;
       }
-      const postsWithFullUrls = posts.map((post) => ({
-        ...post,
-        image: `http://${SERVER_IP}:${SERVER_PORT}${post.image}`,
-      }));
+      const postsWithFullUrls = updateURL(posts, "image");
 
       res.status(200).json({ success: true, message: "Retrieved all posts", data: postsWithFullUrls });
     } catch (error) {

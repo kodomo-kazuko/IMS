@@ -1,21 +1,32 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
+import { updateURL } from "../utils/urlUpdate";
 
 const prisma = new PrismaClient();
-const SERVER_IP = process.env.IP || "localhost";
-const SERVER_PORT = process.env.PORT || 8080;
 
 export default class ApplicationController {
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const { internshipId } = req.body;
+      const studentId = req.cookies.id;
+      const existingApplication = await prisma.application.findFirst({
+        where: {
+          internshipId: Number(internshipId),
+          studentId: Number(studentId),
+        },
+      });
+
+      if (existingApplication) {
+        return res.status(400).json({ success: false, message: "You've already applied to this internship." });
+      }
       await prisma.application.create({
         data: {
           internshipId: Number(internshipId),
-          studentId: req.cookies.id,
+          studentId: Number(studentId),
           document: req.url,
         },
       });
+
       return res.status(201).json({ success: true, message: "Application created successfully." });
     } catch (error) {
       next(error);
@@ -24,9 +35,8 @@ export default class ApplicationController {
 
   public async student(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
       const student = await prisma.student.findUnique({
-        where: { id: Number(id) },
+        where: { id: req.cookies.id },
       });
       if (!student) {
         return res.status(404).json({ success: false, message: "Student not found." });
@@ -39,8 +49,8 @@ export default class ApplicationController {
       if (!applications || applications.length === 0) {
         return res.status(200).json({ success: true, message: "No application from this student yet." });
       }
-
-      return res.status(200).json({ success: true, message: "Applications retrieved successfully.", data: applications });
+      const fullApplications = updateURL(applications, "document");
+      return res.status(200).json({ success: true, message: "successfully retirved applications", data: fullApplications });
     } catch (error) {
       next(error);
     }
@@ -51,10 +61,7 @@ export default class ApplicationController {
       if (applications.length === 0) {
         return res.status(200).json({ success: true, message: "no applications yet" });
       }
-      const fullApplications = applications.map((app) => ({
-        ...app,
-        document: `http://${SERVER_IP}:${SERVER_PORT}${app.document}`,
-      }));
+      const fullApplications = updateURL(applications, "document");
       return res.status(200).json({ success: true, message: "successfully retirved applications", data: fullApplications });
     } catch (error) {
       next(error);

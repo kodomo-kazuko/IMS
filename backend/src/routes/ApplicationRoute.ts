@@ -10,8 +10,8 @@ router.post("/create", accessMiddleware(["student"]), upload("documents"), appli
 
 router.get("/all", accessMiddleware("all"), applicationController.all);
 
-router.get("/company/:id", accessMiddleware(["company"]));
+router.get("/company", accessMiddleware(["company"]));
 
-router.get("/:id", accessMiddleware(["company"]));
+router.get("/student", accessMiddleware(["student"]), applicationController.student);
 
 export default router;
