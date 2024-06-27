@@ -1,33 +1,37 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { updateURL } from "../utils/urlUpdate";
+import path from "path";
+import { getFilePath, saveFileToDisk } from "../utils/fileHandler";
 
 const prisma = new PrismaClient();
 
 export default class ApplicationController {
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { internshipId } = req.body;
-      const studentId = req.cookies.id;
-      const existingApplication = await prisma.application.findFirst({
-        where: {
-          internshipId: Number(internshipId),
-          studentId: Number(studentId),
-        },
-      });
+      const { title, content, internshipId } = req.body;
+      const companyId = req.cookies.id;
 
-      if (existingApplication) {
-        return res.status(400).json({ success: false, message: "You've already applied to this internship." });
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded." });
       }
-      await prisma.application.create({
+
+      const relativePath = "/uploads/images";
+      const filePath = getFilePath(relativePath, req.file);
+
+      await saveFileToDisk(req.file, path.join(__dirname, "..", filePath));
+
+      await prisma.post.create({
         data: {
+          title,
+          content,
+          companyId: Number(companyId),
           internshipId: Number(internshipId),
-          studentId: Number(studentId),
-          document: req.url,
+          image: filePath,
         },
       });
 
-      return res.status(201).json({ success: true, message: "Application created successfully." });
+      res.status(201).json({ success: true, message: "Post created successfully" });
     } catch (error) {
       next(error);
     }

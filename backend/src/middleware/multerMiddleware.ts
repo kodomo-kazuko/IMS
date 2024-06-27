@@ -2,7 +2,6 @@ import multer from "multer";
 import path from "path";
 import { Request, Response, NextFunction } from "express";
 
-// Define extension-to-folder mapping
 const uploadFilter: Record<string, string[]> = {
   images: [".jpg", ".jpeg", ".png"],
   documents: [".pdf", ".doc", ".docx"],
@@ -18,46 +17,31 @@ const getSubdirectory = (extension: string): string => {
   throw new Error(`Unsupported file extension: ${extension}`);
 };
 
-const storage = multer.diskStorage({
-  destination: (req: Request, file: Express.Multer.File, cb: Function) => {
-    const uploadDir = path.join(__dirname, "../uploads");
-    const extension = path.extname(file.originalname).toLowerCase();
-    try {
-      const subdirectory = getSubdirectory(extension);
-      cb(null, path.join(uploadDir, subdirectory));
-    } catch (error) {
-      cb(error); // Call next(error) to handle the error gracefully
-    }
-  },
-  filename: (req: Request, file: Express.Multer.File, cb: Function) => {
-    const timestamp = Date.now();
-    const { name, ext } = path.parse(file.originalname); // Split the filename
-    const customFilename = `${name}_${timestamp}${ext}`;
-    cb(null, customFilename);
-  },
-});
+const storage = multer.memoryStorage();
 
-// Create the combined Multer middleware
 const upload = (allowedTypes: "images" | "documents") => {
-  const multerUpload = multer({ storage }).single(allowedTypes);
+  const multerUpload = multer({ storage }).single("file");
 
   return (req: Request, res: Response, next: NextFunction) => {
     multerUpload(req, res, (err: any) => {
-      if (err) {
-        return res.status(500).json({ error: err as Error });
+      if (err instanceof multer.MulterError) {
+        return res.status(500).json({ error: err.message });
+      } else if (err) {
+        return res.status(500).json({ error: "File upload failed." });
       }
+
       if (!req.file) {
-        return res.status(400).json({ error: "Invalid file type. Supported formats: JPG, JPEG, PNG, PDF, DOC, DOCX." });
+        return res.status(400).json({ error: "No file uploaded." });
       }
 
-      // Construct the complete file path
       const extension = path.extname(req.file.originalname).toLowerCase();
-      const subdirectory = getSubdirectory(extension);
-      const filePath = path.join("/uploads", subdirectory, req.file.filename).replace(/\\/g, "/");
+      if (!uploadFilter[allowedTypes].includes(extension)) {
+        return res.status(400).json({
+          error: `Invalid file type. Supported formats: ${uploadFilter[allowedTypes].join(", ")}.`,
+        });
+      }
 
-      // Store the file path in the request object
-      req.url = filePath;
-
+      req.url = extension;
       next();
     });
   };

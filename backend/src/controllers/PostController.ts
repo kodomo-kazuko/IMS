@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { updateURL } from "../utils/urlUpdate";
+import { getFilePath, saveFileToDisk } from "../utils/fileHandler";
+import path from "path";
 
 const prisma = new PrismaClient();
 const SERVER_IP = process.env.IP || "localhost";
@@ -11,6 +13,16 @@ export default class PostController {
     try {
       const { title, content, internshipId } = req.body;
       const companyId = req.cookies.id;
+
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded." });
+      }
+
+      const uploadDir = path.join(__dirname, "../uploads/documents");
+      const filePath = getFilePath(uploadDir, req.file);
+
+      saveFileToDisk(req.file, filePath);
+
       await prisma.post.create({
         data: {
           title,
