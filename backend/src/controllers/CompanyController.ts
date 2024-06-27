@@ -20,9 +20,10 @@ export default class CompanyController {
           weburl,
         },
       });
-      res.status(201).json({ success: true, message: "Company registered successfully" });
+      return res.status(201).json({ success: true, message: "Company registered successfully" });
     } catch (error) {
       next(error);
+      return res.status(500).json({ success: false, message: "An error occurred while registering the company." });
     }
   }
 
@@ -31,31 +32,31 @@ export default class CompanyController {
       const { email, password } = req.body;
       const company = await prisma.company.findUnique({ where: { email } });
       if (!company) {
-        res.status(404).json({ success: false, message: "Company not found" });
-        return;
+        return res.status(404).json({ success: false, message: "Company not found" });
       }
       const isPasswordValid = await bcrypt.compare(password, company.password);
       if (!isPasswordValid) {
-        res.status(401).json({ success: false, message: "Invalid credentials" });
-        return;
+        return res.status(401).json({ success: false, message: "Invalid credentials" });
       }
       const jwtSecret = process.env.JWT_SECRET;
       if (!jwtSecret) {
         throw new Error("JWT_SECRET is not defined");
       }
       const token = jwt.sign({ id: company.id, account: "company" }, jwtSecret, { expiresIn: "7d" });
-      res.status(200).json({ success: true, message: "Authentication successful", token });
+      return res.status(200).json({ success: true, message: "Authentication successful", token });
     } catch (error) {
       next(error);
+      return res.status(500).json({ success: false, message: "An error occurred while signing in." });
     }
   }
 
   public async index(req: Request, res: Response, next: NextFunction) {
     try {
       const companies = await prisma.company.findMany();
-      res.status(200).json({ success: true, message: "Companies retrieved successfully", data: companies });
+      return res.status(200).json({ success: true, message: "Companies retrieved successfully", data: companies });
     } catch (error) {
       next(error);
+      return res.status(500).json({ success: false, message: "An error occurred while retrieving the companies." });
     }
   }
 
@@ -66,9 +67,10 @@ export default class CompanyController {
         where: { id: companyId },
         data: { isApproved: true },
       });
-      res.status(200).json({ success: true, message: "Company approval updated successfully" });
+      return res.status(200).json({ success: true, message: "Company approval updated successfully" });
     } catch (error) {
       next(error);
+      return res.status(500).json({ success: false, message: "An error occurred while updating the company approval." });
     }
   }
 }

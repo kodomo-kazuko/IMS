@@ -1,8 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import createRedisClient from "../redis";
-
-const redisClient = createRedisClient();
 
 const prisma = new PrismaClient();
 
@@ -24,7 +21,7 @@ export default class RoleController {
           name,
         },
       });
-      return res.status(201).json({ success: true, message: "role created" });
+      return res.status(201).json({ success: true, message: "Role created" });
     } catch (error) {
       next(error);
     }

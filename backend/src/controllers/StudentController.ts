@@ -1,28 +1,14 @@
 import { PrismaClient } from "@prisma/client";
-import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 
 const prisma = new PrismaClient();
-
-interface SignupRequestBody {
-  name: string;
-  email: string;
-  password: string;
-  majorId: number;
-  phone: string;
-  address: string;
-}
-
-interface SigninRequestBody {
-  email: string;
-  password: string;
-}
 
 export default class StudentController {
   public async signup(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, email, password, majorId, phone, address } = req.body as SignupRequestBody;
+      const { name, email, password, majorId, phone, address } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
       await prisma.student.create({
         data: {
@@ -42,7 +28,7 @@ export default class StudentController {
 
   public async signin(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, password } = req.body as SigninRequestBody;
+      const { email, password } = req.body;
       const student = await prisma.student.findUnique({ where: { email } });
       if (!student) {
         res.status(404).json({ success: false, message: "Email or password invalid" });

@@ -5,21 +5,9 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-interface SignupRequestBody {
-  name: string;
-  email: string;
-  password: string;
-  roleId: number;
-}
-
-interface SigninRequestBody {
-  email: string;
-  password: string;
-}
-
 export default class EmployeeController {
   public async signup(req: Request, res: Response, next: NextFunction) {
-    const { name, email, password, roleId } = req.body as SignupRequestBody;
+    const { name, email, password, roleId } = req.body;
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       await prisma.employee.create({
@@ -37,7 +25,7 @@ export default class EmployeeController {
   }
 
   public async signin(req: Request, res: Response, next: NextFunction) {
-    const { email, password } = req.body as SigninRequestBody;
+    const { email, password } = req.body;
     try {
       const employee = await prisma.employee.findUnique({ where: { email } });
       if (!employee) {

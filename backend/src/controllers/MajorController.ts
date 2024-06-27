@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 
 const redisClient = createRedisClient();
-
 const prisma = new PrismaClient();
 
 export default class MajorController {
