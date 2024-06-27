@@ -8,6 +8,130 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model Student {
+  id           Int                 @id @default(autoincrement())
+  name         String
+  email        String              @unique
+  password     String
+  phone        String              @unique
+  address      String
+  majorId      Int
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @default(now()) @updatedAt
+  applications Application[]
+  major        Major               @relation(fields: [majorId], references: [id])
+  internships  StudentInternship[]
+}
+
+model Company {
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  password    String
+  phone       String       @unique
+  weburl      String
+  address     String
+  isApproved  Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+  internships Internship[]
+  mentors     Mentor[]
+  posts       Post[]
+}
+
+model Application {
+  id           Int               @id @default(autoincrement())
+  studentId    Int
+  internshipId Int
+  document     String
+  status       ApplicationStatus @default(PENDING)
+  appliedAt    DateTime          @default(now())
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @default(now()) @updatedAt
+  internship   Internship        @relation(fields: [internshipId], references: [id])
+  student      Student           @relation(fields: [studentId], references: [id])
+}
+
+model Major {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  students Student[]
+}
+
+model Employee {
+  id        Int      @id @default(autoincrement())
+  name      String
+  password  String
+  email     String   @unique
+  roleId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @relation(fields: [roleId], references: [id])
+}
+
+model Post {
+  id           Int        @id @default(autoincrement())
+  title        String
+  content      String
+  image        String
+  companyId    Int
+  internshipId Int
+  views        Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+  company      Company    @relation(fields: [companyId], references: [id])
+  internship   Internship @relation(fields: [internshipId], references: [id])
+}
+
+model Role {
+  id       Int        @id @default(autoincrement())
+  name     String     @unique
+  employee Employee[]
+}
+
+model Internship {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  type              InternshipType
+  companyId         Int
+  createdAt         DateTime            @default(now())
+  enrollmentEndDate DateTime
+  startDate         DateTime
+  endDate           DateTime
+  updatedAt         DateTime            @default(now()) @updatedAt
+  applications      Application[]
+  company           Company             @relation(fields: [companyId], references: [id])
+  posts             Post[]
+  students          StudentInternship[]
+}
+
+model StudentInternship {
+  studentId    Int
+  internshipId Int
+  mentorId     Int
+  type         InternshipType
+  status       InternshipStatus
+  internship   Internship       @relation(fields: [internshipId], references: [id])
+  mentor       Mentor           @relation(fields: [mentorId], references: [id])
+  student      Student          @relation(fields: [studentId], references: [id])
+
+  @@id([studentId, internshipId])
+}
+
+model Mentor {
+  id          Int                 @id @default(autoincrement())
+  name        String
+  position    String
+  password    String
+  email       String              @unique
+  phone       String              @unique
+  companyId   Int
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @default(now()) @updatedAt
+  company     Company             @relation(fields: [companyId], references: [id])
+  internships StudentInternship[]
+}
+
 enum ApplicationStatus {
   PENDING
   APPROVED
@@ -23,129 +147,4 @@ enum InternshipStatus {
   PENDING
   DOING
   FINISHED
-}
-
-model Student {
-  id           Int                 @id @default(autoincrement())
-  name         String
-  email        String              @unique
-  password     String
-  phone        String              @unique
-  address      String
-  majorId      Int
-  major        Major               @relation(fields: [majorId], references: [id])
-  applications Application[]
-  internships  StudentInternship[]
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @default(now()) @updatedAt
-}
-
-model Company {
-  id          Int          @id @default(autoincrement())
-  name        String
-  email       String       @unique
-  password    String
-  phone       String       @unique
-  weburl      String
-  address     String
-  isApproved  Boolean      @default(false)
-  posts       Post[]
-  internships Internship[]
-  mentors     Mentor[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now()) @updatedAt
-}
-
-model Application {
-  id           Int               @id @default(autoincrement())
-  studentId    Int
-  internshipId Int
-  document     String
-  status       ApplicationStatus @default(PENDING)
-  student      Student           @relation(fields: [studentId], references: [id])
-  internship   Internship        @relation(fields: [internshipId], references: [id])
-  appliedAt    DateTime          @default(now())
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @default(now()) @updatedAt
-}
-
-model Major {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  students Student[]
-}
-
-model Employee {
-  id        Int      @id @default(autoincrement())
-  name      String
-  password  String
-  email     String   @unique
-  roleId    Int
-  role      Role     @relation(fields: [roleId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Post {
-  id           Int        @id @default(autoincrement())
-  title        String
-  content      String
-  image        String
-  companyId    Int
-  internshipId Int
-  views        Int        @default(0)
-  company      Company    @relation(fields: [companyId], references: [id])
-  internship   Internship @relation(fields: [internshipId], references: [id])
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now()) @updatedAt
-}
-
-model Role {
-  id       Int        @id @default(autoincrement())
-  name     String     @unique
-  employee Employee[]
-}
-
-model Internship {
-  id                Int                 @id @default(autoincrement())
-  title             String
-  type              InternshipType
-  companyId         Int
-  company           Company             @relation(fields: [companyId], references: [id])
-  createdAt         DateTime            @default(now())
-  enrollmentEndDate DateTime
-  startDate         DateTime
-  endDate           DateTime
-  posts             Post[]
-  applications      Application[]
-  students          StudentInternship[]
-  updatedAt         DateTime            @default(now()) @updatedAt
-}
-
-model StudentInternship {
-  studentId    Int
-  internshipId Int
-  mentorId     Int
-  type         InternshipType
-  status       InternshipStatus
-  student      Student          @relation(fields: [studentId], references: [id])
-  internship   Internship       @relation(fields: [internshipId], references: [id])
-  mentor       Mentor           @relation(fields: [mentorId], references: [id])
-
-  @@id([studentId, internshipId])
-}
-
-model Mentor {
-  id          Int                 @id @default(autoincrement())
-  name        String
-  position    String
-  password    String
-  email       String              @unique
-  phone       String              @unique
-  companyId   Int
-  company     Company             @relation(fields: [companyId], references: [id])
-  internships StudentInternship[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
 }
