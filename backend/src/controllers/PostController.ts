@@ -57,4 +57,19 @@ export default class PostController {
       next(error);
     }
   }
+  public async company(req: Request, res: Response, next: NextFunction) {
+    try {
+      const posts = await prisma.post.findMany({
+        where: { companyId: req.cookies.id },
+      });
+      if (posts.length === 0) {
+        res.status(200).json({ success: true, message: "No posts found" });
+        return;
+      }
+      const updatedPosts = updateURL(posts, "image");
+      res.status(200).json({ success: true, message: "Retrieved posts", data: updatedPosts });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

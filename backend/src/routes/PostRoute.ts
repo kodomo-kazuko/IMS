@@ -7,9 +7,11 @@ const router = Router();
 
 const postController = new PostController();
 
-router.post("/upload", accessMiddleware(["company"]), upload("images"), postController.create);
+router.post("/create", accessMiddleware(["company"]), upload("images"), postController.create);
 
 router.get("/all", accessMiddleware("all"), postController.all);
+
+router.get("/company", accessMiddleware(["company"]), postController.company);
 
 router.get("/:id", accessMiddleware("all"), postController.single);
 

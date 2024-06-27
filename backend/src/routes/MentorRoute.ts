@@ -11,9 +11,9 @@ router.post("/create", accessMiddleware(["company"]), mentorController.create);
 
 router.get("/company", accessMiddleware(["company"]), mentorController.company);
 
-router.get("/company/:id", accessMiddleware(["company"]), mentorController.company);
-
 router.get("/all", accessMiddleware(["employee"]), mentorController.all);
+
+router.get("/company/:id", accessMiddleware(["company"]), mentorController.company);
 
 router.get("/:id", accessMiddleware(["employee"]), mentorController.single);
 

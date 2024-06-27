@@ -15,17 +15,19 @@ const getSubdirectory = (extension: string): string => {
       return category;
     }
   }
-  // If no matching category found, log a warning (optional)
-  console.warn(`Unknown file extension: ${extension}`);
-  return "other";
+  throw new Error(`Unsupported file extension: ${extension}`);
 };
 
 const storage = multer.diskStorage({
   destination: (req: Request, file: Express.Multer.File, cb: Function) => {
     const uploadDir = path.join(__dirname, "../uploads");
     const extension = path.extname(file.originalname).toLowerCase();
-    const subdirectory = getSubdirectory(extension);
-    cb(null, path.join(uploadDir, subdirectory));
+    try {
+      const subdirectory = getSubdirectory(extension);
+      cb(null, path.join(uploadDir, subdirectory));
+    } catch (error) {
+      cb(error); // Call next(error) to handle the error gracefully
+    }
   },
   filename: (req: Request, file: Express.Multer.File, cb: Function) => {
     const timestamp = Date.now();
@@ -45,7 +47,7 @@ const upload = (allowedTypes: "images" | "documents") => {
         return res.status(500).json({ error: err as Error });
       }
       if (!req.file) {
-        return res.status(400).json({ error: err });
+        return res.status(400).json({ error: "Invalid file type. Supported formats: JPG, JPEG, PNG, PDF, DOC, DOCX." });
       }
 
       // Construct the complete file path
