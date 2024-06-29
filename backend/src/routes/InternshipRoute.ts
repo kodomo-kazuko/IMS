@@ -1,4 +1,4 @@
-import accessMiddleware from "../middleware/accessMiddleware";
+import accessMiddleware from "../middleware/AccessMiddleware";
 import InternshipController from "../controllers/InternshipController";
 import { Router } from "express";
 const router = Router();

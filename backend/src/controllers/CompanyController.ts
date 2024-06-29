@@ -2,11 +2,12 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ResponseJSON } from "../types/response";
 
 const prisma = new PrismaClient();
 
 export default class CompanyController {
-  public async signup(req: Request, res: Response, next: NextFunction) {
+  public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { name, email, password, phone, address, weburl } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,7 +27,7 @@ export default class CompanyController {
     }
   }
 
-  public async signin(req: Request, res: Response, next: NextFunction) {
+  public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { email, password } = req.body;
       const company = await prisma.company.findUnique({ where: { email } });
@@ -42,13 +43,13 @@ export default class CompanyController {
         throw new Error("JWT_SECRET is not defined");
       }
       const token = jwt.sign({ id: company.id, account: "company" }, jwtSecret, { expiresIn: "7d" });
-      return res.status(200).json({ success: true, message: "Authentication successful", token });
+      return res.status(200).json({ success: true, message: "Authentication successful", data: token });
     } catch (error) {
       next(error);
     }
   }
 
-  public async index(req: Request, res: Response, next: NextFunction) {
+  public async index(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const companies = await prisma.company.findMany();
       return res.status(200).json({ success: true, message: "Companies retrieved successfully", data: companies });
@@ -57,7 +58,7 @@ export default class CompanyController {
     }
   }
 
-  public async approve(req: Request, res: Response, next: NextFunction) {
+  public async approve(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { companyId } = req.body;
       await prisma.company.update({

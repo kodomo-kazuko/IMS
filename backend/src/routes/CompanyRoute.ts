@@ -1,6 +1,6 @@
 import { Router } from "express";
 import CompanyController from "../controllers/CompanyController";
-import accessMiddleware from "../middleware/accessMiddleware";
+import accessMiddleware from "../middleware/AccessMiddleware";
 
 const router = Router();
 const companyController = new CompanyController();

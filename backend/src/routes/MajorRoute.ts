@@ -1,6 +1,6 @@
 import { Router } from "express";
 import MajorController from "../controllers/MajorController";
-import accessMiddleware from "../middleware/accessMiddleware";
+import accessMiddleware from "../middleware/AccessMiddleware";
 
 const router = Router();
 const majorController = new MajorController();

@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import type { AccountType } from "../types/types";
+import { AccountType } from "../types/types";
+import { ResponseJSON } from "../types/response";
 
 const prisma = new PrismaClient();
 
@@ -24,7 +25,7 @@ export default function accessMiddleware(requiredAccounts: AccountType[] | "all"
     throw new Error("requiredAccounts must be 'all' or a non-empty array of valid account types");
   }
 
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
     try {
       const token = req.headers.authorization?.split(" ")[1];
 
@@ -64,7 +65,7 @@ export default function accessMiddleware(requiredAccounts: AccountType[] | "all"
       //   return res.status(400).json({
       //     success: false,
       //     message: "Invalid account type",
-      //   });
+      //   } );
       // }
 
       // const user = await findUserMethod(decoded.id);
@@ -72,7 +73,7 @@ export default function accessMiddleware(requiredAccounts: AccountType[] | "all"
       //   return res.status(404).json({
       //     success: false,
       //     message: `${decoded.account} not found`,
-      //   });
+      //   } );
       // }
 
       req.cookies = decoded;

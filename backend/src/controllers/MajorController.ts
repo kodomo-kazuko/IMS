@@ -1,12 +1,13 @@
 import createRedisClient from "../redis";
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
+import { ResponseJSON } from "../types/response";
 
 const redisClient = createRedisClient();
 const prisma = new PrismaClient();
 
 export default class MajorController {
-  public async create(req: Request, res: Response, next: NextFunction) {
+  public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { name } = req.body;
       const newMajor = await prisma.major.create({
@@ -26,7 +27,7 @@ export default class MajorController {
     }
   }
 
-  public async all(req: Request, res: Response, next: NextFunction) {
+  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const cachedData = await redisClient.get("majors");
       if (cachedData) {

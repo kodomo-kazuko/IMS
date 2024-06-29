@@ -1,6 +1,6 @@
 import ApplicationController from "../controllers/ApplicationController";
-import accessMiddleware from "../middleware/accessMiddleware";
-import upload from "../middleware/multerMiddleware";
+import accessMiddleware from "../middleware/AccessMiddleware";
+import upload from "../middleware/MulterMiddleware";
 import { Router } from "express";
 const router = Router();
 

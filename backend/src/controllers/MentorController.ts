@@ -2,11 +2,12 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import { ResponseJSON } from "../types/response";
 
 const prisma = new PrismaClient();
 
 export default class MentorController {
-  public async create(req: Request, res: Response, next: NextFunction) {
+  public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { name, position, email, phone, password } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,7 +27,7 @@ export default class MentorController {
     }
   }
 
-  public async single(req: Request, res: Response, next: NextFunction) {
+  public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
       const mentor = await prisma.mentor.findUnique({
@@ -42,7 +43,7 @@ export default class MentorController {
     }
   }
 
-  public async singleCompany(req: Request, res: Response, next: NextFunction) {
+  public async singleCompany(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
       const mentor = await prisma.mentor.findUnique({
@@ -58,7 +59,7 @@ export default class MentorController {
     }
   }
 
-  public async signin(req: Request, res: Response, next: NextFunction) {
+  public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { email, password } = req.body;
       const mentor = await prisma.mentor.findUnique({
@@ -78,13 +79,13 @@ export default class MentorController {
         throw new Error("JWT_SECRET is not defined");
       }
       const token = jwt.sign({ id: mentor.id, account: "mentor" }, jwtSecret, { expiresIn: "7d" });
-      res.status(200).json({ success: true, message: "Authentication successful", token });
+      res.status(200).json({ success: true, message: "Authentication successful", data: token });
     } catch (error) {
       next(error);
     }
   }
 
-  public async company(req: Request, res: Response, next: NextFunction) {
+  public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const mentors = await prisma.mentor.findMany({
         where: { companyId: req.cookies.id },
@@ -99,7 +100,7 @@ export default class MentorController {
     }
   }
 
-  public async all(req: Request, res: Response, next: NextFunction) {
+  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const mentors = await prisma.mentor.findMany();
       if (mentors.length === 0) {

@@ -1,6 +1,7 @@
 import multer from "multer";
 import path from "path";
 import { Request, Response, NextFunction } from "express";
+import { ResponseJSON } from "../types/response";
 
 const uploadFilter: Record<string, string[]> = {
   images: [".jpg", ".jpeg", ".png"],
@@ -20,24 +21,30 @@ const getSubdirectory = (extension: string): string => {
 const storage = multer.memoryStorage();
 
 const upload = (allowedTypes: "images" | "documents") => {
-  const multerUpload = multer({ storage }).single("file");
+  const multerUpload = multer({
+    storage,
+    limits: {
+      fileSize: 5000000,
+    },
+  }).single("file");
 
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
     multerUpload(req, res, (err: any) => {
       if (err instanceof multer.MulterError) {
-        return res.status(500).json({ error: err.message });
+        return res.status(500).json({ success: false, message: (err as Error).message });
       } else if (err) {
-        return res.status(500).json({ error: "File upload failed." });
+        return res.status(500).json({ success: false, message: "File upload failed." });
       }
 
       if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded." });
+        return res.status(400).json({ success: false, message: "No file uploaded." });
       }
 
       const extension = path.extname(req.file.originalname).toLowerCase();
       if (!uploadFilter[allowedTypes].includes(extension)) {
         return res.status(400).json({
-          error: `Invalid file type. Supported formats: ${uploadFilter[allowedTypes].join(", ")}.`,
+          success: false,
+          message: `Invalid file type. Supported formats: ${uploadFilter[allowedTypes].join(", ")}.`,
         });
       }
 

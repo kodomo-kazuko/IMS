@@ -1,5 +1,5 @@
 import { Router } from "express";
-import accessMiddleware from "../middleware/accessMiddleware";
+import accessMiddleware from "../middleware/AccessMiddleware";
 import MentorController from "../controllers/MentorController";
 
 const router = Router();

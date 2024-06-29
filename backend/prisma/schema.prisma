@@ -63,6 +63,7 @@ model Employee {
   name      String
   password  String
   email     String   @unique
+  phone     String   @unique
   roleId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

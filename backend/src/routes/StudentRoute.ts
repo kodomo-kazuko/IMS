@@ -1,6 +1,6 @@
 import { Router } from "express";
 import StudentController from "../controllers/StudentController";
-import accessMiddleware from "../middleware/accessMiddleware";
+import accessMiddleware from "../middleware/AccessMiddleware";
 
 const router = Router();
 const studentController = new StudentController();

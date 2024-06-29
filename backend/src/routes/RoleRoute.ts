@@ -1,12 +1,10 @@
 import { Router } from "express";
-import accessMiddleware from "../middleware/accessMiddleware";
+import accessMiddleware from "../middleware/AccessMiddleware";
 import RoleController from "../controllers/RoleController";
 
 const roleController = new RoleController();
 
 const router = Router();
-
-router;
 
 router.get("/all", accessMiddleware(["employee"]), roleController.all);
 

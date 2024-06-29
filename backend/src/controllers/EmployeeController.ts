@@ -2,12 +2,13 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ResponseJSON } from "../types/response";
 
 const prisma = new PrismaClient();
 
 export default class EmployeeController {
-  public async signup(req: Request, res: Response, next: NextFunction) {
-    const { name, email, password, roleId } = req.body;
+  public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    const { name, email, password, roleId, phone } = req.body;
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       await prisma.employee.create({
@@ -16,6 +17,7 @@ export default class EmployeeController {
           email,
           roleId,
           password: hashedPassword,
+          phone,
         },
       });
       res.status(201).json({ success: true, message: "Employee created successfully" });
@@ -24,7 +26,7 @@ export default class EmployeeController {
     }
   }
 
-  public async signin(req: Request, res: Response, next: NextFunction) {
+  public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     const { email, password } = req.body;
     try {
       const employee = await prisma.employee.findUnique({ where: { email } });
@@ -42,13 +44,13 @@ export default class EmployeeController {
         throw new Error("JWT_SECRET is not defined");
       }
       const token = jwt.sign({ id: employee.id, account: "employee" }, jwtSecret, { expiresIn: "7d" });
-      res.status(200).json({ success: true, message: "Authentication successful", token });
+      res.status(200).json({ success: true, message: "Authentication successful", data: token });
     } catch (error) {
       next(error);
     }
   }
 
-  public async index(req: Request, res: Response, next: NextFunction) {
+  public async index(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const employees = await prisma.employee.findMany();
       res.status(200).json({ success: true, message: "Employees retrieved successfully", data: employees });

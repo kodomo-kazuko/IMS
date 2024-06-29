@@ -3,17 +3,19 @@ import { Request, Response, NextFunction } from "express";
 import { updateURL } from "../utils/urlUpdate";
 import path from "path";
 import { getFilePath, saveFileToDisk } from "../utils/fileHandler";
+import { ResponseJSON } from "../types/response";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const prisma = new PrismaClient();
 
 export default class ApplicationController {
-  public async create(req: Request, res: Response, next: NextFunction) {
+  public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { title, content, internshipId } = req.body;
       const companyId = req.cookies.id;
 
       if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded." });
+        return res.status(400).json({ success: false, message: "No file uploaded." });
       }
 
       const relativePath = "/uploads/images";
@@ -37,7 +39,7 @@ export default class ApplicationController {
     }
   }
 
-  public async student(req: Request, res: Response, next: NextFunction) {
+  public async student(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const student = await prisma.student.findUnique({
         where: { id: req.cookies.id },
@@ -59,7 +61,7 @@ export default class ApplicationController {
       next(error);
     }
   }
-  public async all(req: Request, res: Response, next: NextFunction) {
+  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const applications = await prisma.application.findMany();
       if (applications.length === 0) {
@@ -71,5 +73,5 @@ export default class ApplicationController {
       next(error);
     }
   }
-  public async single(req: Request, res: Response, next: NextFunction) {}
+  public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {}
 }

@@ -3,19 +3,20 @@ import { Request, Response, NextFunction } from "express";
 import { updateURL } from "../utils/urlUpdate";
 import { getFilePath, saveFileToDisk } from "../utils/fileHandler";
 import path from "path";
+import { ResponseJSON } from "../types/response";
 
 const prisma = new PrismaClient();
 const SERVER_IP = process.env.IP || "localhost";
 const SERVER_PORT = process.env.PORT || 8080;
 
 export default class PostController {
-  public async create(req: Request, res: Response, next: NextFunction) {
+  public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { title, content, internshipId } = req.body;
       const companyId = req.cookies.id;
 
       if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded." });
+        return res.status(400).json({ success: false, message: "No file uploaded." });
       }
 
       const uploadDir = path.join(__dirname, "../uploads/documents");
@@ -38,7 +39,7 @@ export default class PostController {
     }
   }
 
-  public async single(req: Request, res: Response, next: NextFunction) {
+  public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
       const post = await prisma.post.findUnique({
@@ -49,13 +50,13 @@ export default class PostController {
         return;
       }
       const newPost = updateURL(post, "image");
-      res.status(200).json({ success: true, data: newPost });
+      res.status(200).json({ success: true, data: newPost, message: "post retrieved" });
     } catch (error) {
       next(error);
     }
   }
 
-  public async all(req: Request, res: Response, next: NextFunction) {
+  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const posts = await prisma.post.findMany();
       if (posts.length === 0) {
@@ -69,7 +70,7 @@ export default class PostController {
       next(error);
     }
   }
-  public async company(req: Request, res: Response, next: NextFunction) {
+  public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const posts = await prisma.post.findMany({
         where: { companyId: req.cookies.id },

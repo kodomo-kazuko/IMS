@@ -1,7 +1,7 @@
 import { Router } from "express";
 import PostController from "../controllers/PostController";
-import accessMiddleware from "../middleware/accessMiddleware";
-import upload from "../middleware/multerMiddleware";
+import accessMiddleware from "../middleware/AccessMiddleware";
+import upload from "../middleware/MulterMiddleware";
 
 const router = Router();
 

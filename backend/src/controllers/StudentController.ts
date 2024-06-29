@@ -2,11 +2,12 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import { ResponseJSON } from "../types/response";
 
 const prisma = new PrismaClient();
 
 export default class StudentController {
-  public async signup(req: Request, res: Response, next: NextFunction) {
+  public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { name, email, password, majorId, phone, address } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,7 +27,7 @@ export default class StudentController {
     }
   }
 
-  public async signin(req: Request, res: Response, next: NextFunction) {
+  public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { email, password } = req.body;
       const student = await prisma.student.findUnique({ where: { email } });
@@ -44,13 +45,13 @@ export default class StudentController {
         throw new Error("JWT_SECRET is not defined");
       }
       const token = jwt.sign({ id: student.id, account: "student" }, jwtSecret, { expiresIn: "7d" });
-      res.status(200).json({ success: true, message: "Authentication successful", token });
+      res.status(200).json({ success: true, message: "Authentication successful", data: token });
     } catch (error) {
       next(error);
     }
   }
 
-  public async index(req: Request, res: Response, next: NextFunction) {
+  public async index(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const students = await prisma.student.findMany();
       if (students.length === 0) {

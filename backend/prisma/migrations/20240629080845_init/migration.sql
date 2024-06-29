@@ -66,6 +66,7 @@ CREATE TABLE "Employee" (
     "name" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
     "roleId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -154,6 +155,9 @@ CREATE UNIQUE INDEX "Major_name_key" ON "Major"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Employee_phone_key" ON "Employee"("phone");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Role_name_key" ON "Role"("name");
