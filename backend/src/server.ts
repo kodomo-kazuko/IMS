@@ -15,8 +15,10 @@ const FRONT_PORT = process.env.FRONT_PORT || "3000";
 
 const app = express();
 
-app.use(cors({ origin: `${IP}:${FRONT_PORT}` }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cors({ origin: `${IP}:${FRONT_PORT}` }));
 app.use("/", routes);
 app.use("/uploads", accessMiddleware("all"), express.static(path.join(__dirname + "/uploads")));
 

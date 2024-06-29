@@ -10,6 +10,8 @@ const ErrorMiddleware = (err: Error, req: Request, res: Response<ResponseJSON>, 
   const status = err.status || 500;
   const message = err.message || "Something went wrong";
 
+  console.log(err);
+
   res.status(status).json({
     success: false,
     message: message,

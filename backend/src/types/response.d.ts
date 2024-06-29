@@ -5,3 +5,9 @@ export interface ResponseJSON {
   message: string;
   data?: any;
 }
+
+export interface Props {
+  req: Request;
+  res: Response<ResponseJSON>;
+  next: NextFunction;
+}

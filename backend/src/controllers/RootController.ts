@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { ResponseJSON } from "../types/response";
+import { Props, ResponseJSON } from "../types/response";
 
 const prisma = new PrismaClient();
 
@@ -37,6 +37,14 @@ export default class RootController {
   public async check(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       res.status(200).json({ success: true, message: "Backend is running" });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async test({ req, res, next }: Props) {
+    try {
+      console.log(req.body);
+      return res.status(200).json({ success: true, message: "it worked" });
     } catch (error) {
       next(error);
     }
