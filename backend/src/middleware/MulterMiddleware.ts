@@ -2,25 +2,22 @@ import multer from "multer";
 import path from "path";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
+import { allowedFileTypes } from "../types/types";
 
 const uploadFilter: Record<string, string[]> = {
   images: [".jpg", ".jpeg", ".png"],
   documents: [".pdf", ".doc", ".docx"],
 };
 
-const getSubdirectory = (extension: string): string => {
-  const normalizedExtension = extension.toLowerCase();
-  for (const category in uploadFilter) {
-    if (uploadFilter[category].includes(normalizedExtension)) {
-      return category;
-    }
-  }
-  throw new Error(`Unsupported file extension: ${extension}`);
+const generateUniqueFilename = (): string => {
+  const timestamp = Date.now();
+  const randomString = Math.random().toString(36).substring(7);
+  return `${timestamp}-${randomString}`;
 };
 
 const storage = multer.memoryStorage();
 
-const upload = (allowedTypes: "images" | "documents") => {
+const upload = (allowedTypes: allowedFileTypes) => {
   const multerUpload = multer({
     storage,
     limits: {
@@ -31,6 +28,7 @@ const upload = (allowedTypes: "images" | "documents") => {
   return (req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
     multerUpload(req, res, (err: any) => {
       if (err instanceof multer.MulterError) {
+        console.log(err);
         return res.status(500).json({ success: false, message: (err as Error).message });
       } else if (err) {
         return res.status(500).json({ success: false, message: "File upload failed." });
@@ -48,7 +46,8 @@ const upload = (allowedTypes: "images" | "documents") => {
         });
       }
 
-      req.url = extension;
+      const uniqueFilename = req.file.originalname;
+      req.url = uniqueFilename;
       next();
     });
   };

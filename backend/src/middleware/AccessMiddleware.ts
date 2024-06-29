@@ -79,10 +79,7 @@ export default function accessMiddleware(requiredAccounts: AccountType[] | "all"
       req.cookies = decoded;
       next();
     } catch (error) {
-      res.status(401).json({
-        success: false,
-        message: (error as Error).message,
-      });
+      next(error);
     }
   };
 }

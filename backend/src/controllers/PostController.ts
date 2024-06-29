@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { updateURL } from "../utils/urlUpdate";
-import { getFilePath, saveFileToDisk } from "../utils/fileHandler";
+import { saveFileToDisk } from "../utils/fileHandler";
 import path from "path";
 import { ResponseJSON } from "../types/response";
 
@@ -19,11 +19,7 @@ export default class PostController {
         return res.status(400).json({ success: false, message: "No file uploaded." });
       }
 
-      const uploadDir = path.join(__dirname, "../uploads/documents");
-      const filePath = getFilePath(uploadDir, req.file);
-
-      saveFileToDisk(req.file, filePath);
-
+      await saveFileToDisk(req.file, "images");
       await prisma.post.create({
         data: {
           title,
@@ -49,7 +45,7 @@ export default class PostController {
         res.status(404).json({ success: false, message: "Post not found" });
         return;
       }
-      const newPost = updateURL(post, "image");
+      const newPost = updateURL(post, "image", "images");
       res.status(200).json({ success: true, data: newPost, message: "post retrieved" });
     } catch (error) {
       next(error);
@@ -63,7 +59,7 @@ export default class PostController {
         res.status(200).json({ success: true, message: "No posts found" });
         return;
       }
-      const postsWithFullUrls = updateURL(posts, "image");
+      const postsWithFullUrls = updateURL(posts, "image", "images");
 
       res.status(200).json({ success: true, message: "Retrieved all posts", data: postsWithFullUrls });
     } catch (error) {
@@ -79,7 +75,7 @@ export default class PostController {
         res.status(200).json({ success: true, message: "No posts found" });
         return;
       }
-      const updatedPosts = updateURL(posts, "image");
+      const updatedPosts = updateURL(posts, "image", "images");
       res.status(200).json({ success: true, message: "Retrieved posts", data: updatedPosts });
     } catch (error) {
       next(error);

@@ -1,11 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { updateURL } from "../utils/urlUpdate";
-import path from "path";
-import { getFilePath, saveFileToDisk } from "../utils/fileHandler";
+import { saveFileToDisk } from "../utils/fileHandler";
 import { ResponseJSON } from "../types/response";
-import { faL } from "@fortawesome/free-solid-svg-icons";
-
 const prisma = new PrismaClient();
 
 export default class ApplicationController {
@@ -18,22 +15,17 @@ export default class ApplicationController {
         return res.status(400).json({ success: false, message: "No file uploaded." });
       }
 
-      const relativePath = "/uploads/images";
-      const filePath = getFilePath(relativePath, req.file);
+      await saveFileToDisk(req.file, "documents");
 
-      await saveFileToDisk(req.file, path.join(__dirname, "..", filePath));
-
-      await prisma.post.create({
+      await prisma.application.create({
         data: {
-          title,
-          content,
-          companyId: Number(companyId),
+          studentId: req.cookies.id,
           internshipId: Number(internshipId),
-          image: filePath,
+          document: req.url,
         },
       });
 
-      res.status(201).json({ success: true, message: "Post created successfully" });
+      res.status(201).json({ success: true, message: "application created successfully" });
     } catch (error) {
       next(error);
     }
@@ -55,7 +47,7 @@ export default class ApplicationController {
       if (!applications || applications.length === 0) {
         return res.status(200).json({ success: true, message: "No application from this student yet." });
       }
-      const fullApplications = updateURL(applications, "document");
+      const fullApplications = updateURL(applications, "document", "documents");
       return res.status(200).json({ success: true, message: "successfully retirved applications", data: fullApplications });
     } catch (error) {
       next(error);
@@ -67,7 +59,7 @@ export default class ApplicationController {
       if (applications.length === 0) {
         return res.status(200).json({ success: true, message: "no applications yet" });
       }
-      const fullApplications = updateURL(applications, "document");
+      const fullApplications = updateURL(applications, "document", "documents");
       return res.status(200).json({ success: true, message: "successfully retirved applications", data: fullApplications });
     } catch (error) {
       next(error);

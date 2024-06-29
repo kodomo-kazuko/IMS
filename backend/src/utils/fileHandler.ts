@@ -1,22 +1,20 @@
 import fs from "fs";
 import path from "path";
+import { allowedFileTypes } from "../types/types";
 
-export const saveFileToDisk = (file: Express.Multer.File, filePath: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(filePath, file.buffer, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-};
+const FILE_PATH = process.env.FILE_PATH;
 
-export const getFilePath = (directory: string, file: Express.Multer.File): string => {
-  const timestamp = Date.now();
-  const { name, ext } = path.parse(file.originalname);
-  const customFilename = `${name}_${timestamp}${ext}`;
-  const filePath = path.join(directory, customFilename);
-  return filePath.replace(/\\/g, "/");
+const rootUploadsPath = path.join(__dirname, `../${FILE_PATH}`);
+
+export const saveFileToDisk = async (file: Express.Multer.File, allowedTypes: allowedFileTypes): Promise<void> => {
+  try {
+    const { name, ext } = path.parse(file.originalname);
+    const customFilename = `${name}${ext}`;
+    const subfolder = allowedTypes;
+    const filePath = path.join(rootUploadsPath, subfolder, customFilename);
+
+    await fs.promises.writeFile(filePath, file.buffer);
+  } catch (error) {
+    throw error;
+  }
 };
