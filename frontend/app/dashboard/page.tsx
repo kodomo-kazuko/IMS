@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import router, { useRouter } from "next/navigation";
+import { useEffect } from "react";
 const invoices = [
     {
         invoice: "INV001",
@@ -72,6 +73,23 @@ const companys = [
 ]
 export default function Dashboard() {
     const router = useRouter();
+
+    const handleLogOut = async (e: { preventDefault: () => void }) => {
+        e.preventDefault();
+    
+        localStorage.clear()
+    };
+
+    useEffect(() => {
+    
+        const token = localStorage.getItem('token')
+        console.log(token)
+        if(!token){
+          router.push('/login')
+        }
+    
+      }, [router]);
+    
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -92,13 +110,13 @@ export default function Dashboard() {
                                 size="icon"
                                 className="overflow-hidden rounded-full"
                             >
-                                <Image
+                                {/* <Image
                                     src="/placeholder-user.jpg"
                                     width={36}
                                     height={36}
                                     alt="Avatar"
                                     className="overflow-hidden rounded-full"
-                                />
+                                /> */}
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -107,7 +125,7 @@ export default function Dashboard() {
                             <DropdownMenuItem>Settings</DropdownMenuItem>
                             <DropdownMenuItem>Support</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>Logout</DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleLogOut}>Logout</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </header>
@@ -128,7 +146,7 @@ export default function Dashboard() {
                                         <DialogHeader>
                                             <DialogTitle>Add Company</DialogTitle>
                                             <DialogDescription>
-                                                Make changes to your profile here. Click save when you're done.
+                                                Make changes to your profile here. Click save when you&apos;re done.
                                             </DialogDescription>
                                         </DialogHeader>
                                         <div className="grid gap-4 py-4">
@@ -235,16 +253,16 @@ export default function Dashboard() {
                                                     </TableRow> */}
 
                                                 {companys.map((company) => (
-                                                    <DialogTrigger asChild>
+                                                    <DialogTrigger asChild key={company.id}>
                                                         <TableRow key={company.id}>
                                                             <TableCell className="hidden sm:table-cell">
-                                                                <Image
+                                                                {/* <Image
                                                                     alt="Product image"
                                                                     className="aspect-square rounded-md object-cover"
                                                                     height="64"
                                                                     src={company.image}
                                                                     width="64"
-                                                                />
+                                                                /> */}
                                                             </TableCell>
                                                             <TableCell className="font-medium">{company.name}</TableCell>
                                                             <TableCell>
@@ -278,7 +296,7 @@ export default function Dashboard() {
                                                     <DialogHeader>
                                                         <DialogTitle>Add Company</DialogTitle>
                                                         <DialogDescription>
-                                                            Add students here. Click save when you're done.
+                                                            Add students here. Click save when you&apos;re done. 
                                                         </DialogDescription>
                                                     </DialogHeader>
                                                     <Table>

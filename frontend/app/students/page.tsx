@@ -250,7 +250,7 @@ export default function Students() {
 
 
                                                 {students.map((student) => (
-                                                    <DialogTrigger asChild>
+                                                    <DialogTrigger asChild key={student.id}>
                                                         <TableRow key={student.id}>
                                                             <TableCell className="hidden sm:table-cell">
                                                                 <Image
