@@ -109,11 +109,11 @@ model Internship {
 model StudentInternship {
   studentId    Int
   internshipId Int
-  mentorId     Int
+  mentorId     Int?
   type         InternshipType
   status       InternshipStatus
   internship   Internship       @relation(fields: [internshipId], references: [id])
-  mentor       Mentor           @relation(fields: [mentorId], references: [id])
+  mentor       Mentor?          @relation(fields: [mentorId], references: [id])
   student      Student          @relation(fields: [studentId], references: [id])
 
   @@id([studentId, internshipId])
@@ -136,6 +136,7 @@ model Mentor {
 enum ApplicationStatus {
   PENDING
   APPROVED
+  STARTED
   REJECTED
 }
 
@@ -146,6 +147,6 @@ enum InternshipType {
 
 enum InternshipStatus {
   PENDING
-  DOING
+  STARTED
   FINISHED
 }

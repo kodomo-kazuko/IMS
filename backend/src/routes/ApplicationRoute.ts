@@ -14,4 +14,8 @@ router.get("/company", accessMiddleware(["company"]));
 
 router.get("/student", accessMiddleware(["student"]), applicationController.student);
 
+router.get("/internship/:id", accessMiddleware(["company"]), applicationController.internship);
+
+router.patch("/approve", accessMiddleware(["company"]), applicationController.approve);
+
 export default router;

@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(cors({ origin: `${IP}:${FRONT_PORT}` }));
+app.use(cors());
 app.use("/", routes);
 app.use("/uploads", accessMiddleware("all"), express.static(path.join(__dirname + "/uploads")));
 

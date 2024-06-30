@@ -5,7 +5,8 @@ const prisma = new PrismaClient();
 
 const seedDatabase = async () => {
   try {
-    const roleName = process.env.ROLE_NAME;
+    const { roleName, PASSWORD, NAME, EMAIL, PHONE } = process.env;
+
     if (!roleName) {
       throw new Error("Environment variable ROLE_NAME is missing.");
     }
@@ -17,7 +18,6 @@ const seedDatabase = async () => {
       },
     });
 
-    const { PASSWORD, NAME, EMAIL, PHONE } = process.env;
     if (!PASSWORD || !NAME || !EMAIL || !PHONE) {
       throw new Error("One or more environment variables are missing.");
     }

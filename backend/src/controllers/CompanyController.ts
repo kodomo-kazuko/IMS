@@ -49,9 +49,13 @@ export default class CompanyController {
     }
   }
 
-  public async index(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const companies = await prisma.company.findMany();
+      const companies = await prisma.company.findMany({
+        select: {
+          password: true,
+        },
+      });
       return res.status(200).json({ success: true, message: "Companies retrieved successfully", data: companies });
     } catch (error) {
       next(error);

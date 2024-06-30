@@ -43,7 +43,6 @@ export default class RootController {
   }
   public async test({ req, res, next }: Props) {
     try {
-      console.log(req.body);
       return res.status(200).json({ success: true, message: "it worked" });
     } catch (error) {
       next(error);

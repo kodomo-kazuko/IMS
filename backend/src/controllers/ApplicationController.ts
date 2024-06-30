@@ -65,5 +65,56 @@ export default class ApplicationController {
       next(error);
     }
   }
-  public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {}
+  public async internship(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const company = await prisma.internship.findUniqueOrThrow({
+        where: { companyId: Number(req.cookies.id), id: Number(id) },
+      });
+      if (!company) {
+        return res.status(404).json({ success: false, message: "access denied" });
+      }
+      const applications = await prisma.application.findMany({
+        where: {
+          internshipId: Number(id),
+        },
+      });
+      if (applications.length === 0) {
+        return res.status(200).json({ success: true, message: "no applications yet" });
+      }
+      const fullApplications = updateURL(applications, "document", "documents");
+      return res.status(200).json({ success: true, message: "retrieved applications", data: fullApplications });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async approve(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.body;
+      const application = await prisma.application.findUniqueOrThrow({
+        where: { id: Number(id) },
+      });
+
+      if (!application) {
+        return res.status(404).json({ success: false, message: "Application not found" });
+      }
+      const internship = await prisma.internship.findUniqueOrThrow({
+        where: { id: application.internshipId },
+      });
+
+      if (!internship) {
+        return res.status(404).json({ success: false, message: "Internship not found" });
+      }
+      if (internship.companyId !== Number(req.cookies.id)) {
+        return res.status(403).json({ success: false, message: "Access denied" });
+      }
+      await prisma.application.update({
+        where: { id: Number(id) },
+        data: { status: "APPROVED" },
+      });
+      return res.status(200).json({ success: true, message: "Application approved successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
