@@ -44,7 +44,8 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import router, { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import axios from "axios";
 const invoices = [
     {
         invoice: "INV001",
@@ -73,22 +74,49 @@ const companys = [
 ]
 export default function Dashboard() {
     const router = useRouter();
-
+    const [companies, setCompanies] = useState<any[]>([]);
+    const [token,setToken] = useState('')
+    
     const handleLogOut = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
     
         localStorage.clear()
     };
-
-    useEffect(() => {
     
+    const fetchCompanyList = useCallback(async () => {
+        try {
+          const storedToken = localStorage.getItem('token');
+          console.log(storedToken)
+          if (!storedToken) {
+            router.push('/login');
+            return; // Exit function if no token
+          }
+    
+          const response = await axios.get('http://10.147.17.211:8080/company/all', {
+            headers: {
+              Authorization: `Bearer ${storedToken}`
+            }
+          });
+          console.log(response.data)
+          setCompanies(response.data);
+        } catch (error) {
+          console.error('Failed to fetch company list:', error);
+          // Handle error as needed
+        }
+      }, [router]);
+      
+    useEffect(() => {
         const token = localStorage.getItem('token')
-        console.log(token)
         if(!token){
           router.push('/login')
+        }else{
+            fetchCompanyList()
+            
         }
     
-      }, [router]);
+      }, [router,fetchCompanyList,token]);
+
+      
     
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -252,7 +280,7 @@ export default function Dashboard() {
                                                         </TableCell>
                                                     </TableRow> */}
 
-                                                {companys.map((company) => (
+                                                {companies?.map((company) => (
                                                     <DialogTrigger asChild key={company.id}>
                                                         <TableRow key={company.id}>
                                                             <TableCell className="hidden sm:table-cell">

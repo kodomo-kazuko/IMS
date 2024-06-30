@@ -16,7 +16,7 @@ export default function Login() {
   const router = useRouter()
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
-  const [token,setToken] = useState('')
+  
   
 
   useEffect(() => {
@@ -24,11 +24,10 @@ export default function Login() {
     const storedToken = localStorage.getItem('token')
     
     if(storedToken){
-      setToken(storedToken)
       router.push('/dashboard')
     }
 
-  }, [token,router]);
+  }, [router]);
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -38,9 +37,10 @@ export default function Login() {
         email,
         password,
       });
-      const {token} = response.data.data
-
-      localStorage.setItem('token', token)
+      
+      localStorage.setItem('token', response.data.data)
+      console.log(localStorage)
+      router.push('/dashboard')
 
       console.log(`Login successful! Token: ${response.data.data}`);
     } catch (error) {
