@@ -4,7 +4,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  omit: {
+    company: {
+      password: true,
+    },
+  },
+});
 
 export default class CompanyController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -30,7 +36,12 @@ export default class CompanyController {
   public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { email, password } = req.body;
-      const company = await prisma.company.findUnique({ where: { email } });
+      const company = await prisma.company.findUnique({
+        where: { email },
+        omit: {
+          password: false,
+        },
+      });
       if (!company) {
         return res.status(404).json({ success: false, message: "Company not found" });
       }
@@ -51,11 +62,7 @@ export default class CompanyController {
 
   public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const companies = await prisma.company.findMany({
-        select: {
-          password: true,
-        },
-      });
+      const companies = await prisma.company.findMany();
       return res.status(200).json({ success: true, message: "Companies retrieved successfully", data: companies });
     } catch (error) {
       next(error);

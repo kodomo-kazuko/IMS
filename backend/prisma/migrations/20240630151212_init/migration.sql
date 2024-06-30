@@ -1,11 +1,11 @@
 -- CreateEnum
-CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING', 'APPROVED', 'STARTED', 'REJECTED');
 
 -- CreateEnum
 CREATE TYPE "InternshipType" AS ENUM ('PROFESSIONAL', 'INTRODUCTION');
 
 -- CreateEnum
-CREATE TYPE "InternshipStatus" AS ENUM ('PENDING', 'DOING', 'FINISHED');
+CREATE TYPE "InternshipStatus" AS ENUM ('PENDING', 'STARTED', 'FINISHED');
 
 -- CreateTable
 CREATE TABLE "Student" (
@@ -15,6 +15,7 @@ CREATE TABLE "Student" (
     "password" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "address" TEXT NOT NULL,
+    "document" TEXT,
     "majorId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -43,7 +44,6 @@ CREATE TABLE "Application" (
     "id" SERIAL NOT NULL,
     "studentId" INTEGER NOT NULL,
     "internshipId" INTEGER NOT NULL,
-    "document" TEXT NOT NULL,
     "status" "ApplicationStatus" NOT NULL DEFAULT 'PENDING',
     "appliedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -116,7 +116,7 @@ CREATE TABLE "Internship" (
 CREATE TABLE "StudentInternship" (
     "studentId" INTEGER NOT NULL,
     "internshipId" INTEGER NOT NULL,
-    "mentorId" INTEGER NOT NULL,
+    "mentorId" INTEGER,
     "type" "InternshipType" NOT NULL,
     "status" "InternshipStatus" NOT NULL,
 
@@ -193,7 +193,7 @@ ALTER TABLE "Internship" ADD CONSTRAINT "Internship_companyId_fkey" FOREIGN KEY 
 ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_internshipId_fkey" FOREIGN KEY ("internshipId") REFERENCES "Internship"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "Mentor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "Mentor"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

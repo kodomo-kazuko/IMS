@@ -1,27 +1,38 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import { updateURL } from "../utils/urlUpdate";
-import { saveFileToDisk } from "../utils/fileHandler";
 import { ResponseJSON } from "../types/response";
 const prisma = new PrismaClient();
 
 export default class ApplicationController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { title, content, internshipId } = req.body;
-      const companyId = req.cookies.id;
+      const { internshipId } = req.body;
 
-      if (!req.file) {
-        return res.status(400).json({ success: false, message: "No file uploaded." });
+      const student = await prisma.student.findUniqueOrThrow({
+        where: {
+          id: Number(req.cookies.id),
+        },
+      });
+
+      if (!student.document) {
+        return res.status(400).json({ success: false, message: "Document is missing." });
       }
 
-      await saveFileToDisk(req.file, "documents");
+      const application = await prisma.application.findFirst({
+        where: {
+          internshipId: Number(internshipId),
+          studentId: Number(req.cookies.id),
+        },
+      });
+
+      if (application) {
+        return res.status(409).json({ success: false, message: "You have already applied to this internship." });
+      }
 
       await prisma.application.create({
         data: {
           studentId: req.cookies.id,
           internshipId: Number(internshipId),
-          document: req.url,
         },
       });
 
@@ -47,8 +58,8 @@ export default class ApplicationController {
       if (!applications || applications.length === 0) {
         return res.status(200).json({ success: true, message: "No application from this student yet." });
       }
-      const fullApplications = updateURL(applications, "document", "documents");
-      return res.status(200).json({ success: true, message: "successfully retirved applications", data: fullApplications });
+
+      return res.status(200).json({ success: true, message: "successfully retirved applications", data: applications });
     } catch (error) {
       next(error);
     }
@@ -59,8 +70,7 @@ export default class ApplicationController {
       if (applications.length === 0) {
         return res.status(200).json({ success: true, message: "no applications yet" });
       }
-      const fullApplications = updateURL(applications, "document", "documents");
-      return res.status(200).json({ success: true, message: "successfully retirved applications", data: fullApplications });
+      return res.status(200).json({ success: true, message: "successfully retirved applications", data: applications });
     } catch (error) {
       next(error);
     }
@@ -82,8 +92,7 @@ export default class ApplicationController {
       if (applications.length === 0) {
         return res.status(200).json({ success: true, message: "no applications yet" });
       }
-      const fullApplications = updateURL(applications, "document", "documents");
-      return res.status(200).json({ success: true, message: "retrieved applications", data: fullApplications });
+      return res.status(200).json({ success: true, message: "retrieved applications", data: applications });
     } catch (error) {
       next(error);
     }

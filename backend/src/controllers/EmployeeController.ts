@@ -4,7 +4,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  omit: {
+    employee: {
+      password: true,
+    },
+  },
+});
 
 export default class EmployeeController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -29,7 +35,12 @@ export default class EmployeeController {
   public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     const { email, password } = req.body;
     try {
-      const employee = await prisma.employee.findUnique({ where: { email } });
+      const employee = await prisma.employee.findUnique({
+        where: { email },
+        omit: {
+          password: false,
+        },
+      });
       if (!employee) {
         res.status(404).json({ success: false, message: "Employee not found" });
         return;
@@ -50,7 +61,7 @@ export default class EmployeeController {
     }
   }
 
-  public async index(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const employees = await prisma.employee.findMany();
       res.status(200).json({ success: true, message: "Employees retrieved successfully", data: employees });

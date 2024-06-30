@@ -5,22 +5,18 @@ const prisma = new PrismaClient();
 
 const seedDatabase = async () => {
   try {
-    const { roleName, PASSWORD, NAME, EMAIL, PHONE } = process.env;
+    const { ROLE_NAME, PASSWORD, NAME, EMAIL, PHONE } = process.env;
 
-    if (!roleName) {
-      throw new Error("Environment variable ROLE_NAME is missing.");
+    if (!PASSWORD || !NAME || !EMAIL || !PHONE || !ROLE_NAME) {
+      throw new Error("One or more environment variables are missing.");
     }
 
     await prisma.role.create({
       data: {
         id: 0,
-        name: roleName,
+        name: ROLE_NAME,
       },
     });
-
-    if (!PASSWORD || !NAME || !EMAIL || !PHONE) {
-      throw new Error("One or more environment variables are missing.");
-    }
 
     const hashedPassword = await bcrypt.hash(PASSWORD, 10);
 

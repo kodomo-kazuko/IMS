@@ -9,6 +9,6 @@ router.post("/signin", employeeController.signin);
 
 router.post("/signup", accessMiddleware(["employee"]), employeeController.signup);
 
-router.get("/all", accessMiddleware(["employee"]), employeeController.index);
+router.get("/all", accessMiddleware(["employee"]), employeeController.all);
 
 export default router;

@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -15,6 +16,7 @@ model Student {
   password     String
   phone        String              @unique
   address      String
+  document     String?
   majorId      Int
   createdAt    DateTime            @default(now())
   updatedAt    DateTime            @default(now()) @updatedAt
@@ -43,7 +45,6 @@ model Application {
   id           Int               @id @default(autoincrement())
   studentId    Int
   internshipId Int
-  document     String
   status       ApplicationStatus @default(PENDING)
   appliedAt    DateTime          @default(now())
   createdAt    DateTime          @default(now())
