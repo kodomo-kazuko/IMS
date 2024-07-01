@@ -9,6 +9,6 @@ router.post("/create", accessMiddleware(["company"]), internshipController.creat
 
 router.get("/all", accessMiddleware("all"), internshipController.all);
 
-router.post("/respond", accessMiddleware(["student"]));
+router.get("/types", accessMiddleware("all"), internshipController.types);
 
 export default router;

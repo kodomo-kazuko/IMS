@@ -5,6 +5,8 @@ const router = Router();
 
 const studentInternshipController = new StudentInternshipController();
 
+router.get("/types", accessMiddleware("all"), studentInternshipController.types);
+
 router.post("/create", accessMiddleware(["student"]), studentInternshipController.create);
 
 router.patch("/start", accessMiddleware(["company"]), studentInternshipController.start);

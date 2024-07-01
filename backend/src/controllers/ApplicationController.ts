@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, ApplicationStatus } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 const prisma = new PrismaClient();
@@ -123,6 +123,14 @@ export default class ApplicationController {
         data: { status: "APPROVED" },
       });
       return res.status(200).json({ success: true, message: "Application approved successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const applicationStatus = Object.values(ApplicationStatus);
+      return res.status(200).json({ success: true, message: "retrieved application status types", data: applicationStatus });
     } catch (error) {
       next(error);
     }

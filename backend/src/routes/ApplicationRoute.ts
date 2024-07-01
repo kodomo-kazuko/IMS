@@ -5,6 +5,8 @@ const router = Router();
 
 const applicationController = new ApplicationController();
 
+router.get("/types", accessMiddleware("all"), applicationController.types);
+
 router.post("/create", accessMiddleware(["student"]), applicationController.create);
 
 router.get("/all", accessMiddleware("all"), applicationController.all);
