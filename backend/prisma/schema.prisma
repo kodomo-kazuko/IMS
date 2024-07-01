@@ -16,6 +16,7 @@ model Student {
   password     String
   phone        String              @unique
   address      String
+  image        String?
   document     String?
   majorId      Int
   createdAt    DateTime            @default(now())
@@ -45,6 +46,7 @@ model Application {
   id           Int               @id @default(autoincrement())
   studentId    Int
   internshipId Int
+  type         InternshipType
   status       ApplicationStatus @default(PENDING)
   appliedAt    DateTime          @default(now())
   createdAt    DateTime          @default(now())

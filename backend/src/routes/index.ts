@@ -10,6 +10,7 @@ import CompanyRoute from "./CompanyRoute";
 import EmployeeRoute from "./EmployeeRoute";
 import InternshipRoute from "./InternshipRoute";
 import ApplicationRoute from "./ApplicationRoute";
+import StudentInternship from "./StudentInternshipRoute";
 
 const router = Router();
 
@@ -23,5 +24,6 @@ router.use("/company", CompanyRoute);
 router.use("/employee", EmployeeRoute);
 router.use("/internship", InternshipRoute);
 router.use("/application", ApplicationRoute);
+router.use("/student-internship", StudentInternship);
 
 export default router;

@@ -66,7 +66,7 @@ export default class StudentController {
 
   public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const students = await prisma.student.findMany({});
+      const students = await prisma.student.findMany();
       if (students.length === 0) {
         res.status(200).json({ success: true, message: "No students found" });
         return;
