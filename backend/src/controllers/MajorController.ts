@@ -1,5 +1,5 @@
 import createRedisClient from "../redis";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Major } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 
@@ -7,31 +7,32 @@ const redisClient = createRedisClient();
 const prisma = new PrismaClient();
 
 export default class MajorController {
-  public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  private updateCache = async () => {
+    const majors = await prisma.major.findMany();
+    await redisClient.set("majors", JSON.stringify(majors));
+  };
+
+  public create = async (req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
     try {
       const { name } = req.body;
-      const newMajor = await prisma.major.create({
-        data: {
-          name,
-        },
+      await prisma.major.create({
+        data: { name },
       });
-      const cachedData = await redisClient.get("majors");
-      if (cachedData) {
-        const majors = JSON.parse(cachedData);
-        majors.push(newMajor);
-        await redisClient.set("majors", JSON.stringify(majors));
-      }
+
+      await redisClient.del("majors");
+      await this.updateCache();
+
       res.status(201).json({ success: true, message: "Major was added successfully" });
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public all = async (req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
     try {
       const cachedData = await redisClient.get("majors");
       if (cachedData) {
-        const majors = JSON.parse(cachedData);
+        const majors: Major[] = JSON.parse(cachedData);
         res.status(200).json({ success: true, message: "Majors retrieved from cache", data: majors });
         return;
       }
@@ -45,5 +46,41 @@ export default class MajorController {
     } catch (error) {
       next(error);
     }
-  }
+  };
+
+  public edit = async (req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
+    try {
+      const { id, name } = req.body;
+      await prisma.major.update({
+        where: { id: Number(id) },
+        data: { name },
+      });
+
+      await redisClient.del("majors");
+      await this.updateCache();
+
+      res.status(200).json({ success: true, message: "Major updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public delete = async (req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      await prisma.major.delete({
+        where: { id: Number(id) },
+      });
+
+      await redisClient.del("majors");
+      await this.updateCache();
+
+      res.status(200).json({ success: true, message: "Major deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
+
+const majorController = new MajorController();
+export { majorController };
