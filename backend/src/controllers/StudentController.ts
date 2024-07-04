@@ -91,13 +91,13 @@ export default class StudentController {
         return res.status(400).json({ success: false, message: "No file uploaded." });
       }
 
-      await saveFileToDisk(req.file, "documents");
       await prisma.student.update({
         where: { id: Number(req.cookies.id) },
         data: {
           document: req.url,
         },
       });
+      await saveFileToDisk(req.file, "documents");
       return res.status(201).json({ success: true, message: "created cv" });
     } catch (error) {
       next(error);
@@ -145,14 +145,13 @@ export default class StudentController {
         return res.status(400).json({ success: false, message: "No file uploaded" });
       }
 
-      await saveFileToDisk(req.file, "images");
       await prisma.student.update({
         where: { id: Number(req.cookies.id) },
         data: {
           image: req.url,
         },
       });
-
+      await saveFileToDisk(req.file, "images");
       return res.status(201).json({ success: true, message: "Image uploaded successfully" });
     } catch (error) {
       next(error);

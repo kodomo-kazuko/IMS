@@ -16,17 +16,36 @@ export default class StudentInternshipController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.body;
+
+      // Check if the student already has an active internship
+      const existingInternship = await prisma.studentInternship.findFirst({
+        where: {
+          studentId: Number(req.cookies.id),
+          status: "STARTED",
+        },
+      });
+      console.log(existingInternship);
+      if (existingInternship) {
+        return res.status(300).json({ success: false, message: "You already have an active internship." });
+      }
+
+      // Find the application by ID
       const application = await prisma.application.findUniqueOrThrow({
         where: {
           id: Number(id),
+          studentId: req.cookies.id,
         },
       });
       if (!application) {
-        return res.status(404).json({ success: false, message: "application not found" });
+        return res.status(404).json({ success: false, message: "Application not found." });
       }
+
+      // Check if the application is approved
       if (application.status !== "APPROVED") {
-        return res.status(400).json({ success: false, message: "application is not approved" });
+        return res.status(400).json({ success: false, message: "Application is not approved." });
       }
+
+      // Create a new student internship record
       await prisma.studentInternship.create({
         data: {
           studentId: Number(req.cookies.id),
@@ -35,11 +54,13 @@ export default class StudentInternshipController {
           status: "PENDING",
         },
       });
-      return res.status(200).json({ success: true, message: "internship pending!" });
+
+      return res.status(200).json({ success: true, message: "Internship pending!" });
     } catch (error) {
       next(error);
     }
   }
+
   public async start(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { studentId, internshipId, mentorId } = req.body;
@@ -90,4 +111,23 @@ export default class StudentInternshipController {
       next(error);
     }
   }
+  public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const studentInternships = await prisma.studentInternship.findMany({
+        where: {
+          internship: {
+            companyId: req.cookies.id,
+          },
+        },
+      });
+      if (!studentInternships) {
+        return res.status(400).json({ success: true, message: "no active internships" });
+      }
+      return res.status(200).json({ success: true, message: "company active internships retrieved ", data: studentInternships });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async student(req: Request, res: Response<ResponseJSON>, next: NextFunction) {}
 }

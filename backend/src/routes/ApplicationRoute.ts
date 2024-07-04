@@ -9,7 +9,7 @@ router.get("/types", accessMiddleware("all"), applicationController.types);
 
 router.post("/create", accessMiddleware(["student"]), applicationController.create);
 
-router.get("/all", accessMiddleware("all"), applicationController.all);
+router.get("/all", accessMiddleware(["employee"]), applicationController.all);
 
 router.get("/company", accessMiddleware(["company"]));
 

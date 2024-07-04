@@ -7,8 +7,10 @@ const internshipController = new InternshipController();
 
 router.post("/create", accessMiddleware(["company"]), internshipController.create);
 
-router.get("/all", accessMiddleware("all"), internshipController.all);
+router.get("/all", accessMiddleware(["employee"]), internshipController.all);
 
 router.get("/types", accessMiddleware("all"), internshipController.types);
+
+router.get("/company", accessMiddleware(["company"]), internshipController.company);
 
 export default router;

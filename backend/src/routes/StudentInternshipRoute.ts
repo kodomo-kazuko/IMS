@@ -11,4 +11,6 @@ router.post("/create", accessMiddleware(["student"]), studentInternshipControlle
 
 router.patch("/start", accessMiddleware(["company"]), studentInternshipController.start);
 
+router.get("/company", accessMiddleware(["company"]), studentInternshipController.company);
+
 export default router;

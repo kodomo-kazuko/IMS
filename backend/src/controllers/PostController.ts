@@ -18,8 +18,13 @@ export default class PostController {
       if (!req.file) {
         return res.status(400).json({ success: false, message: "No file uploaded." });
       }
+      const internshipExists = await prisma.internship.findUnique({
+        where: { id: Number(internshipId) },
+      });
 
-      await saveFileToDisk(req.file, "images");
+      if (!internshipExists) {
+        return res.status(400).json({ success: false, message: "internship not found." });
+      }
       await prisma.post.create({
         data: {
           title,
@@ -29,6 +34,8 @@ export default class PostController {
           image: req.url,
         },
       });
+      await saveFileToDisk(req.file, "images");
+
       res.status(201).json({ success: true, message: "Post created successfully" });
     } catch (error) {
       next(error);

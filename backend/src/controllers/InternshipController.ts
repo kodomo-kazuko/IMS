@@ -47,4 +47,19 @@ export default class InternshipController {
       next(error);
     }
   }
+  public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const internships = await prisma.internship.findMany({
+        where: {
+          companyId: Number(req.cookies.id),
+        },
+      });
+      if (internships.length === 0) {
+        return res.status(200).json({ success: true, message: "no internships yet" });
+      }
+      return res.status(200).json({ success: true, message: "internships retrieved", data: internships });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
