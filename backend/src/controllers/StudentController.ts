@@ -123,7 +123,8 @@ export default class StudentController {
           id: Number(req.cookies.id),
         },
       });
-      return res.status(200).json({ success: true, message: "retrieved student", data: student });
+      const updatedStudent = updateURL(student, "document", "documents");
+      return res.status(200).json({ success: true, message: "retrieved student", data: updatedStudent });
     } catch (error) {
       next(error);
     }
