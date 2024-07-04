@@ -1,46 +1,40 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import Link from "next/link"
+import Link from "next/link";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {useEffect, useState} from "react"
-import axios from "axios"
-import { useRouter } from "next/navigation"
-
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import api from "@/api/api";
 
 export default function Login() {
-  const router = useRouter()
-  const [email,setEmail] = useState('');
-  const [password,setPassword] = useState('');
-  
-  
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
-    
-    const storedToken = localStorage.getItem('token')
-    
-    if(storedToken){
-      router.push('/dashboard')
-    }
+    const storedToken = localStorage.getItem("token");
 
+    if (storedToken) {
+      router.push("/dashboard");
+    }
   }, [router]);
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://10.147.17.211:8080/employee/signin', {
+      const response = await api.post("/employee/signin", {
         email,
         password,
       });
-      
-      localStorage.setItem('token', response.data.data)
-      console.log(localStorage)
-      router.push('/dashboard')
+
+      localStorage.setItem("token", response.data.data);
+      console.log(localStorage);
+      router.push("/dashboard");
 
       console.log(`Login successful! Token: ${response.data.data}`);
     } catch (error) {
@@ -53,9 +47,7 @@ export default function Login() {
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
             <h1 className="text-3xl font-bold">Login</h1>
-            <p className="text-balance text-muted-foreground">
-              Enter your email below to login to your account
-            </p>
+            <p className="text-balance text-muted-foreground">Enter your email below to login to your account</p>
           </div>
           <div className="grid gap-4">
             <div className="grid gap-2">
@@ -66,23 +58,25 @@ export default function Login() {
                 placeholder="m@example.com"
                 required
                 onChange={(e) => {
-                  setEmail(e.target.value)
+                  setEmail(e.target.value);
                 }}
               />
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
-                <Link
-                  href="/forgot-password"
-                  className="ml-auto inline-block text-sm underline"
-                >
+                <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
                   Forgot your password?
                 </Link>
               </div>
-              <Input id="password" type="password" required onChange={(e) => {
-                setPassword(e.target.value)
-              }} />
+              <Input
+                id="password"
+                type="password"
+                required
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
             </div>
             <Button type="submit" className="w-full" onClick={handleSubmit}>
               Login
@@ -109,5 +103,5 @@ export default function Login() {
         /> */}
       </div>
     </div>
-  )
+  );
 }
