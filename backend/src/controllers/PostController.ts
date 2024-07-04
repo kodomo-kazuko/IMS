@@ -45,7 +45,7 @@ export default class PostController {
         res.status(404).json({ success: false, message: "Post not found" });
         return;
       }
-      const newPost = updateURL(post, "image", "images");
+      const newPost = updateURL(post, ["image"]);
       res.status(200).json({ success: true, data: newPost, message: "post retrieved" });
     } catch (error) {
       next(error);
@@ -59,7 +59,7 @@ export default class PostController {
         res.status(200).json({ success: true, message: "No posts found" });
         return;
       }
-      const postsWithFullUrls = updateURL(posts, "image", "images");
+      const postsWithFullUrls = updateURL(posts, ["image"]);
 
       res.status(200).json({ success: true, message: "Retrieved all posts", data: postsWithFullUrls });
     } catch (error) {
@@ -75,7 +75,7 @@ export default class PostController {
         res.status(200).json({ success: true, message: "No posts found" });
         return;
       }
-      const updatedPosts = updateURL(posts, "image", "images");
+      const updatedPosts = updateURL(posts, ["image"]);
       res.status(200).json({ success: true, message: "Retrieved posts", data: updatedPosts });
     } catch (error) {
       next(error);

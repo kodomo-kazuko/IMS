@@ -16,6 +16,8 @@ router.get("/account", accessMiddleware(["student"]), studentController.account)
 
 router.post("/cv", accessMiddleware(["student"]), upload("documents"), studentController.createCV);
 
+router.post("/image", accessMiddleware(["student"]), upload("images"), studentController.uploadImage);
+
 router.get("/:id", accessMiddleware(["company", "employee", "mentor"]), studentController.single);
 
 export default router;

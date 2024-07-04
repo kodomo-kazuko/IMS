@@ -71,7 +71,7 @@ export default class StudentController {
         res.status(200).json({ success: true, message: "No students found" });
         return;
       }
-      const updatedStudents = updateURL(students, "document", "documents");
+      const updatedStudents = updateURL(students, ["document"]);
       res.status(200).json({ success: true, message: "Students retrieved successfully", data: updatedStudents });
     } catch (error) {
       next(error);
@@ -123,8 +123,37 @@ export default class StudentController {
           id: Number(req.cookies.id),
         },
       });
-      const updatedStudent = updateURL(student, "document", "documents");
+      const updatedStudent = updateURL(student, ["image", "document"]);
       return res.status(200).json({ success: true, message: "retrieved student", data: updatedStudent });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async uploadImage(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const student = await prisma.student.findUniqueOrThrow({
+        where: {
+          id: Number(req.cookies.id),
+        },
+      });
+
+      if (student.image !== null) {
+        return res.status(300).json({ success: false, message: "You already have an image" });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ success: false, message: "No file uploaded" });
+      }
+
+      await saveFileToDisk(req.file, "images");
+      await prisma.student.update({
+        where: { id: Number(req.cookies.id) },
+        data: {
+          image: req.url,
+        },
+      });
+
+      return res.status(201).json({ success: true, message: "Image uploaded successfully" });
     } catch (error) {
       next(error);
     }

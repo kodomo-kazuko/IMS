@@ -4,17 +4,11 @@ import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { allowedFileTypes } from "../types/types";
 
+const limitSize: number = 5000000;
+
 const uploadFilter: Record<string, string[]> = {
   images: [".jpg", ".jpeg", ".png"],
   documents: [".pdf", ".doc", ".docx"],
-};
-
-const limitSize: number = 5000000;
-
-const generateUniqueFilename = (): string => {
-  const timestamp = Date.now();
-  const randomString = Math.random().toString(36).substring(7);
-  return `${timestamp}-${randomString}`;
 };
 
 const storage = multer.memoryStorage();

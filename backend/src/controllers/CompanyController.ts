@@ -63,6 +63,9 @@ export default class CompanyController {
   public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const companies = await prisma.company.findMany();
+      if (companies.length === 0) {
+        return res.status(200).json({ success: true, message: "no companies yet" });
+      }
       return res.status(200).json({ success: true, message: "Companies retrieved successfully", data: companies });
     } catch (error) {
       next(error);
