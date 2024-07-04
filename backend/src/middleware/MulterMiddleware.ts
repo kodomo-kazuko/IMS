@@ -9,6 +9,8 @@ const uploadFilter: Record<string, string[]> = {
   documents: [".pdf", ".doc", ".docx"],
 };
 
+const limitSize: number = 5000000;
+
 const generateUniqueFilename = (): string => {
   const timestamp = Date.now();
   const randomString = Math.random().toString(36).substring(7);
@@ -21,7 +23,7 @@ const upload = (allowedTypes: allowedFileTypes) => {
   const multerUpload = multer({
     storage,
     limits: {
-      fileSize: 5000000,
+      fileSize: limitSize,
     },
   }).single("file");
 
