@@ -33,7 +33,7 @@ export default function Login() {
       });
 
       localStorage.setItem("token", response.data.data);
-      console.log(localStorage);
+      api.defaults.headers.common["Authorization"] = `Bearer ${response.data.data}`;
       router.push("/dashboard");
 
       console.log(`Login successful! Token: ${response.data.data}`);

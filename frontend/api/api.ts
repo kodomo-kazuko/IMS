@@ -6,7 +6,6 @@ console.log(baseURL);
 
 const api = axios.create({
   baseURL: baseURL,
-  timeout: 1000,
   headers: {},
 });
 
