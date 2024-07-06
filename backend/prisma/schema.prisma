@@ -144,12 +144,15 @@ enum ApplicationStatus {
 }
 
 enum InternshipType {
-  PROFESSIONAL
   INTRODUCTION
+  PROFESSIONAL
+  VOLUNTEER
+  PART_TIME
 }
 
 enum InternshipStatus {
   PENDING
   STARTED
   FINISHED
+  CANCELLED
 }

@@ -34,4 +34,21 @@ export default class RoleController {
       next(error);
     }
   }
+  public async page(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const roles = await prisma.role.findMany({
+        take: 10,
+        cursor: {
+          id: Number(id),
+        },
+        orderBy: {
+          id: "asc",
+        },
+      });
+      return res.status(200).json({ success: true, message: "stuff", data: roles });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
