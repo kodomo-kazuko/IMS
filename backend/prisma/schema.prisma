@@ -65,6 +65,7 @@ model Employee {
   id        Int      @id @default(autoincrement())
   name      String
   password  String
+  image     String?
   email     String   @unique
   phone     String   @unique
   roleId    Int
@@ -125,6 +126,7 @@ model StudentInternship {
 model Mentor {
   id          Int                 @id @default(autoincrement())
   name        String
+  image       String?
   position    String
   password    String
   email       String              @unique

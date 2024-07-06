@@ -21,8 +21,13 @@ export function updateURL<T extends Record<string, any>>(itemOrItems: T | T[], f
   const updateSingleItem = (item: T): T => {
     const updatedFields = fieldNames.reduce((acc, fieldName) => {
       const fieldValue = item[fieldName] as unknown as string;
-      const subfolder = getAllowedType(fieldValue);
-      acc[fieldName] = `http://${SERVER_IP}:${SERVER_PORT}/${FILE_PATH}/${subfolder}/${fieldValue}` as T[keyof T];
+      if (fieldValue !== null && fieldValue !== undefined) {
+        const subfolder = getAllowedType(fieldValue);
+        if (!subfolder) {
+          throw new Error(`Unrecognized file extension: ${fieldValue}`);
+        }
+        acc[fieldName] = `http://${SERVER_IP}:${SERVER_PORT}/${FILE_PATH}/${subfolder}/${fieldValue}` as T[keyof T];
+      }
       return acc;
     }, {} as Partial<T>);
 

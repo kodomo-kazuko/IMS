@@ -119,6 +119,12 @@ export default class StudentController {
   public async account(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const student = await prisma.student.findUniqueOrThrow({
+        omit: {
+          majorId: true,
+        },
+        include: {
+          major: true,
+        },
         where: {
           id: Number(req.cookies.id),
         },

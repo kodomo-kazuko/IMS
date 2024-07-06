@@ -11,4 +11,6 @@ router.post("/signup", accessMiddleware(["employee"]), employeeController.signup
 
 router.get("/all", accessMiddleware(["employee"]), employeeController.all);
 
+router.get("/account", accessMiddleware(["employee"]), employeeController.account);
+
 export default router;
