@@ -1,4 +1,4 @@
-import { PrismaClient, InternshipStatus } from "@prisma/client";
+import { PrismaClient, InternshipStatus, StudentInternship } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Post, PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { updateURL } from "../utils/urlUpdate";
 import { saveFileToDisk } from "../utils/fileHandler";
@@ -31,7 +31,7 @@ export default class PostController {
           content,
           companyId: Number(companyId),
           internshipId: Number(internshipId),
-          image: req.url,
+          image: req.file.filename,
         },
       });
       await saveFileToDisk(req.file, "images");
@@ -75,14 +75,17 @@ export default class PostController {
   }
   public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const posts = await prisma.post.findMany({
-        where: { companyId: req.cookies.id },
-      });
-      if (posts.length === 0) {
-        res.status(200).json({ success: true, message: "No posts found" });
-        return;
+      const companyPosts = await prisma.company
+        .findUnique({
+          where: {
+            id: req.cookies.id,
+          },
+        })
+        .posts();
+      if (!companyPosts) {
+        return res.status(200).json({ success: true, message: "No posts found" });
       }
-      const updatedPosts = updateURL(posts, ["image"]);
+      const updatedPosts = updateURL(companyPosts, ["image"]);
       res.status(200).json({ success: true, message: "Retrieved posts", data: updatedPosts });
     } catch (error) {
       next(error);
