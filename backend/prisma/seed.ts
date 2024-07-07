@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { createStudents, fakeMajor, fakeMajorComplete, fakeStudent } from "../src/types/fake-data";
 
 const prisma = new PrismaClient();
 
@@ -29,6 +30,8 @@ const seedDatabase = async () => {
         phone: PHONE,
       },
     });
+
+    createStudents(500);
   } catch (error) {
     console.error("Error during seeding:", (error as Error).message);
   } finally {

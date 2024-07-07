@@ -8,10 +8,9 @@ const rootUploadsPath = path.join(__dirname, `../${FILE_PATH}`);
 
 export const saveFileToDisk = async (file: Express.Multer.File, allowedTypes: allowedFileTypes): Promise<void> => {
   try {
-    const { name, ext } = path.parse(file.originalname);
-    const customFilename = `${name}${ext}`;
+    const { filename } = file;
     const subfolder = allowedTypes;
-    const filePath = path.join(rootUploadsPath, subfolder, customFilename);
+    const filePath = path.join(rootUploadsPath, subfolder, filename);
 
     await fs.promises.writeFile(filePath, file.buffer);
   } catch (error) {

@@ -14,4 +14,6 @@ router.patch("/edit");
 
 router.delete("/delete");
 
+router.get("/page/:id", accessMiddleware(["employee"]), roleController.page);
+
 export default router;

@@ -2,10 +2,10 @@
 CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING', 'APPROVED', 'STARTED', 'REJECTED');
 
 -- CreateEnum
-CREATE TYPE "InternshipType" AS ENUM ('PROFESSIONAL', 'INTRODUCTION');
+CREATE TYPE "InternshipType" AS ENUM ('INTRODUCTION', 'PROFESSIONAL', 'VOLUNTEER', 'PART_TIME');
 
 -- CreateEnum
-CREATE TYPE "InternshipStatus" AS ENUM ('PENDING', 'STARTED', 'FINISHED');
+CREATE TYPE "InternshipStatus" AS ENUM ('PENDING', 'STARTED', 'FINISHED', 'CANCELLED');
 
 -- CreateTable
 CREATE TABLE "Student" (
@@ -67,6 +67,7 @@ CREATE TABLE "Employee" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "image" TEXT,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "roleId" INTEGER NOT NULL,
@@ -121,6 +122,8 @@ CREATE TABLE "StudentInternship" (
     "mentorId" INTEGER,
     "type" "InternshipType" NOT NULL,
     "status" "InternshipStatus" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "StudentInternship_pkey" PRIMARY KEY ("studentId","internshipId")
 );
@@ -129,6 +132,7 @@ CREATE TABLE "StudentInternship" (
 CREATE TABLE "Mentor" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "image" TEXT,
     "position" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -147,10 +151,19 @@ CREATE UNIQUE INDEX "Student_email_key" ON "Student"("email");
 CREATE UNIQUE INDEX "Student_phone_key" ON "Student"("phone");
 
 -- CreateIndex
+CREATE INDEX "Student_id_idx" ON "Student"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Company_email_key" ON "Company"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Company_phone_key" ON "Company"("phone");
+
+-- CreateIndex
+CREATE INDEX "Company_id_idx" ON "Company"("id");
+
+-- CreateIndex
+CREATE INDEX "Application_studentId_internshipId_idx" ON "Application"("studentId", "internshipId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Major_name_key" ON "Major"("name");
@@ -162,13 +175,25 @@ CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
 CREATE UNIQUE INDEX "Employee_phone_key" ON "Employee"("phone");
 
 -- CreateIndex
+CREATE INDEX "Post_companyId_idx" ON "Post"("companyId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Role_name_key" ON "Role"("name");
+
+-- CreateIndex
+CREATE INDEX "Internship_companyId_idx" ON "Internship"("companyId");
+
+-- CreateIndex
+CREATE INDEX "StudentInternship_internshipId_studentId_idx" ON "StudentInternship"("internshipId", "studentId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Mentor_email_key" ON "Mentor"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Mentor_phone_key" ON "Mentor"("phone");
+
+-- CreateIndex
+CREATE INDEX "Mentor_companyId_idx" ON "Mentor"("companyId");
 
 -- AddForeignKey
 ALTER TABLE "Student" ADD CONSTRAINT "Student_majorId_fkey" FOREIGN KEY ("majorId") REFERENCES "Major"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

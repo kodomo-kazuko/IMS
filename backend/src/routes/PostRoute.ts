@@ -9,9 +9,11 @@ const postController = new PostController();
 
 router.post("/create", accessMiddleware(["company"]), upload("images"), postController.create);
 
-router.get("/all", accessMiddleware("all"), postController.all);
-
 router.get("/company", accessMiddleware(["company"]), postController.company);
+
+router.get("/all/base", accessMiddleware("all"), postController.base);
+
+router.get("/all/:id", accessMiddleware("all"), postController.cursor);
 
 router.get("/:id", accessMiddleware("all"), postController.single);
 

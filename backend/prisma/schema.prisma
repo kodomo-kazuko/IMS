@@ -9,6 +9,11 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// generator DataGenerator {
+//   provider = "prisma-generator-fake-data"
+//   output   = "../types/fake-data.ts"
+// }
+
 model Student {
   id           Int                 @id @default(autoincrement())
   name         String
@@ -24,6 +29,8 @@ model Student {
   applications Application[]
   major        Major               @relation(fields: [majorId], references: [id])
   internships  StudentInternship[]
+
+  @@index([id])
 }
 
 model Company {
@@ -40,6 +47,8 @@ model Company {
   internships Internship[]
   mentors     Mentor[]
   posts       Post[]
+
+  @@index([id])
 }
 
 model Application {
@@ -53,6 +62,8 @@ model Application {
   updatedAt    DateTime          @default(now()) @updatedAt
   internship   Internship        @relation(fields: [internshipId], references: [id])
   student      Student           @relation(fields: [studentId], references: [id])
+
+  @@index([studentId, internshipId])
 }
 
 model Major {
@@ -65,6 +76,7 @@ model Employee {
   id        Int      @id @default(autoincrement())
   name      String
   password  String
+  image     String?
   email     String   @unique
   phone     String   @unique
   roleId    Int
@@ -85,6 +97,8 @@ model Post {
   updatedAt    DateTime   @default(now()) @updatedAt
   company      Company    @relation(fields: [companyId], references: [id])
   internship   Internship @relation(fields: [internshipId], references: [id])
+
+  @@index([companyId])
 }
 
 model Role {
@@ -107,6 +121,8 @@ model Internship {
   company           Company             @relation(fields: [companyId], references: [id])
   posts             Post[]
   students          StudentInternship[]
+
+  @@index([companyId])
 }
 
 model StudentInternship {
@@ -118,13 +134,17 @@ model StudentInternship {
   internship   Internship       @relation(fields: [internshipId], references: [id])
   mentor       Mentor?          @relation(fields: [mentorId], references: [id])
   student      Student          @relation(fields: [studentId], references: [id])
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @default(now()) @updatedAt
 
   @@id([studentId, internshipId])
+  @@index([internshipId, studentId])
 }
 
 model Mentor {
   id          Int                 @id @default(autoincrement())
   name        String
+  image       String?
   position    String
   password    String
   email       String              @unique
@@ -134,6 +154,8 @@ model Mentor {
   updatedAt   DateTime            @default(now()) @updatedAt
   company     Company             @relation(fields: [companyId], references: [id])
   internships StudentInternship[]
+
+  @@index([companyId])
 }
 
 enum ApplicationStatus {
@@ -144,12 +166,15 @@ enum ApplicationStatus {
 }
 
 enum InternshipType {
-  PROFESSIONAL
   INTRODUCTION
+  PROFESSIONAL
+  VOLUNTEER
+  PART_TIME
 }
 
 enum InternshipStatus {
   PENDING
   STARTED
   FINISHED
+  CANCELLED
 }

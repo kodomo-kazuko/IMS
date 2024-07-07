@@ -69,4 +69,25 @@ export default class EmployeeController {
       next(error);
     }
   }
+  public async account(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const employee = await prisma.employee.findUniqueOrThrow({
+        omit: {
+          roleId: true,
+        },
+        include: {
+          role: true,
+        },
+        where: {
+          id: req.cookies.id,
+        },
+      });
+      if (!employee) {
+        return res.status(404).json({ success: false, message: "employee account not found" });
+      }
+      return res.status(200).json({ success: true, message: "employee account retrieved", data: employee });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
