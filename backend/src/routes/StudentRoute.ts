@@ -8,7 +8,9 @@ const studentController = new StudentController();
 
 router.post("/signin", studentController.signin);
 
-router.get("/all", accessMiddleware(["employee"]), studentController.all);
+router.get("/all/base", accessMiddleware(["employee"]), studentController.base);
+
+router.get("/all/:id", accessMiddleware(["employee"]), studentController.cursor);
 
 router.post("/signup", accessMiddleware(["employee"]), studentController.signup);
 

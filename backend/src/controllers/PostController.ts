@@ -4,10 +4,10 @@ import { updateURL } from "../utils/urlUpdate";
 import { saveFileToDisk } from "../utils/fileHandler";
 import path from "path";
 import { ResponseJSON } from "../types/response";
+import { limit } from "../utils/const";
+import getLastId from "../utils/lastId";
 
 const prisma = new PrismaClient();
-const SERVER_IP = process.env.IP || "localhost";
-const SERVER_PORT = process.env.PORT || 8080;
 
 export default class PostController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -59,16 +59,64 @@ export default class PostController {
     }
   }
 
-  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const posts = await prisma.post.findMany();
+      const posts = await prisma.post.findMany({
+        include: {
+          company: {
+            select: {
+              name: true,
+              id: true,
+            },
+          },
+        },
+        take: limit,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
       if (posts.length === 0) {
         res.status(200).json({ success: true, message: "No posts found" });
         return;
       }
       const postsWithFullUrls = updateURL(posts, ["image"]);
-
-      res.status(200).json({ success: true, message: "Retrieved all posts", data: postsWithFullUrls });
+      const lastId = getLastId(posts);
+      res.status(200).json({
+        success: true,
+        message: "Retrieved all posts",
+        data: {
+          posts: postsWithFullUrls,
+          lastId,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const posts = await prisma.post.findMany({
+        cursor: {
+          id: Number(id),
+        },
+        take: limit,
+        skip: 1,
+      });
+      if (posts.length === 0) {
+        res.status(200).json({ success: true, message: "No posts found" });
+        return;
+      }
+      const postsWithFullUrls = updateURL(posts, ["image"]);
+      const lastId = getLastId(posts);
+      res.status(200).json({
+        success: true,
+        message: "Retrieved all posts",
+        data: {
+          posts: postsWithFullUrls,
+          lastId,
+        },
+      });
     } catch (error) {
       next(error);
     }

@@ -5,6 +5,8 @@ import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { saveFileToDisk } from "../utils/fileHandler";
 import { updateURL } from "../utils/urlUpdate";
+import { limit } from "../utils/const";
+import getLastId from "../utils/lastId";
 
 const prisma = new PrismaClient({
   omit: {
@@ -64,9 +66,10 @@ export default class StudentController {
     }
   }
 
-  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const students = await prisma.student.findMany({
+        take: limit,
         omit: {
           majorId: true,
         },
@@ -82,7 +85,52 @@ export default class StudentController {
         return;
       }
       const updatedStudents = updateURL(students, ["document"]);
-      res.status(200).json({ success: true, message: "Students retrieved successfully", data: updatedStudents });
+      const lastId = getLastId(students);
+      res.status(200).json({
+        success: true,
+        message: "Students retrieved successfully",
+        data: {
+          students: updatedStudents,
+          lastId: lastId,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const students = await prisma.student.findMany({
+        take: limit,
+        skip: 1,
+        omit: {
+          majorId: true,
+        },
+        include: {
+          major: true,
+        },
+        cursor: {
+          id: Number(id),
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      if (students.length === 0) {
+        res.status(200).json({ success: true, message: "No students found" });
+        return;
+      }
+      const lastId = getLastId(students);
+      const updatedStudents = updateURL(students, ["document"]);
+      res.status(200).json({
+        success: true,
+        message: "Students retrieved successfully",
+        data: {
+          students: updatedStudents,
+          lastId,
+        },
+      });
     } catch (error) {
       next(error);
     }
