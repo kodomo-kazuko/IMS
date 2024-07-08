@@ -17,6 +17,6 @@ router.get("/company", accessMiddleware(["company"]), internshipController.compa
 
 // router.get("/company/:id", accessMiddleware(["company"]), internshipController.company);
 
-router.get("/:id", accessMiddleware("all"));
+router.get("/:id", accessMiddleware("all") /** #swagger.tags = ['Internship'] */);
 
 export default router;

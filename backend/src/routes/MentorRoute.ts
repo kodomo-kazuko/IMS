@@ -5,7 +5,7 @@ import MentorController from "../controllers/MentorController";
 const router = Router();
 const mentorController = new MentorController();
 
-router.post("signin", mentorController.signin);
+router.post("/signin", mentorController.signin /** #swagger.tags = ['Mentor'] */);
 
 router.post("/create", accessMiddleware(["company"]), mentorController.create /** #swagger.tags = ['Mentor'] */);
 

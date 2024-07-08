@@ -5,7 +5,7 @@ import accessMiddleware from "../middleware/AccessMiddleware";
 const router = Router();
 const companyController = new CompanyController();
 
-router.post("/signin", companyController.signin);
+router.post("/signin", companyController.signin /** #swagger.tags = ['Company'] */);
 
 router.get("/all/base", accessMiddleware(["employee"]), companyController.base /** #swagger.tags = ['Company'] */);
 

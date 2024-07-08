@@ -9,7 +9,7 @@ router.get("/types", accessMiddleware("all"), applicationController.types /** #s
 
 router.post("/create", accessMiddleware(["student"]), applicationController.create /** #swagger.tags = ['Application'] */);
 
-router.get("/all/base", accessMiddleware(["employee"]), applicationController.base) /** #swagger.tags = ['Application'] */;
+router.get("/all/base", accessMiddleware(["employee"]), applicationController.base /** #swagger.tags = ['Application'] */);
 
 router.get("/all/:id", accessMiddleware(["employee"]), applicationController.cursor /** #swagger.tags = ['Application'] */);
 

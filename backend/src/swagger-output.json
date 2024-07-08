@@ -329,8 +329,11 @@
         }
       }
     },
-    "/mentorsignin": {
+    "/mentor/signin": {
       "post": {
+        "tags": [
+          "Mentor"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -478,6 +481,9 @@
     },
     "/student/signin": {
       "post": {
+        "tags": [
+          "Student"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -660,6 +666,9 @@
     },
     "/company/signin": {
       "post": {
+        "tags": [
+          "Company"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -798,6 +807,9 @@
     },
     "/employee/signin": {
       "post": {
+        "tags": [
+          "Employee"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -1000,7 +1012,20 @@
     },
     "/internship/{id}": {
       "get": {
+        "tags": [
+          "Internship"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -1059,6 +1084,9 @@
     },
     "/application/all/base": {
       "get": {
+        "tags": [
+          "Application"
+        ],
         "description": "",
         "responses": {
           "200": {

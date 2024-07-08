@@ -6,7 +6,7 @@ import upload from "../middleware/MulterMiddleware";
 const router = Router();
 const studentController = new StudentController();
 
-router.post("/signin", studentController.signin);
+router.post("/signin", studentController.signin /** #swagger.tags = ['Student'] */);
 
 router.get("/all/base", accessMiddleware(["employee"]), studentController.base /** #swagger.tags = ['Student'] */);
 
