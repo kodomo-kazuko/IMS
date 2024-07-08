@@ -152,7 +152,7 @@ export default class StudentController {
       await prisma.student.update({
         where: { id: Number(req.cookies.id) },
         data: {
-          document: req.url,
+          document: req.file.filename,
         },
       });
       await saveFileToDisk(req.file, "documents");
@@ -212,7 +212,7 @@ export default class StudentController {
       await prisma.student.update({
         where: { id: Number(req.cookies.id) },
         data: {
-          image: req.url,
+          image: req.file.filename,
         },
       });
       await saveFileToDisk(req.file, "images");
