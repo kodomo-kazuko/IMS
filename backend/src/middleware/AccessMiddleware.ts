@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AccountType } from "../types/types";
 import { ResponseJSON } from "../types/response";
-
-const prisma = new PrismaClient();
+import { prisma } from "../utils/const";
 
 interface DecodedToken {
   account: AccountType;

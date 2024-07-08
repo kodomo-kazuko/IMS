@@ -1,8 +1,7 @@
-import { PrismaClient, InternshipStatus, StudentInternship } from "@prisma/client";
+import { InternshipStatus } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-
-const prisma = new PrismaClient();
+import { prisma } from "../utils/const";
 
 export default class StudentInternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -24,7 +23,6 @@ export default class StudentInternshipController {
           status: "STARTED",
         },
       });
-      console.log(existingInternship);
       if (existingInternship) {
         return res.status(300).json({ success: false, message: "You already have an active internship." });
       }

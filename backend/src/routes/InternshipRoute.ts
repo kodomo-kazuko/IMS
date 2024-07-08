@@ -9,9 +9,9 @@ router.get("/types", accessMiddleware("all"), internshipController.types);
 
 router.post("/create", accessMiddleware(["company"]), internshipController.create);
 
-router.get("/all/base", accessMiddleware(["employee"]), internshipController.base);
+router.get("/all/base", accessMiddleware("all"), internshipController.base);
 
-router.get("/all/:id", accessMiddleware(["employee"]), internshipController.cursor);
+router.get("/all/:id", accessMiddleware("all"), internshipController.cursor);
 
 router.get("/company", accessMiddleware(["company"]), internshipController.company);
 

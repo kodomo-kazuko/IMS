@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { limit } from "../utils/const";
 import getLastId from "../utils/lastId";
-
-const prisma = new PrismaClient();
+import { prisma } from "../utils/const";
 
 export default class RoleController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {

@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-
-const prisma = new PrismaClient();
+import { prisma } from "../utils/const";
 
 export default class MentorController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -64,6 +62,9 @@ export default class MentorController {
       const { email, password } = req.body;
       const mentor = await prisma.mentor.findUnique({
         where: { email },
+        omit: {
+          password: false,
+        },
       });
       if (!mentor) {
         res.status(404).json({ success: false, message: "Mentor not found" });

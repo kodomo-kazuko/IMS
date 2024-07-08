@@ -1,10 +1,9 @@
 import createRedisClient from "../redis";
-import { PrismaClient, Major } from "@prisma/client";
+import { Major } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-
+import { prisma } from "../utils/const";
 const redisClient = createRedisClient();
-const prisma = new PrismaClient();
 
 export default class MajorController {
   private updateCache = async () => {

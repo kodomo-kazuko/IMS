@@ -63,6 +63,7 @@ model Application {
   internship   Internship        @relation(fields: [internshipId], references: [id])
   student      Student           @relation(fields: [studentId], references: [id])
 
+  @@unique([studentId, internshipId])
   @@index([studentId, internshipId])
 }
 

@@ -1,9 +1,7 @@
 import { ApplicationStatus, InternshipType, InternshipStatus, PrismaClient } from "@prisma/client";
 import { faker } from "@faker-js/faker";
-import Decimal from "decimal.js";
 import bcrypt from "bcrypt";
-
-const prisma = new PrismaClient();
+import { prisma } from "../utils/const";
 
 export async function password() {
   const password = String(process.env.PASSWORD);
@@ -37,11 +35,12 @@ export function fakeStudentComplete() {
     updatedAt: new Date(),
   };
 }
-export function fakeCompany() {
+export async function fakeCompany() {
+  const hashedPassword = await password();
   return {
     name: faker.person.fullName(),
     email: faker.internet.email(),
-    password: faker.lorem.words(5),
+    password: hashedPassword,
     phone: faker.lorem.words(5),
     weburl: faker.lorem.words(5),
     address: faker.lorem.words(5),
@@ -259,6 +258,15 @@ export async function createStudents(numberOfStudents: number) {
     const studentData = await fakeStudent();
     await prisma.student.create({
       data: studentData,
+    });
+  }
+}
+
+export async function createCompanies(numberOfStudents: number) {
+  for (let i = 0; i < numberOfStudents; i++) {
+    const data = await fakeCompany();
+    await prisma.company.create({
+      data: data,
     });
   }
 }

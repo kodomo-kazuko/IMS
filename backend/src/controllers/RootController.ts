@@ -1,9 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { Props, ResponseJSON } from "../types/response";
-
-const prisma = new PrismaClient();
 
 export default class RootController {
   public async tokenRenew(req: Request, res: Response<ResponseJSON>, next: NextFunction): Promise<void> {

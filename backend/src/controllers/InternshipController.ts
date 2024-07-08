@@ -1,10 +1,9 @@
-import { PrismaClient, InternshipType } from "@prisma/client";
+import { InternshipType } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import getLastId from "../utils/lastId";
 import { limit } from "../utils/const";
-
-const prisma = new PrismaClient();
+import { prisma } from "../utils/const";
 
 export default class InternshipController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {

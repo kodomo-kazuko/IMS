@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
@@ -7,14 +6,7 @@ import { saveFileToDisk } from "../utils/fileHandler";
 import { updateURL } from "../utils/urlUpdate";
 import { limit } from "../utils/const";
 import getLastId from "../utils/lastId";
-
-const prisma = new PrismaClient({
-  omit: {
-    student: {
-      password: true,
-    },
-  },
-});
+import { prisma } from "../utils/const";
 
 export default class StudentController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {

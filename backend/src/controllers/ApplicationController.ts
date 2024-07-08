@@ -1,9 +1,9 @@
-import { PrismaClient, ApplicationStatus, Application } from "@prisma/client";
+import { ApplicationStatus, Application } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { limit } from "../utils/const";
 import getLastId from "../utils/lastId";
-const prisma = new PrismaClient();
+import { prisma } from "../utils/const";
 
 export default class ApplicationController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -94,11 +94,29 @@ export default class ApplicationController {
   }
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const applications = await prisma.application.findMany();
+      const { id } = req.params;
+      const applications = await prisma.application.findMany({
+        take: limit,
+        skip: 1,
+        cursor: {
+          id: Number(id),
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
       if (applications.length === 0) {
         return res.status(200).json({ success: true, message: "no applications yet" });
       }
-      return res.status(200).json({ success: true, message: "successfully retirved applications", data: applications });
+      const lastId = getLastId(applications);
+      return res.status(200).json({
+        success: true,
+        message: "successfully retirved applications",
+        data: {
+          lastId,
+          list: applications,
+        },
+      });
     } catch (error) {
       next(error);
     }
@@ -116,6 +134,12 @@ export default class ApplicationController {
         .applications({
           orderBy: {
             createdAt: "desc",
+          },
+          omit: {
+            studentId: true,
+          },
+          include: {
+            student: true,
           },
         });
       if (!internshipApplications) {

@@ -1,13 +1,10 @@
-import { Post, PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { updateURL } from "../utils/urlUpdate";
 import { saveFileToDisk } from "../utils/fileHandler";
-import path from "path";
 import { ResponseJSON } from "../types/response";
 import { limit } from "../utils/const";
 import getLastId from "../utils/lastId";
-
-const prisma = new PrismaClient();
+import { prisma } from "../utils/const";
 
 export default class PostController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {

@@ -1,18 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
 import { limit } from "../utils/const";
 import getLastId from "../utils/lastId";
-
-const prisma = new PrismaClient({
-  omit: {
-    company: {
-      password: true,
-    },
-  },
-});
+import { prisma } from "../utils/const";
 
 export default class CompanyController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -89,9 +81,13 @@ export default class CompanyController {
 
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const { id } = req.params;
       const companies = await prisma.company.findMany({
         orderBy: {
           createdAt: "desc",
+        },
+        cursor: {
+          id: Number(id),
         },
         take: limit,
         skip: 1,

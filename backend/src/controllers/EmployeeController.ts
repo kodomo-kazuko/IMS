@@ -1,16 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
-
-const prisma = new PrismaClient({
-  omit: {
-    employee: {
-      password: true,
-    },
-  },
-});
+import { prisma } from "../utils/const";
 
 export default class EmployeeController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
