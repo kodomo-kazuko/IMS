@@ -13,8 +13,6 @@ router.get("/all/base", accessMiddleware(["employee"]), applicationController.ba
 
 router.get("/all/:id", accessMiddleware(["employee"]), applicationController.cursor);
 
-router.get("/company", accessMiddleware(["company"]));
-
 router.get("/student", accessMiddleware(["student"]), applicationController.student);
 
 router.patch("/approve", accessMiddleware(["company"]), applicationController.approve);

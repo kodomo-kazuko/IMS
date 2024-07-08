@@ -1,6 +1,8 @@
-import path from "path";
 import cors from "cors";
 import dotenv from "dotenv";
+
+import swaggerUi from "swagger-ui-express";
+import swaggerFile from "./swagger_output.json";
 
 dotenv.config();
 
@@ -18,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 app.use("/", routes);
+app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.use(ErrorMiddleware);
 

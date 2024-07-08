@@ -71,6 +71,8 @@ model Major {
   id       Int       @id @default(autoincrement())
   name     String    @unique
   students Student[]
+
+  @@index([id])
 }
 
 model Employee {
@@ -84,6 +86,8 @@ model Employee {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role      Role     @relation(fields: [roleId], references: [id])
+
+  @@index([id])
 }
 
 model Post {
@@ -106,6 +110,8 @@ model Role {
   id       Int        @id @default(autoincrement())
   name     String     @unique
   employee Employee[]
+
+  @@index([id])
 }
 
 model Internship {
@@ -127,6 +133,7 @@ model Internship {
 }
 
 model StudentInternship {
+  id           Int              @id @default(autoincrement())
   studentId    Int
   internshipId Int
   mentorId     Int?
@@ -138,7 +145,7 @@ model StudentInternship {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @default(now()) @updatedAt
 
-  @@id([studentId, internshipId])
+  @@unique([studentId, internshipId])
   @@index([internshipId, studentId])
 }
 

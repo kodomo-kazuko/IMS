@@ -117,6 +117,7 @@ CREATE TABLE "Internship" (
 
 -- CreateTable
 CREATE TABLE "StudentInternship" (
+    "id" SERIAL NOT NULL,
     "studentId" INTEGER NOT NULL,
     "internshipId" INTEGER NOT NULL,
     "mentorId" INTEGER,
@@ -125,7 +126,7 @@ CREATE TABLE "StudentInternship" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "StudentInternship_pkey" PRIMARY KEY ("studentId","internshipId")
+    CONSTRAINT "StudentInternship_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -166,6 +167,9 @@ CREATE INDEX "Company_id_idx" ON "Company"("id");
 CREATE INDEX "Application_studentId_internshipId_idx" ON "Application"("studentId", "internshipId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Application_studentId_internshipId_key" ON "Application"("studentId", "internshipId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Major_name_key" ON "Major"("name");
 
 -- CreateIndex
@@ -185,6 +189,9 @@ CREATE INDEX "Internship_companyId_idx" ON "Internship"("companyId");
 
 -- CreateIndex
 CREATE INDEX "StudentInternship_internshipId_studentId_idx" ON "StudentInternship"("internshipId", "studentId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "StudentInternship_studentId_internshipId_key" ON "StudentInternship"("studentId", "internshipId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Mentor_email_key" ON "Mentor"("email");

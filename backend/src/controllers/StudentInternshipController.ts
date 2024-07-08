@@ -61,25 +61,14 @@ export default class StudentInternshipController {
 
   public async start(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { studentId, internshipId, mentorId } = req.body;
+      const { id, mentorId } = req.body;
       const studentinertnship = await prisma.studentInternship.findUniqueOrThrow({
         where: {
-          studentId_internshipId: {
-            studentId: Number(studentId),
-            internshipId: Number(internshipId),
-          },
+          id: Number(id),
         },
       });
       if (!studentinertnship) {
         return res.status(404).json({ success: false, message: "student internship not found" });
-      }
-      const internship = await prisma.internship.findUniqueOrThrow({
-        where: {
-          id: Number(internshipId),
-        },
-      });
-      if (!internship) {
-        return res.status(404).json({ success: false, message: "internship not found" });
       }
       const mentor = await prisma.mentor.findUniqueOrThrow({
         where: {
@@ -127,5 +116,48 @@ export default class StudentInternshipController {
     }
   }
 
-  public async student(req: Request, res: Response<ResponseJSON>, next: NextFunction) {}
+  public async student(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const studentInternships = await prisma.student
+        .findUnique({
+          where: {
+            id: req.cookies.id,
+          },
+        })
+        .internships({
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+      if (!studentInternships) {
+        return res.status(404).json({ success: false, message: "no internships found" });
+      }
+      return res.status(200).json({ success: true, message: "student internships retrieved", data: studentInternships });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async internships(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const internships = await prisma.internship
+        .findUnique({
+          where: {
+            id: Number(id),
+            companyId: req.cookies.id,
+          },
+        })
+        .students({
+          orderBy: {
+            createdAt: "desc",
+          },
+          include: {
+            student: true,
+          },
+        });
+      return res.status(200).json({ success: true, message: " students retrieved", data: internships });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

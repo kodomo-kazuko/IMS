@@ -13,4 +13,8 @@ router.patch("/start", accessMiddleware(["company"]), studentInternshipControlle
 
 router.get("/company", accessMiddleware(["company"]), studentInternshipController.company);
 
+router.get("/internship/:id", accessMiddleware(["company"]), studentInternshipController.internships);
+
+router.get("/student", accessMiddleware(["student"]), studentInternshipController.student);
+
 export default router;
