@@ -44,6 +44,8 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import router, { useRouter } from "next/navigation";
+import api from "@/api/api";
+import { useCallback, useEffect, useState } from "react";
 const studentsApply = [
     {
         id: 1,
@@ -69,6 +71,38 @@ const students = [
 
 export default function Students() {
     const router = useRouter();
+    const [students, setStudents] = useState<any[]>([]);
+    const [token, setToken] = useState("");
+    const fetchStudentsList = useCallback(async () => {
+        try {
+            const storedToken = localStorage.getItem("token");
+            console.log(storedToken);
+            if (!storedToken) {
+                router.push("/login");
+                return; // Exit function if no token
+            }
+
+            const response = await api.get("/student/all", {
+                headers: {
+                    Authorization: `Bearer ${storedToken}`,
+                },
+            });
+            console.log(response.data.data);
+            setStudents(response.data.data);
+        } catch (error) {
+            console.error("Failed to fetch student list:", error);
+            // Handle error as needed
+        }
+    }, [router]);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            router.push("/login");
+        } else {
+            fetchStudentsList();
+        }
+    }, [router, fetchStudentsList, token]);
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -257,7 +291,7 @@ export default function Students() {
                                                                     alt="Product image"
                                                                     className="aspect-square rounded-md object-cover"
                                                                     height="64"
-                                                                    src={student.image}
+                                                                    src={"/asd"}
                                                                     width="64"
                                                                 />
                                                             </TableCell>
@@ -271,7 +305,7 @@ export default function Students() {
                                                                 {student.email}
                                                             </TableCell>
                                                             <TableCell>
-                                                                {student.major}
+                                                                {student.majorId}
                                                             </TableCell>
                                                             <TableCell>
                                                                 {student.createdAt}
