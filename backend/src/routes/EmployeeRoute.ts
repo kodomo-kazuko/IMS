@@ -7,10 +7,10 @@ const employeeController = new EmployeeController();
 
 router.post("/signin", employeeController.signin);
 
-router.post("/signup", accessMiddleware(["employee"]), employeeController.signup);
+router.post("/signup", accessMiddleware(["employee"]), employeeController.signup /** #swagger.tags = ['Employee'] */);
 
-router.get("/all", accessMiddleware(["employee"]), employeeController.all);
+router.get("/all", accessMiddleware(["employee"]), employeeController.all /** #swagger.tags = ['Employee'] */);
 
-router.get("/account", accessMiddleware(["employee"]), employeeController.account);
+router.get("/account", accessMiddleware(["employee"]), employeeController.account /** #swagger.tags = ['Employee'] */);
 
 export default router;

@@ -6,7 +6,7 @@ const uploadController = new UploadController();
 
 const router = Router();
 
-router.use("/", accessMiddleware("all"), uploadController.single);
+router.use("/", accessMiddleware("all"), uploadController.single /** #swagger.tags = ['Upload'] */);
 
 export default router;
 

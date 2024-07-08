@@ -1,18 +1,21 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
     "title": "REST API",
     "description": ""
   },
-  "host": "localhost:3000",
-  "basePath": "/",
-  "schemes": [
-    "http"
+  "servers": [
+    {
+      "url": "http://10.147.17.74:8080/"
+    }
   ],
   "paths": {
     "/": {
       "get": {
+        "tags": [
+          "Root"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -23,12 +26,17 @@
     },
     "/check": {
       "get": {
+        "tags": [
+          "Root"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "authorization",
             "in": "header",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -43,6 +51,9 @@
     },
     "/test": {
       "post": {
+        "tags": [
+          "Root"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -53,6 +64,9 @@
     },
     "/role/all/base": {
       "get": {
+        "tags": [
+          "Role"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -63,13 +77,18 @@
     },
     "/role/all/{id}": {
       "get": {
+        "tags": [
+          "Role"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -81,51 +100,37 @@
     },
     "/role/create": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Role"
         ],
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/post/create": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "example": "any"
-                },
-                "content": {
-                  "example": "any"
-                },
-                "internshipId": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Post"
         ],
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
@@ -133,11 +138,34 @@
           "400": {
             "description": "Bad Request"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "example": "any"
+                  },
+                  "content": {
+                    "example": "any"
+                  },
+                  "internshipId": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
     "/post/company": {
       "get": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -148,6 +176,9 @@
     },
     "/post/all/base": {
       "get": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -158,13 +189,18 @@
     },
     "/post/all/{id}": {
       "get": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -176,13 +212,18 @@
     },
     "/post/{id}": {
       "get": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -197,6 +238,9 @@
     },
     "/major/all": {
       "get": {
+        "tags": [
+          "Major"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -207,64 +251,75 @@
     },
     "/major/create": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Major"
         ],
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/major/edit": {
       "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "example": "any"
-                },
-                "name": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Major"
         ],
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "example": "any"
+                  },
+                  "name": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/major/delete/{id}": {
       "delete": {
+        "tags": [
+          "Major"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -277,23 +332,6 @@
     "/mentorsignin": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -304,47 +342,70 @@
           "404": {
             "description": "Not Found"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
     "/mentor/create": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "position": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "phone": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Mentor"
         ],
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  },
+                  "position": {
+                    "example": "any"
+                  },
+                  "email": {
+                    "example": "any"
+                  },
+                  "phone": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/mentor/company": {
       "get": {
+        "tags": [
+          "Mentor"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -355,6 +416,9 @@
     },
     "/mentor/all": {
       "get": {
+        "tags": [
+          "Mentor"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -365,13 +429,18 @@
     },
     "/mentor/company/{id}": {
       "get": {
+        "tags": [
+          "Mentor"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -383,13 +452,18 @@
     },
     "/mentor/{id}": {
       "get": {
+        "tags": [
+          "Mentor"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -405,23 +479,6 @@
     "/student/signin": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -432,11 +489,31 @@
           "404": {
             "description": "Not Found"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
     "/student/all/base": {
       "get": {
+        "tags": [
+          "Student"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -447,13 +524,18 @@
     },
     "/student/all/{id}": {
       "get": {
+        "tags": [
+          "Student"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -465,45 +547,51 @@
     },
     "/student/signup": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "majorId": {
-                  "example": "any"
-                },
-                "phone": {
-                  "example": "any"
-                },
-                "address": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Student"
         ],
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  },
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  },
+                  "majorId": {
+                    "example": "any"
+                  },
+                  "phone": {
+                    "example": "any"
+                  },
+                  "address": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/student/account": {
       "get": {
+        "tags": [
+          "Student"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -514,6 +602,9 @@
     },
     "/student/cv": {
       "post": {
+        "tags": [
+          "Student"
+        ],
         "description": "",
         "responses": {
           "201": {
@@ -527,6 +618,9 @@
     },
     "/student/image": {
       "post": {
+        "tags": [
+          "Student"
+        ],
         "description": "",
         "responses": {
           "201": {
@@ -543,13 +637,18 @@
     },
     "/student/{id}": {
       "get": {
+        "tags": [
+          "Student"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -562,23 +661,6 @@
     "/company/signin": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -589,11 +671,31 @@
           "404": {
             "description": "Not Found"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
     "/company/all/base": {
       "get": {
+        "tags": [
+          "Company"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -604,13 +706,18 @@
     },
     "/company/all/{id}": {
       "get": {
+        "tags": [
+          "Company"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -622,63 +729,69 @@
     },
     "/company/signup": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "phone": {
-                  "example": "any"
-                },
-                "address": {
-                  "example": "any"
-                },
-                "weburl": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Company"
         ],
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  },
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  },
+                  "phone": {
+                    "example": "any"
+                  },
+                  "address": {
+                    "example": "any"
+                  },
+                  "weburl": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/company/approve": {
       "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "companyId": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Company"
         ],
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "companyId": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -686,23 +799,6 @@
     "/employee/signin": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -713,47 +809,70 @@
           "404": {
             "description": "Not Found"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
     "/employee/signup": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "roleId": {
-                  "example": "any"
-                },
-                "phone": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Employee"
         ],
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  },
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  },
+                  "roleId": {
+                    "example": "any"
+                  },
+                  "phone": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/employee/all": {
       "get": {
+        "tags": [
+          "Employee"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -764,6 +883,9 @@
     },
     "/employee/account": {
       "get": {
+        "tags": [
+          "Employee"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -777,6 +899,9 @@
     },
     "/internship/types": {
       "get": {
+        "tags": [
+          "Internship"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -787,42 +912,48 @@
     },
     "/internship/create": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "example": "any"
-                },
-                "type": {
-                  "example": "any"
-                },
-                "enrollmentEndDate": {
-                  "example": "any"
-                },
-                "startDate": {
-                  "example": "any"
-                },
-                "endDate": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Internship"
         ],
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "example": "any"
+                  },
+                  "type": {
+                    "example": "any"
+                  },
+                  "enrollmentEndDate": {
+                    "example": "any"
+                  },
+                  "startDate": {
+                    "example": "any"
+                  },
+                  "endDate": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/internship/all/base": {
       "get": {
+        "tags": [
+          "Internship"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -833,13 +964,18 @@
     },
     "/internship/all/{id}": {
       "get": {
+        "tags": [
+          "Internship"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -851,6 +987,9 @@
     },
     "/internship/company": {
       "get": {
+        "tags": [
+          "Internship"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -871,6 +1010,9 @@
     },
     "/application/types": {
       "get": {
+        "tags": [
+          "Application"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -881,24 +1023,10 @@
     },
     "/application/create": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "internshipId": {
-                  "example": "any"
-                },
-                "type": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Application"
         ],
+        "description": "",
         "responses": {
           "201": {
             "description": "Created"
@@ -908,6 +1036,23 @@
           },
           "409": {
             "description": "Conflict"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "internshipId": {
+                    "example": "any"
+                  },
+                  "type": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -924,13 +1069,18 @@
     },
     "/application/all/{id}": {
       "get": {
+        "tags": [
+          "Application"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -942,6 +1092,9 @@
     },
     "/application/student": {
       "get": {
+        "tags": [
+          "Application"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -952,21 +1105,10 @@
     },
     "/application/approve": {
       "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "Application"
         ],
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -977,18 +1119,37 @@
           "404": {
             "description": "Not Found"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
     "/application/internship/{id}": {
       "get": {
+        "tags": [
+          "Application"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1003,6 +1164,9 @@
     },
     "/student-internship/types": {
       "get": {
+        "tags": [
+          "StudentInternship"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -1013,21 +1177,10 @@
     },
     "/student-internship/create": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "StudentInternship"
         ],
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -1041,29 +1194,29 @@
           "404": {
             "description": "Not Found"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
     "/student-internship/start": {
       "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "example": "any"
-                },
-                "mentorId": {
-                  "example": "any"
-                }
-              }
-            }
-          }
+        "tags": [
+          "StudentInternship"
         ],
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -1074,11 +1227,31 @@
           "404": {
             "description": "Not Found"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "example": "any"
+                  },
+                  "mentorId": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
     "/student-internship/company": {
       "get": {
+        "tags": [
+          "StudentInternship"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -1092,13 +1265,18 @@
     },
     "/student-internship/internship/{id}": {
       "get": {
+        "tags": [
+          "StudentInternship"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1110,6 +1288,9 @@
     },
     "/student-internship/student": {
       "get": {
+        "tags": [
+          "StudentInternship"
+        ],
         "description": "",
         "responses": {
           "200": {

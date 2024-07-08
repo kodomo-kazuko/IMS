@@ -1,6 +1,10 @@
-const swaggerAutogen = require("swagger-autogen")();
+const swaggerAutogen = require("swagger-autogen")({ openapi: "3.0.0" });
 
-const outputFile = "./swagger_output.json";
-const endpointsFiles = ["./routes/index.ts"];
+const outputFile = "./swagger-output.json";
+const routes = ["./src/server.ts"];
 
-swaggerAutogen(outputFile, endpointsFiles);
+const doc = {
+  host: "10.147.17.74:8080",
+};
+
+swaggerAutogen(outputFile, routes, doc);

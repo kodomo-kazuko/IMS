@@ -1,14 +1,12 @@
 import cors from "cors";
 import dotenv from "dotenv";
-
-import swaggerUi from "swagger-ui-express";
-import swaggerFile from "./swagger_output.json";
-
 dotenv.config();
 
 import express from "express";
 import routes from "./routes";
 import ErrorMiddleware from "./middleware/ErrorMiddleware";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./swagger-output.json";
 
 const IP = process.env.IP || "localhost";
 const PORT = parseInt(process.env.PORT || "8080", 10);
@@ -20,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 app.use("/", routes);
-app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(ErrorMiddleware);
 
