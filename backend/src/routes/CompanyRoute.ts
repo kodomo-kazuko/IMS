@@ -7,7 +7,9 @@ const companyController = new CompanyController();
 
 router.post("/signin", companyController.signin);
 
-router.get("/all", accessMiddleware(["employee"]), companyController.all);
+router.get("/all/base", accessMiddleware(["employee"]), companyController.base);
+
+router.get("/all/:id", accessMiddleware(["employee"]), companyController.cursor);
 
 router.post("/signup", accessMiddleware(["employee"]), companyController.signup);
 

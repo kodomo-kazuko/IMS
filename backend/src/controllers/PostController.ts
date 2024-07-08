@@ -85,8 +85,8 @@ export default class PostController {
         success: true,
         message: "Retrieved all posts",
         data: {
-          posts: postsWithFullUrls,
           lastId,
+          list: postsWithFullUrls,
         },
       });
     } catch (error) {
@@ -113,8 +113,8 @@ export default class PostController {
         success: true,
         message: "Retrieved all posts",
         data: {
-          posts: postsWithFullUrls,
           lastId,
+          list: postsWithFullUrls,
         },
       });
     } catch (error) {

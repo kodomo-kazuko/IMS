@@ -90,8 +90,8 @@ export default class StudentController {
         success: true,
         message: "Students retrieved successfully",
         data: {
-          students: updatedStudents,
-          lastId: lastId,
+          lastId,
+          list: updatedStudents,
         },
       });
     } catch (error) {
@@ -127,8 +127,8 @@ export default class StudentController {
         success: true,
         message: "Students retrieved successfully",
         data: {
-          students: updatedStudents,
           lastId,
+          list: updatedStudents,
         },
       });
     } catch (error) {

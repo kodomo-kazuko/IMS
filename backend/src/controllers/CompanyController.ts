@@ -3,6 +3,8 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
+import { limit } from "../utils/const";
+import getLastId from "../utils/lastId";
 
 const prisma = new PrismaClient({
   omit: {
@@ -60,13 +62,52 @@ export default class CompanyController {
     }
   }
 
-  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const companies = await prisma.company.findMany();
+      const companies = await prisma.company.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: limit,
+      });
       if (companies.length === 0) {
         return res.status(200).json({ success: true, message: "no companies yet" });
       }
-      return res.status(200).json({ success: true, message: "Companies retrieved successfully", data: companies });
+      const lastId = getLastId(companies);
+      return res.status(200).json({
+        success: true,
+        message: "Companies retrieved successfully",
+        data: {
+          lastId,
+          list: companies,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const companies = await prisma.company.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: limit,
+        skip: 1,
+      });
+      if (companies.length === 0) {
+        return res.status(200).json({ success: true, message: "no companies yet" });
+      }
+      const lastId = getLastId(companies);
+      return res.status(200).json({
+        success: true,
+        message: "Companies retrieved successfully",
+        data: {
+          lastId,
+          list: companies,
+        },
+      });
     } catch (error) {
       next(error);
     }

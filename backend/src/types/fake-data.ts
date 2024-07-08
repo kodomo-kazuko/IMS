@@ -248,10 +248,7 @@ export function fakeMentorComplete() {
 }
 
 export async function createStudents(numberOfStudents: number) {
-  const studentsData = [];
-
   const majorData = fakeMajorComplete();
-
   await prisma.major.create({
     data: {
       ...majorData,
@@ -260,10 +257,8 @@ export async function createStudents(numberOfStudents: number) {
 
   for (let i = 0; i < numberOfStudents; i++) {
     const studentData = await fakeStudent();
-    studentsData.push(studentData);
+    await prisma.student.create({
+      data: studentData,
+    });
   }
-
-  await prisma.student.createMany({
-    data: studentsData,
-  });
 }

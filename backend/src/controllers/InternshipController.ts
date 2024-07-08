@@ -1,6 +1,8 @@
 import { PrismaClient, InternshipType } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
+import getLastId from "../utils/lastId";
+import { limit } from "../utils/const";
 
 const prisma = new PrismaClient();
 
@@ -27,14 +29,54 @@ export default class InternshipController {
     }
   }
 
-  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const internships = await prisma.internship.findMany();
+      const internships = await prisma.internship.findMany({
+        take: limit,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
       if (internships.length === 0) {
         res.status(200).json({ success: true, message: "No internships found" });
         return;
       }
-      res.status(200).json({ success: true, message: "Internships retrieved successfully", data: internships });
+      const lastId = getLastId(internships);
+      res.status(200).json({
+        success: true,
+        message: "Internships retrieved successfully",
+        data: {
+          lastId,
+          list: internships,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const internships = await prisma.internship.findMany({
+        take: limit,
+        skip: 1,
+        cursor: {
+          id: Number(id),
+        },
+      });
+      if (internships.length === 0) {
+        res.status(200).json({ success: true, message: "No internships found" });
+        return;
+      }
+      const lastId = getLastId(internships);
+      res.status(200).json({
+        success: true,
+        message: "Internships retrieved successfully",
+        data: {
+          lastId,
+          list: internships,
+        },
+      });
     } catch (error) {
       next(error);
     }
@@ -49,15 +91,18 @@ export default class InternshipController {
   }
   public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const internships = await prisma.internship.findMany({
-        where: {
-          companyId: Number(req.cookies.id),
-        },
-      });
-      if (internships.length === 0) {
-        return res.status(200).json({ success: true, message: "no internships yet" });
-      }
-      return res.status(200).json({ success: true, message: "internships retrieved", data: internships });
+      const companyInternships = await prisma.company
+        .findUniqueOrThrow({
+          where: {
+            id: req.cookies.id,
+          },
+        })
+        .internships({
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+      return res.status(200).json({ success: true, message: "internships retrieved", data: { list: companyInternships } });
     } catch (error) {
       next(error);
     }

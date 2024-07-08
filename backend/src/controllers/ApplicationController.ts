@@ -1,6 +1,8 @@
-import { PrismaClient, ApplicationStatus } from "@prisma/client";
+import { PrismaClient, ApplicationStatus, Application } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
+import { limit } from "../utils/const";
+import getLastId from "../utils/lastId";
 const prisma = new PrismaClient();
 
 export default class ApplicationController {
@@ -45,27 +47,52 @@ export default class ApplicationController {
 
   public async student(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const student = await prisma.student.findUnique({
-        where: { id: req.cookies.id },
-      });
-      if (!student) {
-        return res.status(404).json({ success: false, message: "Student not found." });
-      }
+      const studentApplications = await prisma.student
+        .findUnique({
+          where: {
+            id: req.cookies.id,
+          },
+        })
+        .applications({
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
 
-      const applications = await prisma.application.findMany({
-        where: { studentId: student.id },
-      });
-
-      if (!applications || applications.length === 0) {
+      if (!studentApplications || studentApplications.length === 0) {
         return res.status(200).json({ success: true, message: "No application from this student yet." });
       }
 
-      return res.status(200).json({ success: true, message: "successfully retirved applications", data: applications });
+      return res.status(200).json({ success: true, message: "successfully retirved applications", data: studentApplications });
     } catch (error) {
       next(error);
     }
   }
-  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const applications = await prisma.application.findMany({
+        take: limit,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      if (applications.length === 0) {
+        return res.status(200).json({ success: true, message: "no applications yet" });
+      }
+      const lastId = getLastId(applications);
+      return res.status(200).json({
+        success: true,
+        message: "successfully retirved applications",
+        data: {
+          lastId,
+          list: applications,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const applications = await prisma.application.findMany();
       if (applications.length === 0) {
@@ -79,21 +106,22 @@ export default class ApplicationController {
   public async internship(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
-      const company = await prisma.internship.findUniqueOrThrow({
-        where: { companyId: Number(req.cookies.id), id: Number(id) },
-      });
-      if (!company) {
-        return res.status(404).json({ success: false, message: "access denied" });
+      const internshipApplications = await prisma.internship
+        .findUnique({
+          where: {
+            id: Number(id),
+            companyId: req.cookies.id,
+          },
+        })
+        .applications({
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+      if (!internshipApplications) {
+        return res.status(400).json({ success: false, message: "problem retrieving applications" });
       }
-      const applications = await prisma.application.findMany({
-        where: {
-          internshipId: Number(id),
-        },
-      });
-      if (applications.length === 0) {
-        return res.status(200).json({ success: true, message: "no applications yet" });
-      }
-      return res.status(200).json({ success: true, message: "retrieved applications", data: applications });
+      return res.status(200).json({ success: true, message: "applications retrieved", data: internshipApplications });
     } catch (error) {
       next(error);
     }

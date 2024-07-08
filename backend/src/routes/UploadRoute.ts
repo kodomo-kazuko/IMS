@@ -6,7 +6,7 @@ const uploadController = new UploadController();
 
 const router = Router();
 
-router.use("/", uploadController.single);
+router.use("/", accessMiddleware("all"), uploadController.single);
 
 export default router;
 

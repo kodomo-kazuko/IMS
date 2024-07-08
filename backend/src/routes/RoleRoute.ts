@@ -6,14 +6,14 @@ const roleController = new RoleController();
 
 const router = Router();
 
-router.get("/all", accessMiddleware(["employee"]), roleController.all);
+router.get("/all/base", accessMiddleware(["employee"]), roleController.base);
+
+router.get("/all/:id", accessMiddleware(["employee"]), roleController.cursor);
 
 router.post("/create", accessMiddleware(["employee"]), roleController.create);
 
 router.patch("/edit");
 
 router.delete("/delete");
-
-router.get("/page/:id", accessMiddleware(["employee"]), roleController.page);
 
 export default router;

@@ -1,23 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
+import { limit } from "../utils/const";
+import getLastId from "../utils/lastId";
 
 const prisma = new PrismaClient();
 
 export default class RoleController {
-  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
-    try {
-      const roles = await prisma.role.findMany();
-      return res.status(200).json({
-        success: true,
-        message: "Roles retrieved successfully",
-        data: roles,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { name } = req.body;
@@ -34,19 +23,49 @@ export default class RoleController {
       next(error);
     }
   }
-  public async page(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const roles = await prisma.role.findMany({
+        take: limit,
+        orderBy: {
+          id: "desc",
+        },
+      });
+      const lastId = getLastId(roles);
+      return res.status(200).json({
+        success: true,
+        message: "stuff",
+        data: {
+          lastId,
+          list: roles,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
       const roles = await prisma.role.findMany({
-        take: 10,
+        take: limit,
+        skip: 1,
         cursor: {
           id: Number(id),
         },
         orderBy: {
-          id: "asc",
+          id: "desc",
         },
       });
-      return res.status(200).json({ success: true, message: "stuff", data: roles });
+      const lastId = getLastId(roles);
+      return res.status(200).json({
+        success: true,
+        message: "stuff",
+        data: {
+          lastId,
+          list: roles,
+        },
+      });
     } catch (error) {
       next(error);
     }

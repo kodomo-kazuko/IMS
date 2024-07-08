@@ -3,9 +3,8 @@ import path from "path";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { allowedFileTypes } from "../types/types";
-import { v4 as uuidv4 } from "uuid"; // Import UUID library
-
-const limitSize: number = 5000000;
+import { v4 as uuidv4 } from "uuid";
+import { limitSize } from "../utils/const";
 
 const uploadFilter: Record<string, string[]> = {
   images: [".jpg", ".jpeg", ".png"],

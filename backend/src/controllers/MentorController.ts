@@ -87,10 +87,18 @@ export default class MentorController {
 
   public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const mentors = await prisma.mentor.findMany({
-        where: { companyId: req.cookies.id },
-      });
-      if (mentors.length === 0) {
+      const mentors = await prisma.company
+        .findUnique({
+          where: {
+            id: req.cookies.id,
+          },
+        })
+        .mentors({
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+      if (!mentors) {
         res.status(200).json({ success: true, message: "No mentors found" });
         return;
       }
