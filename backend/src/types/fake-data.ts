@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import bcrypt from "bcrypt";
 import { prisma } from "../utils/const";
 
-export async function password() {
+async function password() {
   const password = String(process.env.PASSWORD);
   const hashedPassword = await bcrypt.hash(password, 10);
   return hashedPassword;

@@ -86,4 +86,3 @@ export default class MajorController {
 }
 
 const majorController = new MajorController();
-export { majorController };

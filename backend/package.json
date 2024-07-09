@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node ./src/server.ts",
     "dev": "nodemon --exec ts-node ./src/server.ts",
-    "swagger": "ts-node ./src/swagger.ts"
+    "swag": "ts-node ./src/swagger.ts",
+    "clean": "ts-prune"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
@@ -45,6 +46,7 @@
     "prisma-generator-fake-data": "^0.14.2",
     "swagger-autogen": "^2.23.7",
     "ts-node": "^10.9.2",
+    "ts-prune": "^0.10.3",
     "typescript": "^5.4.5"
   }
 }

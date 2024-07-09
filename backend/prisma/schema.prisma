@@ -19,7 +19,7 @@ model Student {
   name         String
   email        String              @unique
   password     String
-  phone        String              @unique
+  phone        String              @unique @db.VarChar(8)
   address      String
   image        String?
   document     String?
@@ -38,7 +38,7 @@ model Company {
   name        String
   email       String       @unique
   password    String
-  phone       String       @unique
+  phone       String       @unique @db.VarChar(8)
   weburl      String
   address     String
   isApproved  Boolean      @default(false)
@@ -81,13 +81,13 @@ model Employee {
   password  String
   image     String?
   email     String   @unique
-  phone     String   @unique
+  phone     String   @unique @db.VarChar(8)
   roleId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role      Role     @relation(fields: [roleId], references: [id])
 
-  @@index([id])
+  @@index([id, roleId])
 }
 
 model Post {
@@ -156,7 +156,7 @@ model Mentor {
   position    String
   password    String
   email       String              @unique
-  phone       String              @unique
+  phone       String              @unique @db.VarChar(8)
   companyId   Int
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @default(now()) @updatedAt

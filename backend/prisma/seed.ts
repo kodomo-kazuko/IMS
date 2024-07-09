@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { createCompanies, createStudents, fakeMajor, fakeMajorComplete, fakeStudent } from "../src/types/fake-data";
+import { createCompanies, createStudents } from "../src/types/fake-data";
 
 const prisma = new PrismaClient();
 
