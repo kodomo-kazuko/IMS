@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
 import { jwtSecretKey, prisma } from "../utils/const";
-import notFound from "../middleware/not-found";
+import notFound from "../utils/not-found";
 
 export default class EmployeeController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -38,9 +38,13 @@ export default class EmployeeController {
       const isPasswordValid = await bcrypt.compare(password, employee.password);
       notFound(isPasswordValid, "password");
 
-      const token = jwt.sign({ id: employee.id, account: "employee" }, jwtSecretKey, {
-        expiresIn: "7d",
-      });
+      const token = jwt.sign(
+        { id: employee.id, account: "employee", access: employee.roleId },
+        jwtSecretKey,
+        {
+          expiresIn: "7d",
+        }
+      );
       res.status(200).json({ success: true, message: "Authentication successful", data: token });
     } catch (error) {
       next(error);

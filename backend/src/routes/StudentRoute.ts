@@ -25,7 +25,7 @@ router.get(
 
 router.post(
   "/signup",
-  accessMiddleware(["employee"]),
+  accessMiddleware(["employee"], 1),
   studentController.signup /** #swagger.tags = ['Student'] #swagger.security = [{"bearerAuth": []}] */
 );
 

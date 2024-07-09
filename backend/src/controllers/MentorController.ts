@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { jwtSecretKey, limit, prisma } from "../utils/const";
 import getLastId from "../utils/lastId";
-import notFound from "../middleware/not-found";
+import notFound from "../utils/not-found";
 
 export default class MentorController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {

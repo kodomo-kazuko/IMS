@@ -24,13 +24,13 @@ router.get(
 
 router.post(
   "/signup",
-  accessMiddleware(["employee"]),
+  accessMiddleware(["employee"], 1),
   companyController.signup /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 router.patch(
   "/approve",
-  accessMiddleware(["employee"]),
+  accessMiddleware(["employee"], 1),
   companyController.approve /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */
 );
 

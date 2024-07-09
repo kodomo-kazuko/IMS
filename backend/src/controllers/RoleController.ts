@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-import { limit } from "../utils/const";
-import getLastId from "../utils/lastId";
 import { prisma } from "../utils/const";
 
 export default class RoleController {

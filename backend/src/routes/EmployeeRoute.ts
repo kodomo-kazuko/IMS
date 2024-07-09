@@ -12,7 +12,7 @@ router.post(
 
 router.post(
   "/signup",
-  accessMiddleware(["employee"]),
+  accessMiddleware(["employee"], 0),
   employeeController.signup /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */
 );
 

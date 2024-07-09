@@ -2,7 +2,7 @@ import { InternshipStatus } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { prisma } from "../utils/const";
-import notFound from "../middleware/not-found";
+import notFound from "../utils/not-found";
 
 export default class StudentInternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {

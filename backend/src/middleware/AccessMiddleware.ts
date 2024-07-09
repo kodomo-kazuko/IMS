@@ -9,6 +9,7 @@ interface DecodedToken {
   id: number;
   iat: number;
   exp: number;
+  access?: number;
 }
 
 const findUserMethods = {
@@ -18,7 +19,10 @@ const findUserMethods = {
   mentor: (id: number) => prisma.mentor.findUnique({ where: { id } }),
 };
 
-export default function accessMiddleware(requiredAccounts: AccountType[] | "all") {
+export default function accessMiddleware(
+  requiredAccounts: AccountType[] | "all",
+  requiredAccessLevel?: number
+) {
   if (
     requiredAccounts !== "all" &&
     (!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)
@@ -28,9 +32,7 @@ export default function accessMiddleware(requiredAccounts: AccountType[] | "all"
 
   return async (req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
     try {
-      /* #swagger.security = [{"bearerAuth": []}] #swagger.security = [{"bearerAuth": []}] */
       const token = req.headers.authorization?.split(" ")[1];
-
       if (!token) {
         return res.status(401).json({
           success: false,
@@ -48,35 +50,22 @@ export default function accessMiddleware(requiredAccounts: AccountType[] | "all"
 
       const decoded: DecodedToken = jwt.verify(token, jwtSecret) as DecodedToken;
 
-      if (requiredAccounts === "all") {
-        next();
-        return;
-      }
-
-      if (!requiredAccounts.includes(decoded.account)) {
+      if (requiredAccounts !== "all" && !requiredAccounts.includes(decoded.account)) {
         return res.status(403).json({
           success: false,
-          message: "Access denied",
+          message: "Access denied: Invalid account type",
         });
       }
 
-      // uncomment for additional check
-
-      // const findUserMethod = findUserMethods[decoded.account];
-      // if (!findUserMethod) {
-      //   return res.status(400).json({
-      //     success: false,
-      //     message: "Invalid account type",
-      //   } );
-      // }
-
-      // const user = await findUserMethod(decoded.id);
-      // if (!user) {
-      //   return res.status(404).json({
-      //     success: false,
-      //     message: `${decoded.account} not found`,
-      //   } );
-      // }
+      if (requiredAccessLevel !== undefined) {
+        const userAccessLevel = decoded.access ?? 10;
+        if (userAccessLevel > requiredAccessLevel) {
+          return res.status(403).json({
+            success: false,
+            message: "Access denied: Insufficient access level",
+          });
+        }
+      }
 
       req.cookies = decoded;
       next();

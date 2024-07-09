@@ -4,7 +4,7 @@ import { ResponseJSON } from "../types/response";
 import getLastId from "../utils/lastId";
 import { limit } from "../utils/const";
 import { prisma } from "../utils/const";
-import notFound from "../middleware/not-found";
+import notFound from "../utils/not-found";
 
 export default class InternshipController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {

@@ -5,7 +5,7 @@ import { ResponseJSON } from "../types/response";
 import { jwtSecretKey, limit } from "../utils/const";
 import getLastId from "../utils/lastId";
 import { prisma } from "../utils/const";
-import notFound from "../middleware/not-found";
+import notFound from "../utils/not-found";
 
 export default class CompanyController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
