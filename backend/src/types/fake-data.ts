@@ -1,7 +1,8 @@
 import { ApplicationStatus, InternshipType, InternshipStatus, PrismaClient } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcrypt";
-import { prisma } from "../utils/const";
+
+export const prisma = new PrismaClient();
 
 async function password() {
   const password = String(process.env.PASSWORD);
@@ -15,7 +16,7 @@ export async function fakeStudent() {
     name: faker.person.fullName(),
     email: faker.internet.email(),
     password: hashedPassword,
-    phone: faker.lorem.words(5),
+    phone: faker.lorem.words(8),
     address: faker.lorem.words(5),
     majorId: faker.number.int({ min: 1, max: 1 }),
   };

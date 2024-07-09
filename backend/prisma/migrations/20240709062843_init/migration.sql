@@ -173,16 +173,25 @@ CREATE UNIQUE INDEX "Application_studentId_internshipId_key" ON "Application"("s
 CREATE UNIQUE INDEX "Major_name_key" ON "Major"("name");
 
 -- CreateIndex
+CREATE INDEX "Major_id_idx" ON "Major"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Employee_phone_key" ON "Employee"("phone");
 
 -- CreateIndex
+CREATE INDEX "Employee_id_roleId_idx" ON "Employee"("id", "roleId");
+
+-- CreateIndex
 CREATE INDEX "Post_companyId_idx" ON "Post"("companyId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Role_name_key" ON "Role"("name");
+
+-- CreateIndex
+CREATE INDEX "Role_id_idx" ON "Role"("id");
 
 -- CreateIndex
 CREATE INDEX "Internship_companyId_idx" ON "Internship"("companyId");
