@@ -28,7 +28,9 @@ export default class ApplicationController {
       });
 
       if (application) {
-        return res.status(409).json({ success: false, message: "You have already applied to this internship." });
+        return res
+          .status(409)
+          .json({ success: false, message: "You have already applied to this internship." });
       }
 
       await prisma.application.create({
@@ -60,10 +62,18 @@ export default class ApplicationController {
         });
 
       if (!studentApplications || studentApplications.length === 0) {
-        return res.status(200).json({ success: true, message: "No application from this student yet." });
+        return res
+          .status(200)
+          .json({ success: true, message: "No application from this student yet." });
       }
 
-      return res.status(200).json({ success: true, message: "successfully retirved applications", data: studentApplications });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "successfully retirved applications",
+          data: studentApplications,
+        });
     } catch (error) {
       next(error);
     }
@@ -145,7 +155,9 @@ export default class ApplicationController {
       if (!internshipApplications) {
         return res.status(400).json({ success: false, message: "problem retrieving applications" });
       }
-      return res.status(200).json({ success: true, message: "applications retrieved", data: internshipApplications });
+      return res
+        .status(200)
+        .json({ success: true, message: "applications retrieved", data: internshipApplications });
     } catch (error) {
       next(error);
     }
@@ -182,7 +194,13 @@ export default class ApplicationController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const applicationStatus = Object.values(ApplicationStatus);
-      return res.status(200).json({ success: true, message: "retrieved application status types", data: applicationStatus });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "retrieved application status types",
+          data: applicationStatus,
+        });
     } catch (error) {
       next(error);
     }

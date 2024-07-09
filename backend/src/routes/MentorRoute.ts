@@ -5,16 +5,45 @@ import MentorController from "../controllers/MentorController";
 const router = Router();
 const mentorController = new MentorController();
 
-router.post("/signin", mentorController.signin /** #swagger.tags = ['Mentor'] */);
+router.post(
+  "/signin",
+  mentorController.signin /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
+);
 
-router.post("/create", accessMiddleware(["company"]), mentorController.create /** #swagger.tags = ['Mentor'] */);
+router.post(
+  "/create",
+  accessMiddleware(["company"]),
+  mentorController.create /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
+);
 
-router.get("/company", accessMiddleware(["company"]), mentorController.company /** #swagger.tags = ['Mentor'] */);
+router.get(
+  "/company",
+  accessMiddleware(["company"]),
+  mentorController.company /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
+);
 
-router.get("/all", accessMiddleware(["employee"]), mentorController.all /** #swagger.tags = ['Mentor'] */);
+router.get(
+  "/all/base",
+  accessMiddleware(["employee"]),
+  mentorController.base /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
+);
 
-router.get("/company/:id", accessMiddleware(["company"]), mentorController.company /** #swagger.tags = ['Mentor'] */);
+router.get(
+  "/all/:id",
+  accessMiddleware(["employee"]),
+  mentorController.cursor /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
+);
 
-router.get("/:id", accessMiddleware(["employee"]), mentorController.single /** #swagger.tags = ['Mentor'] */);
+router.get(
+  "/company/:id",
+  accessMiddleware(["company"]),
+  mentorController.company /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
+);
+
+router.get(
+  "/:id",
+  accessMiddleware(["employee"]),
+  mentorController.single /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
+);
 
 export default router;

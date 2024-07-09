@@ -46,7 +46,9 @@ export default class EmployeeController {
       if (!jwtSecret) {
         throw new Error("JWT_SECRET is not defined");
       }
-      const token = jwt.sign({ id: employee.id, account: "employee" }, jwtSecret, { expiresIn: "7d" });
+      const token = jwt.sign({ id: employee.id, account: "employee" }, jwtSecret, {
+        expiresIn: "7d",
+      });
       res.status(200).json({ success: true, message: "Authentication successful", data: token });
     } catch (error) {
       next(error);
@@ -56,7 +58,9 @@ export default class EmployeeController {
   public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const employees = await prisma.employee.findMany();
-      res.status(200).json({ success: true, message: "Employees retrieved successfully", data: employees });
+      res
+        .status(200)
+        .json({ success: true, message: "Employees retrieved successfully", data: employees });
     } catch (error) {
       next(error);
     }
@@ -77,7 +81,9 @@ export default class EmployeeController {
       if (!employee) {
         return res.status(404).json({ success: false, message: "employee account not found" });
       }
-      return res.status(200).json({ success: true, message: "employee account retrieved", data: employee });
+      return res
+        .status(200)
+        .json({ success: true, message: "employee account retrieved", data: employee });
     } catch (error) {
       next(error);
     }

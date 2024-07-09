@@ -6,7 +6,11 @@ const uploadController = new UploadController();
 
 const router = Router();
 
-router.use("/", accessMiddleware("all"), uploadController.single /** #swagger.tags = ['Upload'] */);
+router.use(
+  "/",
+  accessMiddleware("all"),
+  uploadController.single /** #swagger.tags = ['Upload'] #swagger.security = [{"bearerAuth": []}] */
+);
 
 export default router;
 

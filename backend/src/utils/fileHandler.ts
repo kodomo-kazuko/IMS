@@ -6,7 +6,10 @@ const FILE_PATH = process.env.FILE_PATH;
 
 const rootUploadsPath = path.join(__dirname, `../${FILE_PATH}`);
 
-export const saveFileToDisk = async (file: Express.Multer.File, allowedTypes: allowedFileTypes): Promise<void> => {
+export const saveFileToDisk = async (
+  file: Express.Multer.File,
+  allowedTypes: allowedFileTypes
+): Promise<void> => {
   try {
     const { filename } = file;
     const subfolder = allowedTypes;

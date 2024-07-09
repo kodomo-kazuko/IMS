@@ -83,7 +83,9 @@ export default class InternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const internshipTypes = Object.values(InternshipType);
-      return res.status(200).json({ success: true, message: "retrieved internship types", data: internshipTypes });
+      return res
+        .status(200)
+        .json({ success: true, message: "retrieved internship types", data: internshipTypes });
     } catch (error) {
       next(error);
     }
@@ -101,7 +103,13 @@ export default class InternshipController {
             createdAt: "desc",
           },
         });
-      return res.status(200).json({ success: true, message: "internships retrieved", data: { list: companyInternships } });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "internships retrieved",
+          data: { list: companyInternships },
+        });
     } catch (error) {
       next(error);
     }

@@ -22,7 +22,11 @@ const upload = (allowedTypes: allowedFileTypes) => {
     fileFilter: (req, file, cb) => {
       const extension = path.extname(file.originalname).toLowerCase();
       if (!uploadFilter[allowedTypes].includes(extension)) {
-        return cb(new Error(`Invalid file type. Supported formats: ${uploadFilter[allowedTypes].join(", ")}.`));
+        return cb(
+          new Error(
+            `Invalid file type. Supported formats: ${uploadFilter[allowedTypes].join(", ")}.`
+          )
+        );
       }
       cb(null, true);
     },

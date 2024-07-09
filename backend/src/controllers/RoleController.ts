@@ -21,49 +21,43 @@ export default class RoleController {
       next(error);
     }
   }
-  public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const roles = await prisma.role.findMany({
-        take: limit,
-        orderBy: {
-          id: "desc",
-        },
-      });
-      const lastId = getLastId(roles);
+      const roles = await prisma.role.findMany();
       return res.status(200).json({
         success: true,
         message: "stuff",
-        data: {
-          lastId,
-          list: roles,
-        },
+        data: roles,
       });
     } catch (error) {
       next(error);
     }
   }
-  public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async edit(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
-      const roles = await prisma.role.findMany({
-        take: limit,
-        skip: 1,
-        cursor: {
+      const { id, name } = req.body;
+      await prisma.role.update({
+        where: {
           id: Number(id),
         },
-        orderBy: {
-          id: "desc",
-        },
-      });
-      const lastId = getLastId(roles);
-      return res.status(200).json({
-        success: true,
-        message: "stuff",
         data: {
-          lastId,
-          list: roles,
+          name,
         },
       });
+      return res.status(200).json({ success: true, message: "role name updated" });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      await prisma.role.delete({
+        where: {
+          id: Number(id),
+        },
+      });
+      return res.status(200).json({ success: true, message: "role deleted successfully" });
     } catch (error) {
       next(error);
     }

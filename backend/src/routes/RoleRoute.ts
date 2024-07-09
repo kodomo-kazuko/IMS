@@ -6,14 +6,28 @@ const roleController = new RoleController();
 
 const router = Router();
 
-router.get("/all/base", accessMiddleware(["employee"]), roleController.base /** #swagger.tags = ['Role'] */);
+router.get(
+  "/all",
+  accessMiddleware(["employee"]),
+  roleController.all /** #swagger.tags = ['Role'] #swagger.security = [{"bearerAuth": []}] */
+);
 
-router.get("/all/:id", accessMiddleware(["employee"]), roleController.cursor /** #swagger.tags = ['Role'] */);
+router.post(
+  "/create",
+  accessMiddleware(["employee"]),
+  roleController.create /** #swagger.tags = ['Role'] #swagger.security = [{"bearerAuth": []}] */
+);
 
-router.post("/create", accessMiddleware(["employee"]), roleController.create /** #swagger.tags = ['Role'] */);
+router.patch(
+  "/edit",
+  accessMiddleware(["employee"]),
+  roleController.edit /** #swagger.tags = ['Role'] #swagger.security = [{"bearerAuth": []}] */
+);
 
-router.patch("/edit");
-
-router.delete("/delete");
+router.delete(
+  "/delete/:id",
+  accessMiddleware(["employee"]),
+  roleController.delete /** #swagger.tags = ['Role'] #swagger.security = [{"bearerAuth": []}] */
+);
 
 export default router;

@@ -7,7 +7,13 @@ export default class StudentInternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const internshipStatus = Object.values(InternshipStatus);
-      return res.status(200).json({ success: true, message: "retrieved internship status types", data: internshipStatus });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "retrieved internship status types",
+          data: internshipStatus,
+        });
     } catch (error) {
       next(error);
     }
@@ -24,7 +30,9 @@ export default class StudentInternshipController {
         },
       });
       if (existingInternship) {
-        return res.status(300).json({ success: false, message: "You already have an active internship." });
+        return res
+          .status(300)
+          .json({ success: false, message: "You already have an active internship." });
       }
 
       // Find the application by ID
@@ -79,7 +87,9 @@ export default class StudentInternshipController {
         return res.status(404).json({ success: false, message: "mentor does not exist" });
       }
       if (mentor.companyId !== req.cookies.id) {
-        return res.status(400).json({ success: false, message: "mentor does not belong to this company" });
+        return res
+          .status(400)
+          .json({ success: false, message: "mentor does not belong to this company" });
       }
       await prisma.studentInternship.update({
         where: {
@@ -110,7 +120,13 @@ export default class StudentInternshipController {
       if (!studentInternships) {
         return res.status(400).json({ success: true, message: "no active internships" });
       }
-      return res.status(200).json({ success: true, message: "company active internships retrieved ", data: studentInternships });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "company active internships retrieved ",
+          data: studentInternships,
+        });
     } catch (error) {
       next(error);
     }
@@ -132,7 +148,13 @@ export default class StudentInternshipController {
       if (!studentInternships) {
         return res.status(404).json({ success: false, message: "no internships found" });
       }
-      return res.status(200).json({ success: true, message: "student internships retrieved", data: studentInternships });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "student internships retrieved",
+          data: studentInternships,
+        });
     } catch (error) {
       next(error);
     }
@@ -155,7 +177,9 @@ export default class StudentInternshipController {
             student: true,
           },
         });
-      return res.status(200).json({ success: true, message: " students retrieved", data: internships });
+      return res
+        .status(200)
+        .json({ success: true, message: " students retrieved", data: internships });
     } catch (error) {
       next(error);
     }

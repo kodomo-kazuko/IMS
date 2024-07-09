@@ -47,8 +47,12 @@ export default class CompanyController {
       if (!jwtSecret) {
         throw new Error("JWT_SECRET is not defined");
       }
-      const token = jwt.sign({ id: company.id, account: "company" }, jwtSecret, { expiresIn: "7d" });
-      return res.status(200).json({ success: true, message: "Authentication successful", data: token });
+      const token = jwt.sign({ id: company.id, account: "company" }, jwtSecret, {
+        expiresIn: "7d",
+      });
+      return res
+        .status(200)
+        .json({ success: true, message: "Authentication successful", data: token });
     } catch (error) {
       next(error);
     }
@@ -116,7 +120,9 @@ export default class CompanyController {
         where: { id: companyId },
         data: { isApproved: true },
       });
-      return res.status(200).json({ success: true, message: "Company approval updated successfully" });
+      return res
+        .status(200)
+        .json({ success: true, message: "Company approval updated successfully" });
     } catch (error) {
       next(error);
     }

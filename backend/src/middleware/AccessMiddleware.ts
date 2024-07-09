@@ -19,12 +19,16 @@ const findUserMethods = {
 };
 
 export default function accessMiddleware(requiredAccounts: AccountType[] | "all") {
-  if (requiredAccounts !== "all" && (!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)) {
+  if (
+    requiredAccounts !== "all" &&
+    (!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)
+  ) {
     throw new Error("requiredAccounts must be 'all' or a non-empty array of valid account types");
   }
 
   return async (req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
     try {
+      /* #swagger.security = [{"bearerAuth": []}] #swagger.security = [{"bearerAuth": []}] */
       const token = req.headers.authorization?.split(" ")[1];
 
       if (!token) {

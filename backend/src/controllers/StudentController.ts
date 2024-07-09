@@ -51,7 +51,9 @@ export default class StudentController {
       if (!jwtSecret) {
         throw new Error("JWT_SECRET is not defined");
       }
-      const token = jwt.sign({ id: student.id, account: "student" }, jwtSecret, { expiresIn: "7d" });
+      const token = jwt.sign({ id: student.id, account: "student" }, jwtSecret, {
+        expiresIn: "7d",
+      });
       res.status(200).json({ success: true, message: "Authentication successful", data: token });
     } catch (error) {
       next(error);
@@ -180,7 +182,9 @@ export default class StudentController {
         },
       });
       const updatedStudent = updateURL(student, ["image", "document"]);
-      return res.status(200).json({ success: true, message: "retrieved student", data: updatedStudent });
+      return res
+        .status(200)
+        .json({ success: true, message: "retrieved student", data: updatedStudent });
     } catch (error) {
       next(error);
     }

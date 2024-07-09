@@ -6,7 +6,12 @@ interface Error {
   message?: string;
 }
 
-const ErrorMiddleware = (err: Error, req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
+const ErrorMiddleware = (
+  err: Error,
+  req: Request,
+  res: Response<ResponseJSON>,
+  next: NextFunction
+) => {
   const status = err.status || 500;
   const message = err.message || "Something went wrong";
 

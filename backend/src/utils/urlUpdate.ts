@@ -17,7 +17,10 @@ function getAllowedType(fieldValue: string): string {
   return "others"; // Default folder if no match is found
 }
 
-export function updateURL<T extends Record<string, any>>(itemOrItems: T | T[], fieldNames: (keyof T)[]): T | T[] {
+export function updateURL<T extends Record<string, any>>(
+  itemOrItems: T | T[],
+  fieldNames: (keyof T)[]
+): T | T[] {
   const updateSingleItem = (item: T): T => {
     const updatedFields = fieldNames.reduce((acc, fieldName) => {
       const fieldValue = item[fieldName] as unknown as string;
@@ -26,7 +29,8 @@ export function updateURL<T extends Record<string, any>>(itemOrItems: T | T[], f
         if (!subfolder) {
           throw new Error(`Unrecognized file extension: ${fieldValue}`);
         }
-        acc[fieldName] = `http://${SERVER_IP}:${SERVER_PORT}/${FILE_PATH}/${subfolder}/${fieldValue}` as T[keyof T];
+        acc[fieldName] =
+          `http://${SERVER_IP}:${SERVER_PORT}/${FILE_PATH}/${subfolder}/${fieldValue}` as T[keyof T];
       }
       return acc;
     }, {} as Partial<T>);

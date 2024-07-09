@@ -23,7 +23,10 @@ export default class UploadController {
 
         const stream = fs.createReadStream(filePath);
 
-        res.setHeader("Content-Type", express.static.mime.lookup(filePath) || "application/octet-stream");
+        res.setHeader(
+          "Content-Type",
+          express.static.mime.lookup(filePath) || "application/octet-stream"
+        );
         res.setHeader("Content-Length", stats.size);
 
         stream.pipe(res);

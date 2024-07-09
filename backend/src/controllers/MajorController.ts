@@ -32,7 +32,9 @@ export default class MajorController {
       const cachedData = await redisClient.get("majors");
       if (cachedData) {
         const majors: Major[] = JSON.parse(cachedData);
-        res.status(200).json({ success: true, message: "Majors retrieved from cache", data: majors });
+        res
+          .status(200)
+          .json({ success: true, message: "Majors retrieved from cache", data: majors });
         return;
       }
       const majors = await prisma.major.findMany();
@@ -41,7 +43,9 @@ export default class MajorController {
         return;
       }
       await redisClient.set("majors", JSON.stringify(majors));
-      res.status(200).json({ success: true, message: "Majors retrieved successfully", data: majors });
+      res
+        .status(200)
+        .json({ success: true, message: "Majors retrieved successfully", data: majors });
     } catch (error) {
       next(error);
     }

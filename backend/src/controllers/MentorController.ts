@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-import { prisma } from "../utils/const";
+import { limit, prisma } from "../utils/const";
+import getLastId from "../utils/lastId";
 
 export default class MentorController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -35,7 +36,9 @@ export default class MentorController {
         res.status(404).json({ success: false, message: "Mentor not found" });
         return;
       }
-      res.status(200).json({ success: true, message: "Mentor retrieved successfully", data: mentor });
+      res
+        .status(200)
+        .json({ success: true, message: "Mentor retrieved successfully", data: mentor });
     } catch (error) {
       next(error);
     }
@@ -51,7 +54,9 @@ export default class MentorController {
         res.status(404).json({ success: false, message: "Mentor not found" });
         return;
       }
-      res.status(200).json({ success: true, message: "Mentor retrieved successfully", data: mentor });
+      res
+        .status(200)
+        .json({ success: true, message: "Mentor retrieved successfully", data: mentor });
     } catch (error) {
       next(error);
     }
@@ -103,20 +108,63 @@ export default class MentorController {
         res.status(200).json({ success: true, message: "No mentors found" });
         return;
       }
-      res.status(200).json({ success: true, message: "Mentors retrieved successfully", data: mentors });
+      res
+        .status(200)
+        .json({ success: true, message: "Mentors retrieved successfully", data: mentors });
     } catch (error) {
       next(error);
     }
   }
 
-  public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const mentors = await prisma.mentor.findMany();
+      const mentors = await prisma.mentor.findMany({
+        take: limit,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
       if (mentors.length === 0) {
         res.status(200).json({ success: true, message: "No mentors found" });
         return;
       }
-      res.status(200).json({ success: true, message: "Mentors retrieved successfully", data: mentors });
+      const lastId = getLastId(mentors);
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: "Mentors retrieved successfully",
+          data: { lastId, list: mentors },
+        });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const mentors = await prisma.mentor.findMany({
+        take: limit,
+        skip: 1,
+        orderBy: {
+          createdAt: "desc",
+        },
+        cursor: {
+          id: Number(id),
+        },
+      });
+      if (mentors.length === 0) {
+        res.status(200).json({ success: true, message: "No mentors found" });
+        return;
+      }
+      const lastId = getLastId(mentors);
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: "Mentors retrieved successfully",
+          data: { lastId, list: mentors },
+        });
     } catch (error) {
       next(error);
     }
