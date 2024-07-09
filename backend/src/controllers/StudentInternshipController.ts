@@ -2,18 +2,17 @@ import { InternshipStatus } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { prisma } from "../utils/const";
+import notFound from "../middleware/not-found";
 
 export default class StudentInternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const internshipStatus = Object.values(InternshipStatus);
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "retrieved internship status types",
-          data: internshipStatus,
-        });
+      return res.status(200).json({
+        success: true,
+        message: "retrieved internship status types",
+        data: internshipStatus,
+      });
     } catch (error) {
       next(error);
     }
@@ -22,14 +21,13 @@ export default class StudentInternshipController {
     try {
       const { id } = req.body;
 
-      // Check if the student already has an active internship
-      const existingInternship = await prisma.studentInternship.findFirst({
+      const startedInternship = await prisma.studentInternship.findFirst({
         where: {
           studentId: Number(req.cookies.id),
           status: "STARTED",
         },
       });
-      if (existingInternship) {
+      if (startedInternship) {
         return res
           .status(300)
           .json({ success: false, message: "You already have an active internship." });
@@ -42,9 +40,7 @@ export default class StudentInternshipController {
           studentId: req.cookies.id,
         },
       });
-      if (!application) {
-        return res.status(404).json({ success: false, message: "Application not found." });
-      }
+      notFound(application, "application");
 
       // Check if the application is approved
       if (application.status !== "APPROVED") {
@@ -75,17 +71,12 @@ export default class StudentInternshipController {
           id: Number(id),
         },
       });
-      if (!studentinertnship) {
-        return res.status(404).json({ success: false, message: "student internship not found" });
-      }
+      notFound(studentinertnship, "student inertnship");
       const mentor = await prisma.mentor.findUniqueOrThrow({
         where: {
           id: Number(mentorId),
         },
       });
-      if (!mentor) {
-        return res.status(404).json({ success: false, message: "mentor does not exist" });
-      }
       if (mentor.companyId !== req.cookies.id) {
         return res
           .status(400)
@@ -117,16 +108,12 @@ export default class StudentInternshipController {
           },
         },
       });
-      if (!studentInternships) {
-        return res.status(400).json({ success: true, message: "no active internships" });
-      }
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "company active internships retrieved ",
-          data: studentInternships,
-        });
+      notFound(studentInternships, "student Internships");
+      return res.status(200).json({
+        success: true,
+        message: "company active internships retrieved ",
+        data: studentInternships,
+      });
     } catch (error) {
       next(error);
     }
@@ -145,16 +132,12 @@ export default class StudentInternshipController {
             createdAt: "desc",
           },
         });
-      if (!studentInternships) {
-        return res.status(404).json({ success: false, message: "no internships found" });
-      }
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "student internships retrieved",
-          data: studentInternships,
-        });
+      notFound(studentInternships, "student Internships");
+      return res.status(200).json({
+        success: true,
+        message: "student internships retrieved",
+        data: studentInternships,
+      });
     } catch (error) {
       next(error);
     }

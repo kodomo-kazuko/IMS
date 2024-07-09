@@ -38,4 +38,12 @@ router.get(
   postController.single /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */
 );
 
+router.patch("/edit", accessMiddleware(["employee"]));
+
+router.delete(
+  "/delete/:id",
+  accessMiddleware(["company"]),
+  postController.delete /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */
+);
+
 export default router;

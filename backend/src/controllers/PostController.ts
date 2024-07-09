@@ -1,32 +1,27 @@
 import { Request, Response, NextFunction } from "express";
 import { updateURL } from "../utils/urlUpdate";
-import { saveFileToDisk } from "../utils/fileHandler";
+import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { ResponseJSON } from "../types/response";
 import { limit } from "../utils/const";
 import getLastId from "../utils/lastId";
 import { prisma } from "../utils/const";
+import notFound from "../middleware/not-found";
 
 export default class PostController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { title, content, internshipId } = req.body;
-      const companyId = req.cookies.id;
 
-      if (!req.file) {
-        return res.status(400).json({ success: false, message: "No file uploaded." });
-      }
+      notFound(req.file, "file");
       const internshipExists = await prisma.internship.findUnique({
-        where: { id: Number(internshipId) },
+        where: { id: Number(internshipId), companyId: req.cookies.id },
       });
 
-      if (!internshipExists) {
-        return res.status(400).json({ success: false, message: "internship not found." });
-      }
       await prisma.post.create({
         data: {
           title,
           content,
-          companyId: Number(companyId),
+          companyId: req.cookies.id,
           internshipId: Number(internshipId),
           image: req.file.filename,
         },
@@ -45,10 +40,9 @@ export default class PostController {
       const post = await prisma.post.findUnique({
         where: { id: Number(id) },
       });
-      if (!post) {
-        res.status(404).json({ success: false, message: "Post not found" });
-        return;
-      }
+
+      notFound(post, "post");
+
       const newPost = updateURL(post, ["image"]);
       res.status(200).json({ success: true, data: newPost, message: "post retrieved" });
     } catch (error) {
@@ -72,10 +66,7 @@ export default class PostController {
           createdAt: "desc",
         },
       });
-      if (posts.length === 0) {
-        res.status(200).json({ success: true, message: "No posts found" });
-        return;
-      }
+      notFound(posts, "posts");
       const postsWithFullUrls = updateURL(posts, ["image"]);
       const lastId = getLastId(posts);
       res.status(200).json({
@@ -100,10 +91,7 @@ export default class PostController {
         take: limit,
         skip: 1,
       });
-      if (posts.length === 0) {
-        res.status(200).json({ success: true, message: "No posts found" });
-        return;
-      }
+      notFound(posts, "post");
       const postsWithFullUrls = updateURL(posts, ["image"]);
       const lastId = getLastId(posts);
       res.status(200).json({
@@ -127,11 +115,24 @@ export default class PostController {
           },
         })
         .posts();
-      if (!companyPosts) {
-        return res.status(200).json({ success: true, message: "No posts found" });
-      }
+      notFound(companyPosts, "company posts");
       const updatedPosts = updateURL(companyPosts, ["image"]);
       res.status(200).json({ success: true, message: "Retrieved posts", data: updatedPosts });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const post = await prisma.post.delete({
+        where: {
+          id: Number(id),
+          companyId: req.cookies.id,
+        },
+      });
+      deleteFileOnDisk(post.image, "images");
+      return res.status(200).json({ success: true, message: "post deleted successfully" });
     } catch (error) {
       next(error);
     }

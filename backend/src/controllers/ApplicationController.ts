@@ -4,6 +4,7 @@ import { ResponseJSON } from "../types/response";
 import { limit } from "../utils/const";
 import getLastId from "../utils/lastId";
 import { prisma } from "../utils/const";
+import notFound from "../middleware/not-found";
 
 export default class ApplicationController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -16,9 +17,7 @@ export default class ApplicationController {
         },
       });
 
-      if (!student.document) {
-        return res.status(400).json({ success: false, message: "Document is missing." });
-      }
+      notFound(student.document, "document");
 
       const application = await prisma.application.findFirst({
         where: {
@@ -27,11 +26,7 @@ export default class ApplicationController {
         },
       });
 
-      if (application) {
-        return res
-          .status(409)
-          .json({ success: false, message: "You have already applied to this internship." });
-      }
+      notFound(application, "application");
 
       await prisma.application.create({
         data: {
@@ -61,19 +56,13 @@ export default class ApplicationController {
           },
         });
 
-      if (!studentApplications || studentApplications.length === 0) {
-        return res
-          .status(200)
-          .json({ success: true, message: "No application from this student yet." });
-      }
+      notFound(studentApplications, "student Applications");
 
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "successfully retirved applications",
-          data: studentApplications,
-        });
+      return res.status(200).json({
+        success: true,
+        message: "successfully retirved applications",
+        data: studentApplications,
+      });
     } catch (error) {
       next(error);
     }
@@ -86,9 +75,7 @@ export default class ApplicationController {
           createdAt: "desc",
         },
       });
-      if (applications.length === 0) {
-        return res.status(200).json({ success: true, message: "no applications yet" });
-      }
+      notFound(applications, "applications");
       const lastId = getLastId(applications);
       return res.status(200).json({
         success: true,
@@ -115,9 +102,7 @@ export default class ApplicationController {
           createdAt: "desc",
         },
       });
-      if (applications.length === 0) {
-        return res.status(200).json({ success: true, message: "no applications yet" });
-      }
+      notFound(applications, "applications");
       const lastId = getLastId(applications);
       return res.status(200).json({
         success: true,
@@ -152,9 +137,7 @@ export default class ApplicationController {
             student: true,
           },
         });
-      if (!internshipApplications) {
-        return res.status(400).json({ success: false, message: "problem retrieving applications" });
-      }
+      notFound(internshipApplications, "internship Applications");
       return res
         .status(200)
         .json({ success: true, message: "applications retrieved", data: internshipApplications });
@@ -169,19 +152,12 @@ export default class ApplicationController {
         where: { id: Number(id) },
       });
 
-      if (!application) {
-        return res.status(404).json({ success: false, message: "Application not found" });
-      }
+      notFound(application, "application");
       const internship = await prisma.internship.findUniqueOrThrow({
         where: { id: application.internshipId },
       });
 
-      if (!internship) {
-        return res.status(404).json({ success: false, message: "Internship not found" });
-      }
-      if (internship.companyId !== Number(req.cookies.id)) {
-        return res.status(403).json({ success: false, message: "Access denied" });
-      }
+      notFound(internship, "internship");
       await prisma.application.update({
         where: { id: Number(id) },
         data: { status: "APPROVED" },
@@ -194,13 +170,11 @@ export default class ApplicationController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const applicationStatus = Object.values(ApplicationStatus);
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "retrieved application status types",
-          data: applicationStatus,
-        });
+      return res.status(200).json({
+        success: true,
+        message: "retrieved application status types",
+        data: applicationStatus,
+      });
     } catch (error) {
       next(error);
     }

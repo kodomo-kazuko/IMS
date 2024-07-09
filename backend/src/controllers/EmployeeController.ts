@@ -2,7 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
-import { prisma } from "../utils/const";
+import { jwtSecretKey, prisma } from "../utils/const";
+import notFound from "../middleware/not-found";
 
 export default class EmployeeController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -33,20 +34,11 @@ export default class EmployeeController {
           password: false,
         },
       });
-      if (!employee) {
-        res.status(404).json({ success: false, message: "Employee not found" });
-        return;
-      }
+      notFound(employee, "employee");
       const isPasswordValid = await bcrypt.compare(password, employee.password);
-      if (!isPasswordValid) {
-        res.status(401).json({ success: false, message: "Invalid password" });
-        return;
-      }
-      const jwtSecret = process.env.JWT_SECRET;
-      if (!jwtSecret) {
-        throw new Error("JWT_SECRET is not defined");
-      }
-      const token = jwt.sign({ id: employee.id, account: "employee" }, jwtSecret, {
+      notFound(isPasswordValid, "password");
+
+      const token = jwt.sign({ id: employee.id, account: "employee" }, jwtSecretKey, {
         expiresIn: "7d",
       });
       res.status(200).json({ success: true, message: "Authentication successful", data: token });
@@ -78,9 +70,7 @@ export default class EmployeeController {
           id: req.cookies.id,
         },
       });
-      if (!employee) {
-        return res.status(404).json({ success: false, message: "employee account not found" });
-      }
+      notFound(employee, "employee");
       return res
         .status(200)
         .json({ success: true, message: "employee account retrieved", data: employee });

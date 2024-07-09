@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { Props, ResponseJSON } from "../types/response";
+import { jwtSecretKey } from "../utils/const";
 
 export default class RootController {
   public async tokenRenew(
@@ -14,18 +15,14 @@ export default class RootController {
       return;
     }
     try {
-      const jwtSecret = process.env.JWT_SECRET;
-      if (!jwtSecret) {
-        throw new Error("JWT_SECRET is not defined");
-      }
-      const decoded = jwt.verify(token, jwtSecret) as jwt.JwtPayload;
+      const decoded = jwt.verify(token, jwtSecretKey) as jwt.JwtPayload;
       if (!decoded.iat) {
         throw new Error("Invalid token");
       }
       const issuedAt = new Date(decoded.iat * 1000);
       const threeAndHalfDaysAgo = new Date(Date.now() - 3.5 * 24 * 60 * 60 * 1000);
       if (issuedAt < threeAndHalfDaysAgo) {
-        const newToken = jwt.sign({ id: decoded.id }, jwtSecret, { expiresIn: "7d" });
+        const newToken = jwt.sign({ id: decoded.id }, jwtSecretKey, { expiresIn: "7d" });
         res
           .status(200)
           .json({ success: true, message: "Token renewed", data: { token: newToken } });

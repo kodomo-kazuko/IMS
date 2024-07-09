@@ -4,6 +4,7 @@ import { ResponseJSON } from "../types/response";
 import getLastId from "../utils/lastId";
 import { limit } from "../utils/const";
 import { prisma } from "../utils/const";
+import notFound from "../middleware/not-found";
 
 export default class InternshipController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -36,10 +37,7 @@ export default class InternshipController {
           createdAt: "desc",
         },
       });
-      if (internships.length === 0) {
-        res.status(200).json({ success: true, message: "No internships found" });
-        return;
-      }
+      notFound(internships, "internships");
       const lastId = getLastId(internships);
       res.status(200).json({
         success: true,
@@ -63,10 +61,7 @@ export default class InternshipController {
           id: Number(id),
         },
       });
-      if (internships.length === 0) {
-        res.status(200).json({ success: true, message: "No internships found" });
-        return;
-      }
+      notFound(internships, "internships");
       const lastId = getLastId(internships);
       res.status(200).json({
         success: true,
@@ -103,13 +98,11 @@ export default class InternshipController {
             createdAt: "desc",
           },
         });
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "internships retrieved",
-          data: { list: companyInternships },
-        });
+      return res.status(200).json({
+        success: true,
+        message: "internships retrieved",
+        data: { list: companyInternships },
+      });
     } catch (error) {
       next(error);
     }

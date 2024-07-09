@@ -2,9 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
-import { limit } from "../utils/const";
+import { jwtSecretKey, limit } from "../utils/const";
 import getLastId from "../utils/lastId";
 import { prisma } from "../utils/const";
+import notFound from "../middleware/not-found";
 
 export default class CompanyController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -36,18 +37,11 @@ export default class CompanyController {
           password: false,
         },
       });
-      if (!company) {
-        return res.status(404).json({ success: false, message: "Company not found" });
-      }
+      notFound(company, "company");
       const isPasswordValid = await bcrypt.compare(password, company.password);
-      if (!isPasswordValid) {
-        return res.status(401).json({ success: false, message: "Invalid credentials" });
-      }
-      const jwtSecret = process.env.JWT_SECRET;
-      if (!jwtSecret) {
-        throw new Error("JWT_SECRET is not defined");
-      }
-      const token = jwt.sign({ id: company.id, account: "company" }, jwtSecret, {
+      notFound(isPasswordValid, "password");
+
+      const token = jwt.sign({ id: company.id, account: "company" }, jwtSecretKey, {
         expiresIn: "7d",
       });
       return res
@@ -66,9 +60,7 @@ export default class CompanyController {
         },
         take: limit,
       });
-      if (companies.length === 0) {
-        return res.status(200).json({ success: true, message: "no companies yet" });
-      }
+      notFound(companies, "companies");
       const lastId = getLastId(companies);
       return res.status(200).json({
         success: true,
@@ -96,9 +88,7 @@ export default class CompanyController {
         take: limit,
         skip: 1,
       });
-      if (companies.length === 0) {
-        return res.status(200).json({ success: true, message: "no companies yet" });
-      }
+      notFound(companies, "companies");
       const lastId = getLastId(companies);
       return res.status(200).json({
         success: true,

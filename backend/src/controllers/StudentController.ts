@@ -4,9 +4,10 @@ import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { saveFileToDisk } from "../utils/fileHandler";
 import { updateURL } from "../utils/urlUpdate";
-import { limit } from "../utils/const";
+import { jwtSecretKey, limit } from "../utils/const";
 import getLastId from "../utils/lastId";
 import { prisma } from "../utils/const";
+import notFound from "../middleware/not-found";
 
 export default class StudentController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -38,20 +39,11 @@ export default class StudentController {
           password: false,
         },
       });
-      if (!student) {
-        res.status(404).json({ success: false, message: "Email or password invalid" });
-        return;
-      }
+      notFound(student, "student");
       const isValidPassword = await bcrypt.compare(password, student.password);
-      if (!isValidPassword) {
-        res.status(401).json({ success: false, message: "Email or password invalid" });
-        return;
-      }
-      const jwtSecret = process.env.JWT_SECRET;
-      if (!jwtSecret) {
-        throw new Error("JWT_SECRET is not defined");
-      }
-      const token = jwt.sign({ id: student.id, account: "student" }, jwtSecret, {
+      notFound(isValidPassword, "password");
+
+      const token = jwt.sign({ id: student.id, account: "student" }, jwtSecretKey, {
         expiresIn: "7d",
       });
       res.status(200).json({ success: true, message: "Authentication successful", data: token });
@@ -74,10 +66,7 @@ export default class StudentController {
           createdAt: "desc",
         },
       });
-      if (students.length === 0) {
-        res.status(200).json({ success: true, message: "No students found" });
-        return;
-      }
+      notFound(students, "students");
       const updatedStudents = updateURL(students, ["document"]);
       const lastId = getLastId(students);
       res.status(200).json({
@@ -111,10 +100,7 @@ export default class StudentController {
           createdAt: "desc",
         },
       });
-      if (students.length === 0) {
-        res.status(200).json({ success: true, message: "No students found" });
-        return;
-      }
+      notFound(students, "students");
       const lastId = getLastId(students);
       const updatedStudents = updateURL(students, ["document"]);
       res.status(200).json({
@@ -136,12 +122,8 @@ export default class StudentController {
           id: Number(req.cookies.id),
         },
       });
-      if (student?.document) {
-        return res.status(400).json({ success: false, message: "you already have a document" });
-      }
-      if (!req.file) {
-        return res.status(400).json({ success: false, message: "No file uploaded." });
-      }
+      notFound(student, "student");
+      notFound(req.file, "file");
 
       await prisma.student.update({
         where: { id: Number(req.cookies.id) },
@@ -197,13 +179,9 @@ export default class StudentController {
         },
       });
 
-      if (student.image !== null) {
-        return res.status(300).json({ success: false, message: "You already have an image" });
-      }
+      notFound(student.image, "image");
 
-      if (!req.file) {
-        return res.status(400).json({ success: false, message: "No file uploaded" });
-      }
+      notFound(req.file, "file");
 
       await prisma.student.update({
         where: { id: Number(req.cookies.id) },
