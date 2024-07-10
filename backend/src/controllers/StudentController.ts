@@ -115,7 +115,7 @@ export default class StudentController {
       next(error);
     }
   }
-  public async createCV(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async createDocument(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const student = await prisma.student.findUnique({
         where: {
@@ -132,7 +132,7 @@ export default class StudentController {
         },
       });
       await saveFileToDisk(req.file, "documents");
-      return res.status(201).json({ success: true, message: "created cv" });
+      return res.status(201).json({ success: true, message: "document uploaded successfully" });
     } catch (error) {
       next(error);
     }

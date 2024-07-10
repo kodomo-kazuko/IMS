@@ -36,10 +36,10 @@ router.get(
 );
 
 router.post(
-  "/cv",
+  "/document",
   accessMiddleware(["student"]),
   upload("documents"),
-  studentController.createCV /** #swagger.tags = ['Student'] #swagger.security = [{"bearerAuth": []}] */
+  studentController.createDocument /** #swagger.tags = ['Student'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 router.post(

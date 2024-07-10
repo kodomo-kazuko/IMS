@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AccountType } from "../types/types";
 import { ResponseJSON } from "../types/response";
-import { prisma } from "../utils/const";
+import { jwtSecretKey, prisma } from "../utils/const";
 
 interface DecodedToken {
   account: AccountType;
@@ -40,15 +40,7 @@ export default function accessMiddleware(
         });
       }
 
-      const jwtSecret = process.env.JWT_SECRET;
-      if (!jwtSecret) {
-        return res.status(500).json({
-          success: false,
-          message: "Missing JWT secret. Please set the JWT_SECRET environment variable.",
-        });
-      }
-
-      const decoded: DecodedToken = jwt.verify(token, jwtSecret) as DecodedToken;
+      const decoded: DecodedToken = jwt.verify(token, jwtSecretKey) as DecodedToken;
 
       if (requiredAccounts !== "all" && !requiredAccounts.includes(decoded.account)) {
         return res.status(403).json({

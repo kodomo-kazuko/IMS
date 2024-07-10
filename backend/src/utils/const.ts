@@ -6,7 +6,7 @@ if (!jwtSecret) {
 
 export const jwtSecretKey: Secret = jwtSecret;
 
-export const limit: number = 100;
+export const limit: number = 50;
 
 export const limitSize: number = 5000000;
 

@@ -6,7 +6,7 @@ import express from "express";
 import routes from "./routes";
 import ErrorMiddleware from "./middleware/ErrorMiddleware";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./swagger-output.json";
+import swaggerDocument from "./swagger/swagger-output.json";
 
 const IP = process.env.IP || "localhost";
 const PORT = parseInt(process.env.PORT || "8080", 10);

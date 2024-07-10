@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node ./src/server.ts",
     "dev": "nodemon --exec ts-node ./src/server.ts",
-    "swag": "ts-node ./src/swagger.ts",
+    "swagger": "ts-node ./src/swagger/swagger.ts",
     "clean": "ts-prune"
   },
   "prisma": {

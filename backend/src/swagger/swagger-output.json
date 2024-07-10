@@ -816,7 +816,7 @@
         ]
       }
     },
-    "/student/cv": {
+    "/student/document": {
       "post": {
         "tags": [
           "Student"
