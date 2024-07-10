@@ -13,9 +13,6 @@ export default class PostController {
       const { title, content, internshipId } = req.body;
 
       notFound(req.file, "file");
-      const internshipExists = await prisma.internship.findUnique({
-        where: { id: Number(internshipId), companyId: req.cookies.id },
-      });
 
       await prisma.post.create({
         data: {
@@ -81,6 +78,7 @@ export default class PostController {
       next(error);
     }
   }
+
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
@@ -106,6 +104,7 @@ export default class PostController {
       next(error);
     }
   }
+
   public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const companyPosts = await prisma.company
@@ -122,6 +121,7 @@ export default class PostController {
       next(error);
     }
   }
+
   public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
@@ -133,6 +133,60 @@ export default class PostController {
       });
       deleteFileOnDisk(post.image, "images");
       return res.status(200).json({ success: true, message: "post deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async editData(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { title, content, internshipId } = req.body;
+
+      const existingPost = await prisma.post.findUnique({
+        where: { id: Number(id) },
+      });
+
+      notFound(existingPost, "post");
+
+      await prisma.post.update({
+        where: { id: Number(id) },
+        data: {
+          title,
+          content,
+          internshipId: Number(internshipId),
+        },
+      });
+
+      res.status(200).json({ success: true, message: "Post updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async editImage(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+
+      const existingPost = await prisma.post.findUnique({
+        where: { id: Number(id) },
+      });
+
+      notFound(existingPost, "post");
+
+      let image = existingPost.image;
+      if (req.file) {
+        await deleteFileOnDisk(image, "images");
+        await saveFileToDisk(req.file, "images");
+        image = req.file.filename;
+      }
+
+      await prisma.post.update({
+        where: { id: Number(id) },
+        data: { image },
+      });
+
+      res.status(200).json({ success: true, message: "Post image updated successfully" });
     } catch (error) {
       next(error);
     }
