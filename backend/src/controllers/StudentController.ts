@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-import { saveFileToDisk } from "../utils/fileHandler";
+import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { updateURL } from "../utils/urlUpdate";
 import { jwtSecretKey, limit } from "../utils/const";
 import getLastId from "../utils/lastId";
@@ -189,6 +189,22 @@ export default class StudentController {
       });
       await saveFileToDisk(req.file, "images");
       res.status(201).json({ success: true, message: "Image uploaded successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const student = await prisma.student.delete({
+        where: {
+          id: Number(id),
+        },
+      });
+      notFound(student.image, "student image");
+      notFound(student.document, "student document");
+      deleteFileOnDisk(student.image, "images");
+      deleteFileOnDisk(student.document, "documents");
     } catch (error) {
       next(error);
     }
