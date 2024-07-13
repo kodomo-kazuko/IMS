@@ -144,4 +144,18 @@ export default class MentorController {
       next(error);
     }
   }
+  public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      await prisma.mentor.delete({
+        where: {
+          id: Number(id),
+          companyId: req.cookies.id,
+        },
+      });
+      return res.status(200).json({ success: true, message: "mentor deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

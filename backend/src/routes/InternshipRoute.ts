@@ -13,7 +13,7 @@ router.get(
 
 router.post(
   "/create",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   internshipController.create /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
 );
 
@@ -31,17 +31,20 @@ router.get(
 
 router.get(
   "/company",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   internshipController.company /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
 );
 
-// router.get("/company/:id", accessMiddleware(["company"]), internshipController.company);
+router.get(
+  "/company/:id",
+  accessMiddleware(["employee"], 0),
+  internshipController.company /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
+);
 
 router.get(
   "/:id",
-  accessMiddleware(
-    "all"
-  ) /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
+  accessMiddleware("all"),
+  internshipController.single /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 export default router;

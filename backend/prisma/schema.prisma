@@ -100,9 +100,10 @@ model Post {
   views        Int        @default(0)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @default(now()) @updatedAt
-  company      Company    @relation(fields: [companyId], references: [id])
-  internship   Internship @relation(fields: [internshipId], references: [id])
+  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  internship   Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
 
+  @@unique([id, internshipId])
   @@index([companyId])
 }
 
@@ -160,7 +161,7 @@ model Mentor {
   companyId   Int
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @default(now()) @updatedAt
-  company     Company             @relation(fields: [companyId], references: [id])
+  company     Company             @relation(fields: [companyId], onDelete: Cascade, references: [id])
   internships StudentInternship[]
 
   @@index([companyId])

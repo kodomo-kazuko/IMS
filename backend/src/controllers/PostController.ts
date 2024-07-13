@@ -132,7 +132,7 @@ export default class PostController {
         },
       });
       deleteFileOnDisk(post.image, "images");
-      return res.status(200).json({ success: true, message: "post deleted successfully" });
+      res.status(200).json({ success: true, message: "post deleted successfully" });
     } catch (error) {
       next(error);
     }

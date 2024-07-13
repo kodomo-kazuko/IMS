@@ -14,11 +14,11 @@ export default class UploadController {
       fs.stat(filePath, (err, stats) => {
         if (err) {
           console.error("File stat error:", err);
-          return res.status(404).json({ success: false, message: "File not found" });
+          res.status(404).json({ success: false, message: "File not found" });
         }
 
         if (!stats.isFile()) {
-          return res.status(400).json({ success: false, message: "Requested path is not a file" });
+          res.status(400).json({ success: false, message: "Requested path is not a file" });
         }
 
         const stream = fs.createReadStream(filePath);

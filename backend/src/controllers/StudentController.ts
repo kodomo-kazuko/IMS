@@ -132,7 +132,7 @@ export default class StudentController {
         },
       });
       await saveFileToDisk(req.file, "documents");
-      return res.status(201).json({ success: true, message: "document uploaded successfully" });
+      res.status(201).json({ success: true, message: "document uploaded successfully" });
     } catch (error) {
       next(error);
     }
@@ -145,7 +145,7 @@ export default class StudentController {
           id: Number(id),
         },
       });
-      return res.status(200).json({ success: true, message: "retrieved student", data: student });
+      res.status(200).json({ success: true, message: "retrieved student", data: student });
     } catch (error) {
       next(error);
     }
@@ -164,9 +164,7 @@ export default class StudentController {
         },
       });
       const updatedStudent = updateURL(student, ["image", "document"]);
-      return res
-        .status(200)
-        .json({ success: true, message: "retrieved student", data: updatedStudent });
+      res.status(200).json({ success: true, message: "retrieved student", data: updatedStudent });
     } catch (error) {
       next(error);
     }
@@ -190,7 +188,7 @@ export default class StudentController {
         },
       });
       await saveFileToDisk(req.file, "images");
-      return res.status(201).json({ success: true, message: "Image uploaded successfully" });
+      res.status(201).json({ success: true, message: "Image uploaded successfully" });
     } catch (error) {
       next(error);
     }

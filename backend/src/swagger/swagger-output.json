@@ -736,6 +736,34 @@
         ]
       }
     },
+    "/mentor/delete/{id}": {
+      "delete": {
+        "tags": [
+          "Mentor"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/student/signin": {
       "post": {
         "tags": [
@@ -1106,6 +1134,24 @@
         }
       }
     },
+    "/company/account": {
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/employee/signin": {
       "post": {
         "tags": [
@@ -1347,6 +1393,34 @@
         ]
       }
     },
+    "/internship/company/{id}": {
+      "get": {
+        "tags": [
+          "Internship"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/internship/{id}": {
       "get": {
         "tags": [
@@ -1364,8 +1438,8 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         },
         "security": [

@@ -75,7 +75,7 @@ export default class EmployeeController {
         },
       });
       notFound(employee, "employee");
-      return res
+      res
         .status(200)
         .json({ success: true, message: "employee account retrieved", data: employee });
     } catch (error) {

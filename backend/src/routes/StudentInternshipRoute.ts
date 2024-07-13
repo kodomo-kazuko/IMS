@@ -19,19 +19,19 @@ router.post(
 
 router.patch(
   "/start",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   studentInternshipController.start /** #swagger.tags = ['StudentInternship'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 router.get(
   "/company",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   studentInternshipController.company /** #swagger.tags = ['StudentInternship'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 router.get(
   "/internship/:id",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   studentInternshipController.internships /** #swagger.tags = ['StudentInternship'] #swagger.security = [{"bearerAuth": []}] */
 );
 

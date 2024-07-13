@@ -78,7 +78,7 @@ export default class InternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const internshipTypes = Object.values(InternshipType);
-      return res
+      res
         .status(200)
         .json({ success: true, message: "retrieved internship types", data: internshipTypes });
     } catch (error) {
@@ -98,11 +98,25 @@ export default class InternshipController {
             createdAt: "desc",
           },
         });
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "internships retrieved",
         data: { list: companyInternships },
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const internship = await prisma.internship.findUnique({
+        where: {
+          id: Number(id),
+        },
+      });
+      notFound(internship, "internship");
+      res.status(200).json({ success: true, message: "internship retrieved", data: internship });
     } catch (error) {
       next(error);
     }

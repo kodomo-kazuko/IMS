@@ -37,13 +37,13 @@ router.get(
 
 router.patch(
   "/approve",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   applicationController.approve /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 router.get(
   "/internship/:id",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   applicationController.internship /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
 );
 

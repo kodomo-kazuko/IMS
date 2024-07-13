@@ -58,7 +58,7 @@ export default class ApplicationController {
 
       notFound(studentApplications, "student Applications");
 
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "successfully retirved applications",
         data: studentApplications,
@@ -77,7 +77,7 @@ export default class ApplicationController {
       });
       notFound(applications, "applications");
       const lastId = getLastId(applications);
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "successfully retirved applications",
         data: {
@@ -104,7 +104,7 @@ export default class ApplicationController {
       });
       notFound(applications, "applications");
       const lastId = getLastId(applications);
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "successfully retirved applications",
         data: {
@@ -138,7 +138,7 @@ export default class ApplicationController {
           },
         });
       notFound(internshipApplications, "internship Applications");
-      return res
+      res
         .status(200)
         .json({ success: true, message: "applications retrieved", data: internshipApplications });
     } catch (error) {
@@ -162,7 +162,7 @@ export default class ApplicationController {
         where: { id: Number(id) },
         data: { status: "APPROVED" },
       });
-      return res.status(200).json({ success: true, message: "Application approved successfully" });
+      res.status(200).json({ success: true, message: "Application approved successfully" });
     } catch (error) {
       next(error);
     }
@@ -170,7 +170,7 @@ export default class ApplicationController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const applicationStatus = Object.values(ApplicationStatus);
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "retrieved application status types",
         data: applicationStatus,

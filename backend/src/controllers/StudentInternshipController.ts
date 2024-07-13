@@ -8,7 +8,7 @@ export default class StudentInternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const internshipStatus = Object.values(InternshipStatus);
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "retrieved internship status types",
         data: internshipStatus,
@@ -28,9 +28,7 @@ export default class StudentInternshipController {
         },
       });
       if (startedInternship) {
-        return res
-          .status(300)
-          .json({ success: false, message: "You already have an active internship." });
+        res.status(300).json({ success: false, message: "You already have an active internship." });
       }
 
       // Find the application by ID
@@ -44,7 +42,7 @@ export default class StudentInternshipController {
 
       // Check if the application is approved
       if (application.status !== "APPROVED") {
-        return res.status(400).json({ success: false, message: "Application is not approved." });
+        res.status(400).json({ success: false, message: "Application is not approved." });
       }
 
       // Create a new student internship record
@@ -57,7 +55,7 @@ export default class StudentInternshipController {
         },
       });
 
-      return res.status(200).json({ success: true, message: "Internship pending!" });
+      res.status(200).json({ success: true, message: "Internship pending!" });
     } catch (error) {
       next(error);
     }
@@ -78,9 +76,7 @@ export default class StudentInternshipController {
         },
       });
       if (mentor.companyId !== req.cookies.id) {
-        return res
-          .status(400)
-          .json({ success: false, message: "mentor does not belong to this company" });
+        res.status(400).json({ success: false, message: "mentor does not belong to this company" });
       }
       await prisma.studentInternship.update({
         where: {
@@ -94,7 +90,7 @@ export default class StudentInternshipController {
           status: "STARTED",
         },
       });
-      return res.status(200).json({ success: true, message: "internship started!" });
+      res.status(200).json({ success: true, message: "internship started!" });
     } catch (error) {
       next(error);
     }
@@ -109,7 +105,7 @@ export default class StudentInternshipController {
         },
       });
       notFound(studentInternships, "student Internships");
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "company active internships retrieved ",
         data: studentInternships,
@@ -133,7 +129,7 @@ export default class StudentInternshipController {
           },
         });
       notFound(studentInternships, "student Internships");
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "student internships retrieved",
         data: studentInternships,
@@ -160,9 +156,7 @@ export default class StudentInternshipController {
             student: true,
           },
         });
-      return res
-        .status(200)
-        .json({ success: true, message: " students retrieved", data: internships });
+      res.status(200).json({ success: true, message: " students retrieved", data: internships });
     } catch (error) {
       next(error);
     }

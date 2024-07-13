@@ -12,13 +12,13 @@ router.post(
 
 router.post(
   "/create",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   mentorController.create /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 router.get(
   "/company",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   mentorController.company /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
 );
 
@@ -36,7 +36,7 @@ router.get(
 
 router.get(
   "/company/:id",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   mentorController.company /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
 );
 
@@ -44,6 +44,12 @@ router.get(
   "/:id",
   accessMiddleware(["employee"]),
   mentorController.single /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
+);
+
+router.delete(
+  "/delete/:id",
+  accessMiddleware(["company"]),
+  mentorController.delete /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 export default router;

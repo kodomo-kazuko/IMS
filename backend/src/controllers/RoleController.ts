@@ -11,7 +11,7 @@ export default class RoleController {
           name,
         },
       });
-      return res.status(201).json({
+      res.status(201).json({
         success: true,
         message: "Role created successfully",
       });
@@ -22,7 +22,7 @@ export default class RoleController {
   public async all(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const roles = await prisma.role.findMany();
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "stuff",
         data: roles,
@@ -42,7 +42,7 @@ export default class RoleController {
           name,
         },
       });
-      return res.status(200).json({ success: true, message: "role name updated" });
+      res.status(200).json({ success: true, message: "role name updated" });
     } catch (error) {
       next(error);
     }
@@ -55,7 +55,7 @@ export default class RoleController {
           id: Number(id),
         },
       });
-      return res.status(200).json({ success: true, message: "role deleted successfully" });
+      res.status(200).json({ success: true, message: "role deleted successfully" });
     } catch (error) {
       next(error);
     }
