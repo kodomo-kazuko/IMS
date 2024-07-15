@@ -228,30 +228,21 @@
         }
       }
     },
-    "/post/company": {
-      "get": {
-        "tags": [
-          "Post"
-        ],
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
     "/post/all/base": {
       "get": {
         "tags": [
           "Post"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "comapnyId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -275,6 +266,13 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "comapnyId",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -616,30 +614,21 @@
         }
       }
     },
-    "/mentor/company": {
-      "get": {
-        "tags": [
-          "Mentor"
-        ],
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
     "/mentor/all/base": {
       "get": {
         "tags": [
           "Mentor"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -666,31 +655,10 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
+          },
           {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/mentor/company/{id}": {
-      "get": {
-        "tags": [
-          "Mentor"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "companyId",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -1363,6 +1331,15 @@
           "Internship"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1389,49 +1366,10 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
+          },
           {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/internship/company": {
-      "get": {
-        "tags": [
-          "Internship"
-        ],
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/internship/company/{id}": {
-      "get": {
-        "tags": [
-          "Internship"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "companyId",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -1536,6 +1474,22 @@
           "Application"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "internshipId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1562,26 +1516,22 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
+          },
           {
-            "bearerAuth": []
+            "name": "student",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "internshipId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
-        ]
-      }
-    },
-    "/application/student": {
-      "get": {
-        "tags": [
-          "Application"
         ],
-        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -1624,34 +1574,6 @@
             }
           }
         }
-      }
-    },
-    "/application/internship/{id}": {
-      "get": {
-        "tags": [
-          "Application"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
       }
     },
     "/student-internship/types": {

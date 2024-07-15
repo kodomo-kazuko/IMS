@@ -19,20 +19,14 @@ router.post(
 
 router.get(
   "/all/base",
-  accessMiddleware(["employee"]),
+  accessMiddleware("all"),
   applicationController.base /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 router.get(
   "/all/:id",
-  accessMiddleware(["employee"]),
+  accessMiddleware("all"),
   applicationController.cursor /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
-);
-
-router.get(
-  "/student",
-  accessMiddleware(["student"]),
-  applicationController.student /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 router.patch(
@@ -40,11 +34,4 @@ router.patch(
   accessMiddleware(["company"], 0),
   applicationController.approve /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
 );
-
-router.get(
-  "/internship/:id",
-  accessMiddleware(["company"], 0),
-  applicationController.internship /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
-);
-
 export default router;

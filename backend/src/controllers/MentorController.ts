@@ -42,21 +42,6 @@ export default class MentorController {
     }
   }
 
-  public async singleCompany(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
-    try {
-      const { id } = req.params;
-      const mentor = await prisma.mentor.findUnique({
-        where: { id: Number(id), companyId: req.cookies.id },
-      });
-      notFound(mentor, "mentor");
-      res
-        .status(200)
-        .json({ success: true, message: "Mentor retrieved successfully", data: mentor });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { email, password } = req.body;
@@ -79,34 +64,16 @@ export default class MentorController {
     }
   }
 
-  public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
-    try {
-      const mentors = await prisma.company
-        .findUnique({
-          where: {
-            id: req.cookies.id,
-          },
-        })
-        .mentors({
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-      notFound(mentors, "mentors");
-      res
-        .status(200)
-        .json({ success: true, message: "Mentors retrieved successfully", data: mentors });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const { companyId } = req.query;
       const mentors = await prisma.mentor.findMany({
         take: limit,
         orderBy: {
           createdAt: "desc",
+        },
+        where: {
+          companyId: companyId ? Number(companyId) : undefined,
         },
       });
       notFound(mentors, "mentors");
@@ -122,12 +89,16 @@ export default class MentorController {
   }
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const { companyId } = req.query;
       const { id } = req.params;
       const mentors = await prisma.mentor.findMany({
         take: limit,
         skip: 1,
         orderBy: {
           createdAt: "desc",
+        },
+        where: {
+          companyId: companyId ? Number(companyId) : undefined,
         },
         cursor: {
           id: Number(id),

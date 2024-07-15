@@ -17,12 +17,6 @@ router.post(
 );
 
 router.get(
-  "/company",
-  accessMiddleware(["company"], 0),
-  mentorController.company /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
-);
-
-router.get(
   "/all/base",
   accessMiddleware(["employee"]),
   mentorController.base /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
@@ -32,12 +26,6 @@ router.get(
   "/all/:id",
   accessMiddleware(["employee"]),
   mentorController.cursor /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
-);
-
-router.get(
-  "/company/:id",
-  accessMiddleware(["company"], 0),
-  mentorController.company /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 router.get(

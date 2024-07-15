@@ -41,38 +41,17 @@ export default class ApplicationController {
       next(error);
     }
   }
-
-  public async student(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
-    try {
-      const studentApplications = await prisma.student
-        .findUnique({
-          where: {
-            id: req.cookies.id,
-          },
-        })
-        .applications({
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-
-      notFound(studentApplications, "student Applications");
-
-      res.status(200).json({
-        success: true,
-        message: "successfully retirved applications",
-        data: studentApplications,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
   public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const { studentId, internshipId } = req.query;
       const applications = await prisma.application.findMany({
         take: limit,
         orderBy: {
           createdAt: "desc",
+        },
+        where: {
+          studentId: studentId === req.cookies.id ? Number(studentId) : undefined,
+          internshipId: internshipId ? Number(internshipId) : undefined,
         },
       });
       notFound(applications, "applications");
@@ -91,12 +70,18 @@ export default class ApplicationController {
   }
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const studentId = Number(req.query.student);
+      const internshipId = Number(req.query.internshipId);
       const { id } = req.params;
       const applications = await prisma.application.findMany({
         take: limit,
         skip: 1,
         cursor: {
           id: Number(id),
+        },
+        where: {
+          studentId: studentId === req.cookies.id ? studentId : undefined,
+          internshipId: internshipId ? internshipId : undefined,
         },
         orderBy: {
           createdAt: "desc",
@@ -112,35 +97,6 @@ export default class ApplicationController {
           list: applications,
         },
       });
-    } catch (error) {
-      next(error);
-    }
-  }
-  public async internship(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
-    try {
-      const { id } = req.params;
-      const internshipApplications = await prisma.internship
-        .findUnique({
-          where: {
-            id: Number(id),
-            companyId: req.cookies.id,
-          },
-        })
-        .applications({
-          orderBy: {
-            createdAt: "desc",
-          },
-          omit: {
-            studentId: true,
-          },
-          include: {
-            student: true,
-          },
-        });
-      notFound(internshipApplications, "internship Applications");
-      res
-        .status(200)
-        .json({ success: true, message: "applications retrieved", data: internshipApplications });
     } catch (error) {
       next(error);
     }

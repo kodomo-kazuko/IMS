@@ -30,18 +30,6 @@ router.get(
 );
 
 router.get(
-  "/company",
-  accessMiddleware(["company"], 0),
-  internshipController.company /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
-);
-
-router.get(
-  "/company/:id",
-  accessMiddleware(["employee"], 0),
-  internshipController.company /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
-);
-
-router.get(
   "/:id",
   accessMiddleware("all"),
   internshipController.single /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */

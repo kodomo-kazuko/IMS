@@ -31,10 +31,14 @@ export default class InternshipController {
 
   public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const companyId = Number(req.query.companyId);
       const internships = await prisma.internship.findMany({
         take: limit,
         orderBy: {
           createdAt: "desc",
+        },
+        where: {
+          companyId: companyId ? companyId : undefined,
         },
       });
       notFound(internships, "internships");
@@ -53,12 +57,16 @@ export default class InternshipController {
   }
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const companyId = Number(req.query.companyId);
       const { id } = req.params;
       const internships = await prisma.internship.findMany({
         take: limit,
         skip: 1,
         cursor: {
           id: Number(id),
+        },
+        where: {
+          companyId: companyId ? companyId : undefined,
         },
       });
       notFound(internships, "internships");
@@ -81,28 +89,6 @@ export default class InternshipController {
       res
         .status(200)
         .json({ success: true, message: "retrieved internship types", data: internshipTypes });
-    } catch (error) {
-      next(error);
-    }
-  }
-  public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
-    try {
-      const companyInternships = await prisma.company
-        .findUniqueOrThrow({
-          where: {
-            id: req.cookies.id,
-          },
-        })
-        .internships({
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-      res.status(200).json({
-        success: true,
-        message: "internships retrieved",
-        data: { list: companyInternships },
-      });
     } catch (error) {
       next(error);
     }

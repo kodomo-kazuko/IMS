@@ -15,12 +15,6 @@ router.post(
 );
 
 router.get(
-  "/company",
-  accessMiddleware(["company"], 0),
-  postController.company /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */
-);
-
-router.get(
   "/all/base",
   accessMiddleware("all"),
   postController.base /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */

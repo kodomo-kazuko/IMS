@@ -12,6 +12,15 @@ export default class PostController {
     try {
       const { title, content, internshipId } = req.body;
 
+      const internship = await prisma.internship.findUnique({
+        where: {
+          id: Number(internshipId),
+          companyId: req.cookies.id,
+        },
+      });
+
+      notFound(internship, "internship");
+
       notFound(req.file, "file");
 
       await prisma.post.create({
@@ -36,6 +45,12 @@ export default class PostController {
       const { id } = req.params;
       const post = await prisma.post.findUnique({
         where: { id: Number(id) },
+        include: {
+          internship: true,
+        },
+        omit: {
+          internshipId: true,
+        },
       });
 
       notFound(post, "post");
@@ -49,6 +64,7 @@ export default class PostController {
 
   public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const comapnyId = Number(req.query.comapnyId);
       const posts = await prisma.post.findMany({
         include: {
           company: {
@@ -57,6 +73,9 @@ export default class PostController {
               id: true,
             },
           },
+        },
+        where: {
+          companyId: comapnyId ? comapnyId : undefined,
         },
         take: limit,
         orderBy: {
@@ -81,13 +100,28 @@ export default class PostController {
 
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const comapnyId = Number(req.query.comapnyId);
       const { id } = req.params;
       const posts = await prisma.post.findMany({
         cursor: {
           id: Number(id),
         },
+        include: {
+          company: {
+            select: {
+              name: true,
+              id: true,
+            },
+          },
+        },
+        where: {
+          companyId: comapnyId ? comapnyId : undefined,
+        },
         take: limit,
         skip: 1,
+        orderBy: {
+          createdAt: "desc",
+        },
       });
       notFound(posts, "post");
       const postsWithFullUrls = updateURL(posts, ["image"]);
@@ -100,23 +134,6 @@ export default class PostController {
           list: postsWithFullUrls,
         },
       });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
-    try {
-      const companyPosts = await prisma.company
-        .findUnique({
-          where: {
-            id: req.cookies.id,
-          },
-        })
-        .posts();
-      notFound(companyPosts, "company posts");
-      const updatedPosts = updateURL(companyPosts, ["image"]);
-      res.status(200).json({ success: true, message: "Retrieved posts", data: updatedPosts });
     } catch (error) {
       next(error);
     }
@@ -173,19 +190,20 @@ export default class PostController {
       });
 
       notFound(existingPost, "post");
+      notFound(req.file, "image");
 
       let image = existingPost.image;
-      if (req.file) {
-        await deleteFileOnDisk(image, "images");
-        await saveFileToDisk(req.file, "images");
-        image = req.file.filename;
-      }
+
+      await deleteFileOnDisk(image, "images");
+
+      image = req.file.filename;
 
       await prisma.post.update({
         where: { id: Number(id) },
         data: { image },
       });
 
+      await saveFileToDisk(req.file, "images");
       res.status(200).json({ success: true, message: "Post image updated successfully" });
     } catch (error) {
       next(error);

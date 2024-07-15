@@ -103,7 +103,7 @@ model Post {
   company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
   internship   Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
 
-  @@unique([id, internshipId])
+  @@unique([internshipId, companyId])
   @@index([companyId])
 }
 
