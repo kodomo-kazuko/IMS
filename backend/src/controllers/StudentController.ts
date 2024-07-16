@@ -8,6 +8,9 @@ import { jwtSecretKey, limit } from "../utils/const";
 import getLastId from "../utils/lastId";
 import { prisma } from "../utils/const";
 import notFound from "../utils/not-found";
+import { AccountType } from "../types/types";
+
+const account: AccountType = "student";
 
 export default class StudentController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -43,7 +46,7 @@ export default class StudentController {
       const isValidPassword = await bcrypt.compare(password, student.password);
       notFound(isValidPassword, "password");
 
-      const token = jwt.sign({ id: student.id, account: "student" }, jwtSecretKey, {
+      const token = jwt.sign({ id: student.id, account }, jwtSecretKey, {
         expiresIn: "7d",
       });
       res.status(200).json({ success: true, message: "Authentication successful", data: token });
@@ -201,10 +204,8 @@ export default class StudentController {
           id: Number(id),
         },
       });
-      notFound(student.image, "student image");
-      notFound(student.document, "student document");
-      deleteFileOnDisk(student.image, "images");
-      deleteFileOnDisk(student.document, "documents");
+      student.image ? deleteFileOnDisk(student.image, "images") : undefined;
+      student.document ? deleteFileOnDisk(student.document, "documents") : undefined;
     } catch (error) {
       next(error);
     }

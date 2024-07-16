@@ -45,7 +45,7 @@ export default function accessMiddleware(
       if (requiredAccounts !== "all" && !requiredAccounts.includes(decoded.account)) {
         return res.status(403).json({
           success: false,
-          message: "Access denied: Invalid account type",
+          message: "Access denied",
         });
       }
 
@@ -54,7 +54,7 @@ export default function accessMiddleware(
         if (userAccessLevel > requiredAccessLevel) {
           return res.status(403).json({
             success: false,
-            message: "Access denied: Insufficient access level",
+            message: "Access denied",
           });
         }
       }

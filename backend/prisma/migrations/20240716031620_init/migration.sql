@@ -33,6 +33,7 @@ CREATE TABLE "Company" (
     "phone" TEXT NOT NULL,
     "weburl" TEXT NOT NULL,
     "address" TEXT NOT NULL,
+    "image" TEXT,
     "isApproved" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -121,6 +122,7 @@ CREATE TABLE "StudentInternship" (
     "studentId" INTEGER NOT NULL,
     "internshipId" INTEGER NOT NULL,
     "mentorId" INTEGER,
+    "image" TEXT,
     "type" "InternshipType" NOT NULL,
     "status" "InternshipStatus" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -188,7 +190,7 @@ CREATE INDEX "Employee_id_roleId_idx" ON "Employee"("id", "roleId");
 CREATE INDEX "Post_companyId_idx" ON "Post"("companyId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Post_id_internshipId_key" ON "Post"("id", "internshipId");
+CREATE UNIQUE INDEX "Post_internshipId_companyId_key" ON "Post"("internshipId", "companyId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Role_name_key" ON "Role"("name");

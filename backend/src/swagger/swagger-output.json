@@ -1488,6 +1488,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1518,7 +1525,7 @@
             }
           },
           {
-            "name": "student",
+            "name": "studentId",
             "in": "query",
             "schema": {
               "type": "string"
@@ -1526,6 +1533,13 @@
           },
           {
             "name": "internshipId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
             "in": "query",
             "schema": {
               "type": "string"

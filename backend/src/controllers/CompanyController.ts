@@ -8,6 +8,8 @@ import { prisma } from "../utils/const";
 import notFound from "../utils/not-found";
 import { AccountType } from "../types/types";
 
+const account: AccountType = "company";
+
 export default class CompanyController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
@@ -31,7 +33,6 @@ export default class CompanyController {
 
   public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const account: AccountType = "company";
       const { email, password } = req.body;
       const company = await prisma.company.findUnique({
         where: { email },

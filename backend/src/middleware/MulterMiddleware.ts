@@ -19,7 +19,7 @@ const upload = (allowedTypes: allowedFileTypes) => {
     limits: {
       fileSize: limitSize,
     },
-    fileFilter: (req, file, cb) => {
+    fileFilter: (_req, file, cb) => {
       const extension = path.extname(file.originalname).toLowerCase();
       if (!uploadFilter[allowedTypes].includes(extension)) {
         return cb(

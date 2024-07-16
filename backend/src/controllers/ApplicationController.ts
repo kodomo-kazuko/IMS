@@ -1,6 +1,6 @@
-import { ApplicationStatus, Application } from "@prisma/client";
+import { ApplicationStatus } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import { ResponseJSON } from "../types/response";
+import { ApplicationDTO, ResponseJSON } from "../types/response";
 import { limit } from "../utils/const";
 import getLastId from "../utils/lastId";
 import { prisma } from "../utils/const";
@@ -19,14 +19,13 @@ export default class ApplicationController {
 
       notFound(student.document, "document");
 
-      const application = await prisma.application.findFirst({
+      const internship = await prisma.internship.findUnique({
         where: {
-          internshipId: Number(internshipId),
-          studentId: Number(req.cookies.id),
+          id: Number(internshipId),
         },
       });
 
-      notFound(application, "application");
+      notFound(internship, "internship");
 
       await prisma.application.create({
         data: {
@@ -43,15 +42,16 @@ export default class ApplicationController {
   }
   public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { studentId, internshipId } = req.query;
+      const { studentId, internshipId, status } = req.query as unknown as ApplicationDTO;
       const applications = await prisma.application.findMany({
         take: limit,
         orderBy: {
           createdAt: "desc",
         },
         where: {
-          studentId: studentId === req.cookies.id ? Number(studentId) : undefined,
+          studentId: studentId ? Number(studentId) : undefined,
           internshipId: internshipId ? Number(internshipId) : undefined,
+          status: status ? status : undefined,
         },
       });
       notFound(applications, "applications");
@@ -70,8 +70,7 @@ export default class ApplicationController {
   }
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const studentId = Number(req.query.student);
-      const internshipId = Number(req.query.internshipId);
+      const { studentId, internshipId, status } = req.query as unknown as ApplicationDTO;
       const { id } = req.params;
       const applications = await prisma.application.findMany({
         take: limit,
@@ -80,8 +79,9 @@ export default class ApplicationController {
           id: Number(id),
         },
         where: {
-          studentId: studentId === req.cookies.id ? studentId : undefined,
-          internshipId: internshipId ? internshipId : undefined,
+          studentId: studentId ? Number(studentId) : undefined,
+          internshipId: internshipId ? Number(internshipId) : undefined,
+          status: status ? status : undefined,
         },
         orderBy: {
           createdAt: "desc",

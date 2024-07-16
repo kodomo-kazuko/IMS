@@ -8,9 +8,9 @@ interface Error {
 
 const ErrorMiddleware = (
   err: Error,
-  req: Request,
+  _req: Request,
   res: Response<ResponseJSON>,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   const status = err.status || 500;
   const message = err.message || "Something went wrong";

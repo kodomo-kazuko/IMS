@@ -41,6 +41,7 @@ model Company {
   phone       String       @unique
   weburl      String
   address     String
+  image       String?
   isApproved  Boolean      @default(false)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
@@ -138,6 +139,7 @@ model StudentInternship {
   studentId    Int
   internshipId Int
   mentorId     Int?
+  image        String?
   type         InternshipType
   status       InternshipStatus
   internship   Internship       @relation(fields: [internshipId], references: [id], onDelete: Cascade)
