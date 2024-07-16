@@ -46,32 +46,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import router, { useRouter } from "next/navigation";
 import api from "@/api/api";
 import { useCallback, useEffect, useState } from "react";
-const studentsApply = [
-    {
-        id: 1,
-        company: "MEZORN",
-        status: "Working",
-        duration: "3 months",
-        internposition: "Software develpoper",
-    },
-
-]
-const students = [
-    {
-        id: 1,
-        image: '',
-        name: 'JOHN DOE',
-        status: 'Working',
-        email: 'johndoe@example.com',
-        major: 'IT',
-        createdAt: '2024-11-11',
-    }
-]
-
 
 export default function Students() {
     const router = useRouter();
     const [students, setStudents] = useState<any[]>([]);
+    const [studentApply, setStudentsApply] = useState<any[]>([]);
     const [token, setToken] = useState("");
     const fetchStudentsList = useCallback(async () => {
         try {
@@ -82,13 +61,13 @@ export default function Students() {
                 return; // Exit function if no token
             }
 
-            const response = await api.get("/student/all", {
+            const response = await api.get("/student/all/base", {
                 headers: {
                     Authorization: `Bearer ${storedToken}`,
                 },
             });
-            console.log(response.data.data);
-            setStudents(response.data.data);
+            console.log(response.data.data.list);
+            setStudents(response.data.data.list);
         } catch (error) {
             console.error("Failed to fetch student list:", error);
             // Handle error as needed
@@ -107,79 +86,7 @@ export default function Students() {
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
                 <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                    {/* <Sheet>
-                        <SheetTrigger asChild>
-                            <Button size="icon" variant="outline" className="sm:hidden">
-                                <PanelLeft className="h-5 w-5" />
-                                <span className="sr-only">Toggle Menu</span>
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="left" className="sm:max-w-xs">
-                            <nav className="grid gap-6 text-lg font-medium">
-                                <Link
-                                    href="#"
-                                    className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-                                >
-                                    <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
-                                    <span className="sr-only">Acme Inc</span>
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                >
-                                    <Home className="h-5 w-5" />
-                                    Dashboard
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                >
-                                    <ShoppingCart className="h-5 w-5" />
-                                    Orders
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-foreground"
-                                >
-                                    <Package className="h-5 w-5" />
-                                    Products
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                >
-                                    <Users2 className="h-5 w-5" />
-                                    Customers
-                                </Link>
-                                <Link
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                >
-                                    <LineChart className="h-5 w-5" />
-                                    Settings
-                                </Link>
-                            </nav>
-                        </SheetContent>
-                    </Sheet> */}
-                    {/* <Breadcrumb className="hidden md:flex">
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink asChild>
-                                    <Link href="#">Dashboard</Link>
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink asChild>
-                                    <Link href="#">Products</Link>
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>All Products</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb> */}
+
                     <div className="relative ml-auto flex-1 md:grow-0">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -280,80 +187,37 @@ export default function Students() {
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            <Dialog>
+                                            {students.map((student) => (
 
+                                                <TableRow key={student.id} onClick={() => router.push(`/students/detail/${student.id}`)}>
+                                                    <TableCell className="hidden sm:table-cell">
+                                                        <Image
+                                                            alt="Product image"
+                                                            className="aspect-square rounded-md object-cover"
+                                                            height="64"
+                                                            src={"/asd"}
+                                                            width="64"
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell className="font-medium">
+                                                        {student.name}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {student.status}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {student.email}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {student.major.name}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {student.createdAt}
+                                                    </TableCell>
+                                                </TableRow>
 
-                                                {students.map((student) => (
-                                                    <DialogTrigger asChild key={student.id}>
-                                                        <TableRow key={student.id}>
-                                                            <TableCell className="hidden sm:table-cell">
-                                                                <Image
-                                                                    alt="Product image"
-                                                                    className="aspect-square rounded-md object-cover"
-                                                                    height="64"
-                                                                    src={"/asd"}
-                                                                    width="64"
-                                                                />
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {student.name}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                {student.status}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                {student.email}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                {student.majorId}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                {student.createdAt}
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    </DialogTrigger>
-                                                ))}
+                                            ))}
 
-                                                <DialogContent className="sm:max-w-[625px]">
-                                                    <DialogHeader>
-                                                        <DialogTitle>Applications</DialogTitle>
-                                                        <DialogDescription>
-                                                            Applied internships
-                                                        </DialogDescription>
-                                                    </DialogHeader>
-                                                    <Table>
-                                                        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
-                                                        <TableHeader>
-                                                            <TableRow>
-                                                                <TableHead className="w-[100px]">Company</TableHead>
-                                                                <TableHead>Status</TableHead>
-                                                                <TableHead>Duration</TableHead>
-                                                                <TableHead className="text-right">Intern position</TableHead>
-                                                            </TableRow>
-                                                        </TableHeader>
-                                                        <TableBody>
-                                                            {studentsApply.map((apply) => (
-                                                                <TableRow key={apply.id}>
-                                                                    <TableCell className="font-medium">{apply.company}</TableCell>
-                                                                    <TableCell>{apply.status}</TableCell>
-                                                                    <TableCell>{apply.duration}</TableCell>
-                                                                    <TableCell className="text-right">{apply.internposition}</TableCell>
-
-                                                                </TableRow>
-                                                            ))}
-                                                        </TableBody>
-                                                        {/* <TableFooter>
-                                                            <TableRow>
-                                                                <TableCell colSpan={3}>Total</TableCell>
-                                                                <TableCell className="text-right">$2,500.00</TableCell>
-                                                            </TableRow>
-                                                        </TableFooter> */}
-                                                    </Table>
-                                                    <DialogFooter>
-                                                        <Button type="submit">Save changes</Button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </Dialog>
                                         </TableBody>
                                     </Table>
                                 </CardContent>
