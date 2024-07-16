@@ -2,10 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
-import { jwtSecretKey, prisma } from "../utils/const";
-import notFound from "../utils/not-found";
+import { jwtSecretKey } from "../utils/const";
 import { deleteFileOnDisk } from "../utils/fileHandler";
 import { AccountType } from "../types/types";
+import { prisma } from "../middleware/PrismMiddleware";
+import { validatePassword } from "../utils/PasswordValidate";
+import notFound from "../utils/not-found";
 
 const account: AccountType = "employee";
 
@@ -38,9 +40,9 @@ export default class EmployeeController {
           password: false,
         },
       });
+
       notFound(employee, "employee");
-      const isPasswordValid = await bcrypt.compare(password, employee.password);
-      notFound(isPasswordValid, "password");
+      validatePassword(password, employee.password);
 
       const token = jwt.sign({ id: employee.id, account, access: employee.roleId }, jwtSecretKey, {
         expiresIn: "7d",
@@ -63,7 +65,7 @@ export default class EmployeeController {
   }
   public async account(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const employee = await prisma.employee.findUniqueOrThrow({
+      const employee = await prisma.employee.findUnique({
         omit: {
           roleId: true,
         },
@@ -74,7 +76,6 @@ export default class EmployeeController {
           id: req.cookies.id,
         },
       });
-      notFound(employee, "employee");
       res
         .status(200)
         .json({ success: true, message: "employee account retrieved", data: employee });

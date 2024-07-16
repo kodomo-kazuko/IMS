@@ -2,8 +2,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-import { jwtSecretKey, limit, prisma } from "../utils/const";
+import { jwtSecretKey } from "../utils/const";
 import getLastId from "../utils/lastId";
+import { prisma } from "../middleware/PrismMiddleware";
+import { validatePassword } from "../utils/PasswordValidate";
 import notFound from "../utils/not-found";
 
 export default class MentorController {
@@ -30,10 +32,9 @@ export default class MentorController {
   public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
-      const mentor = await prisma.mentor.findUnique({
+      const mentor = await prisma.mentor.findUniqueOrThrow({
         where: { id: Number(id) },
       });
-      notFound(mentor, "mentor");
       res
         .status(200)
         .json({ success: true, message: "Mentor retrieved successfully", data: mentor });
@@ -51,9 +52,10 @@ export default class MentorController {
           password: false,
         },
       });
+
       notFound(mentor, "mentor");
-      const isPasswordValid = await bcrypt.compare(password, mentor.password);
-      notFound(isPasswordValid, "password");
+
+      validatePassword(password, mentor.password);
 
       const token = jwt.sign({ id: mentor.id, account: "mentor" }, jwtSecretKey, {
         expiresIn: "7d",
@@ -68,7 +70,6 @@ export default class MentorController {
     try {
       const { companyId } = req.query;
       const mentors = await prisma.mentor.findMany({
-        take: limit,
         orderBy: {
           createdAt: "desc",
         },
@@ -76,7 +77,6 @@ export default class MentorController {
           companyId: companyId ? Number(companyId) : undefined,
         },
       });
-      notFound(mentors, "mentors");
       const lastId = getLastId(mentors);
       res.status(200).json({
         success: true,
@@ -92,7 +92,6 @@ export default class MentorController {
       const { companyId } = req.query;
       const { id } = req.params;
       const mentors = await prisma.mentor.findMany({
-        take: limit,
         skip: 1,
         orderBy: {
           createdAt: "desc",
@@ -104,7 +103,6 @@ export default class MentorController {
           id: Number(id),
         },
       });
-      notFound(mentors, "mentors");
       const lastId = getLastId(mentors);
       res.status(200).json({
         success: true,

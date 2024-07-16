@@ -2,7 +2,7 @@ import createRedisClient from "../redis";
 import { Major } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-import { prisma } from "../utils/const";
+import { prisma } from "../middleware/PrismMiddleware";
 const redisClient = createRedisClient();
 
 export default class MajorController {

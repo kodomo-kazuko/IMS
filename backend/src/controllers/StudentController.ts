@@ -3,12 +3,12 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
-import { updateURL } from "../utils/urlUpdate";
-import { jwtSecretKey, limit } from "../utils/const";
+import { jwtSecretKey } from "../utils/const";
 import getLastId from "../utils/lastId";
-import { prisma } from "../utils/const";
+import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
 import { AccountType } from "../types/types";
+import { validatePassword } from "../utils/PasswordValidate";
 
 const account: AccountType = "student";
 
@@ -42,9 +42,10 @@ export default class StudentController {
           password: false,
         },
       });
+
       notFound(student, "student");
-      const isValidPassword = await bcrypt.compare(password, student.password);
-      notFound(isValidPassword, "password");
+
+      validatePassword(password, student.password);
 
       const token = jwt.sign({ id: student.id, account }, jwtSecretKey, {
         expiresIn: "7d",
@@ -58,7 +59,6 @@ export default class StudentController {
   public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const students = await prisma.student.findMany({
-        take: limit,
         omit: {
           majorId: true,
         },
@@ -69,15 +69,14 @@ export default class StudentController {
           createdAt: "desc",
         },
       });
-      notFound(students, "students");
-      const updatedStudents = updateURL(students, ["document"]);
+
       const lastId = getLastId(students);
       res.status(200).json({
         success: true,
         message: "Students retrieved successfully",
         data: {
           lastId,
-          list: updatedStudents,
+          list: students,
         },
       });
     } catch (error) {
@@ -88,7 +87,6 @@ export default class StudentController {
     try {
       const { id } = req.params;
       const students = await prisma.student.findMany({
-        take: limit,
         skip: 1,
         omit: {
           majorId: true,
@@ -103,15 +101,15 @@ export default class StudentController {
           createdAt: "desc",
         },
       });
-      notFound(students, "students");
+
       const lastId = getLastId(students);
-      const updatedStudents = updateURL(students, ["document"]);
+
       res.status(200).json({
         success: true,
         message: "Students retrieved successfully",
         data: {
           lastId,
-          list: updatedStudents,
+          list: students,
         },
       });
     } catch (error) {
@@ -120,12 +118,11 @@ export default class StudentController {
   }
   public async createDocument(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const student = await prisma.student.findUnique({
+      const student = await prisma.student.findUniqueOrThrow({
         where: {
           id: Number(req.cookies.id),
         },
       });
-      notFound(student, "student");
       notFound(req.file, "file");
 
       await prisma.student.update({
@@ -143,7 +140,7 @@ export default class StudentController {
   public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
-      const student = await prisma.student.findUniqueOrThrow({
+      const student = await prisma.student.findUnique({
         where: {
           id: Number(id),
         },
@@ -155,7 +152,7 @@ export default class StudentController {
   }
   public async account(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const student = await prisma.student.findUniqueOrThrow({
+      const student = await prisma.student.findUnique({
         omit: {
           majorId: true,
         },
@@ -166,8 +163,10 @@ export default class StudentController {
           id: Number(req.cookies.id),
         },
       });
-      const updatedStudent = updateURL(student, ["image", "document"]);
-      res.status(200).json({ success: true, message: "retrieved student", data: updatedStudent });
+
+      notFound(student, "student");
+
+      res.status(200).json({ success: true, message: "retrieved student", data: student });
     } catch (error) {
       next(error);
     }
@@ -177,10 +176,9 @@ export default class StudentController {
       const student = await prisma.student.findUniqueOrThrow({
         where: {
           id: Number(req.cookies.id),
+          image: null,
         },
       });
-
-      notFound(student.image, "image");
 
       notFound(req.file, "file");
 

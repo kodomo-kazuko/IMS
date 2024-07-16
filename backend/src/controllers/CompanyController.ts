@@ -2,11 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
-import { jwtSecretKey, limit } from "../utils/const";
+import { jwtSecretKey } from "../utils/const";
 import getLastId from "../utils/lastId";
-import { prisma } from "../utils/const";
-import notFound from "../utils/not-found";
+import { prisma } from "../middleware/PrismMiddleware";
 import { AccountType } from "../types/types";
+import { validatePassword } from "../utils/PasswordValidate";
+import notFound from "../utils/not-found";
 
 const account: AccountType = "company";
 
@@ -40,9 +41,10 @@ export default class CompanyController {
           password: false,
         },
       });
+
       notFound(company, "company");
-      const isPasswordValid = await bcrypt.compare(password, company.password);
-      notFound(isPasswordValid, "password");
+
+      validatePassword(password, company.password);
 
       const access = !company.isApproved;
 
@@ -61,9 +63,8 @@ export default class CompanyController {
         orderBy: {
           createdAt: "desc",
         },
-        take: limit,
       });
-      notFound(companies, "companies");
+
       const lastId = getLastId(companies);
       res.status(200).json({
         success: true,
@@ -88,10 +89,8 @@ export default class CompanyController {
         cursor: {
           id: Number(id),
         },
-        take: limit,
         skip: 1,
       });
-      notFound(companies, "companies");
       const lastId = getLastId(companies);
       res.status(200).json({
         success: true,
@@ -120,12 +119,11 @@ export default class CompanyController {
   }
   public async account(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const company = await prisma.company.findUnique({
+      const company = await prisma.company.findUniqueOrThrow({
         where: {
           id: req.cookies.id,
         },
       });
-      notFound(company, "company");
       res.status(200).json({ success: true, message: "company details retrieved", data: company });
     } catch (error) {
       next(error);

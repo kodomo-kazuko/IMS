@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { updateURL } from "../utils/urlUpdate";
 import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { ResponseJSON } from "../types/response";
-import { limit } from "../utils/const";
 import getLastId from "../utils/lastId";
-import { prisma } from "../utils/const";
+import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
 
 export default class PostController {
@@ -12,14 +10,12 @@ export default class PostController {
     try {
       const { title, content, internshipId } = req.body;
 
-      const internship = await prisma.internship.findUnique({
+      await prisma.internship.findUniqueOrThrow({
         where: {
           id: Number(internshipId),
           companyId: req.cookies.id,
         },
       });
-
-      notFound(internship, "internship");
 
       notFound(req.file, "file");
 
@@ -52,11 +48,7 @@ export default class PostController {
           internshipId: true,
         },
       });
-
-      notFound(post, "post");
-
-      const newPost = updateURL(post, ["image"]);
-      res.status(200).json({ success: true, data: newPost, message: "post retrieved" });
+      res.status(200).json({ success: true, message: "post retrieved", data: post });
     } catch (error) {
       next(error);
     }
@@ -77,20 +69,19 @@ export default class PostController {
         where: {
           companyId: comapnyId ? comapnyId : undefined,
         },
-        take: limit,
+
         orderBy: {
           createdAt: "desc",
         },
       });
-      notFound(posts, "posts");
-      const postsWithFullUrls = updateURL(posts, ["image"]);
+
       const lastId = getLastId(posts);
       res.status(200).json({
         success: true,
         message: "Retrieved all posts",
         data: {
           lastId,
-          list: postsWithFullUrls,
+          list: posts,
         },
       });
     } catch (error) {
@@ -117,21 +108,18 @@ export default class PostController {
         where: {
           companyId: comapnyId ? comapnyId : undefined,
         },
-        take: limit,
         skip: 1,
         orderBy: {
           createdAt: "desc",
         },
       });
-      notFound(posts, "post");
-      const postsWithFullUrls = updateURL(posts, ["image"]);
       const lastId = getLastId(posts);
       res.status(200).json({
         success: true,
         message: "Retrieved all posts",
         data: {
           lastId,
-          list: postsWithFullUrls,
+          list: posts,
         },
       });
     } catch (error) {
@@ -158,20 +146,18 @@ export default class PostController {
   public async editData(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { title, content, internshipId } = req.body;
+      const { title, content, internshipId } = req.query;
 
-      const existingPost = await prisma.post.findUnique({
-        where: { id: Number(id) },
+      await prisma.post.findUniqueOrThrow({
+        where: { id: Number(id), companyId: req.cookies.id },
       });
-
-      notFound(existingPost, "post");
 
       await prisma.post.update({
         where: { id: Number(id) },
         data: {
-          title,
-          content,
-          internshipId: Number(internshipId),
+          title: title ? String(title) : undefined,
+          content: content ? String(content) : undefined,
+          internshipId: internshipId ? Number(internshipId) : undefined,
         },
       });
 
@@ -185,11 +171,10 @@ export default class PostController {
     try {
       const { id } = req.params;
 
-      const existingPost = await prisma.post.findUnique({
-        where: { id: Number(id) },
+      const existingPost = await prisma.post.findUniqueOrThrow({
+        where: { id: Number(id), companyId: req.cookies.id },
       });
 
-      notFound(existingPost, "post");
       notFound(req.file, "image");
 
       let image = existingPost.image;

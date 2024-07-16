@@ -2,7 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AccountType } from "../types/types";
 import { ResponseJSON } from "../types/response";
-import { jwtSecretKey, prisma } from "../utils/const";
+import { jwtSecretKey } from "../utils/const";
+import { prisma } from "./PrismMiddleware";
 
 interface DecodedToken {
   account: AccountType;
@@ -13,10 +14,10 @@ interface DecodedToken {
 }
 
 const findUserMethods = {
-  employee: (id: number) => prisma.employee.findUnique({ where: { id } }),
-  company: (id: number) => prisma.company.findUnique({ where: { id } }),
-  student: (id: number) => prisma.student.findUnique({ where: { id } }),
-  mentor: (id: number) => prisma.mentor.findUnique({ where: { id } }),
+  employee: (id: number) => prisma.employee.findUniqueOrThrow({ where: { id } }),
+  company: (id: number) => prisma.company.findUniqueOrThrow({ where: { id } }),
+  student: (id: number) => prisma.student.findUniqueOrThrow({ where: { id } }),
+  mentor: (id: number) => prisma.mentor.findUniqueOrThrow({ where: { id } }),
 };
 
 export default function accessMiddleware(

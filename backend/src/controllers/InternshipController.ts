@@ -2,9 +2,7 @@ import { InternshipType } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import getLastId from "../utils/lastId";
-import { limit } from "../utils/const";
-import { prisma } from "../utils/const";
-import notFound from "../utils/not-found";
+import { prisma } from "../middleware/PrismMiddleware";
 
 export default class InternshipController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -33,7 +31,6 @@ export default class InternshipController {
     try {
       const companyId = Number(req.query.companyId);
       const internships = await prisma.internship.findMany({
-        take: limit,
         orderBy: {
           createdAt: "desc",
         },
@@ -41,7 +38,6 @@ export default class InternshipController {
           companyId: companyId ? companyId : undefined,
         },
       });
-      notFound(internships, "internships");
       const lastId = getLastId(internships);
       res.status(200).json({
         success: true,
@@ -60,7 +56,6 @@ export default class InternshipController {
       const companyId = Number(req.query.companyId);
       const { id } = req.params;
       const internships = await prisma.internship.findMany({
-        take: limit,
         skip: 1,
         cursor: {
           id: Number(id),
@@ -69,7 +64,6 @@ export default class InternshipController {
           companyId: companyId ? companyId : undefined,
         },
       });
-      notFound(internships, "internships");
       const lastId = getLastId(internships);
       res.status(200).json({
         success: true,
@@ -96,12 +90,11 @@ export default class InternshipController {
   public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
-      const internship = await prisma.internship.findUnique({
+      const internship = await prisma.internship.findUniqueOrThrow({
         where: {
           id: Number(id),
         },
       });
-      notFound(internship, "internship");
       res.status(200).json({ success: true, message: "internship retrieved", data: internship });
     } catch (error) {
       next(error);

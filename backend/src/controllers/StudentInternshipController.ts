@@ -1,7 +1,7 @@
 import { InternshipStatus } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-import { prisma } from "../utils/const";
+import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
 
 export default class StudentInternshipController {
@@ -23,29 +23,25 @@ export default class StudentInternshipController {
 
       const startedInternship = await prisma.studentInternship.findFirst({
         where: {
-          studentId: Number(req.cookies.id),
-          status: "STARTED",
+          studentId: req.cookies.id,
+          internshipId: Number(id),
         },
       });
       if (startedInternship) {
         res.status(300).json({ success: false, message: "You already have an active internship." });
       }
 
-      // Find the application by ID
       const application = await prisma.application.findUniqueOrThrow({
         where: {
           id: Number(id),
           studentId: req.cookies.id,
         },
       });
-      notFound(application, "application");
 
-      // Check if the application is approved
       if (application.status !== "APPROVED") {
         res.status(400).json({ success: false, message: "Application is not approved." });
       }
 
-      // Create a new student internship record
       await prisma.studentInternship.create({
         data: {
           studentId: Number(req.cookies.id),
@@ -69,7 +65,6 @@ export default class StudentInternshipController {
           id: Number(id),
         },
       });
-      notFound(studentinertnship, "student inertnship");
       const mentor = await prisma.mentor.findUniqueOrThrow({
         where: {
           id: Number(mentorId),
@@ -118,7 +113,7 @@ export default class StudentInternshipController {
   public async student(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const studentInternships = await prisma.student
-        .findUnique({
+        .findUniqueOrThrow({
           where: {
             id: req.cookies.id,
           },
@@ -142,7 +137,7 @@ export default class StudentInternshipController {
     try {
       const { id } = req.params;
       const internships = await prisma.internship
-        .findUnique({
+        .findUniqueOrThrow({
           where: {
             id: Number(id),
             companyId: req.cookies.id,

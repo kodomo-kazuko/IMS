@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-import { prisma } from "../utils/const";
+import { prisma } from "../middleware/PrismMiddleware";
 
 export default class RoleController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
