@@ -31,9 +31,6 @@ export default class InternshipController {
     try {
       const companyId = Number(req.query.companyId);
       const internships = await prisma.internship.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
         where: {
           companyId: companyId ? companyId : undefined,
         },

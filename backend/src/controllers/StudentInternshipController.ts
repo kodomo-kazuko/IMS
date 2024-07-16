@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
+import getLastId from "../utils/lastId";
 
 export default class StudentInternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -90,68 +91,53 @@ export default class StudentInternshipController {
       next(error);
     }
   }
-  public async company(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const studentInternships = await prisma.studentInternship.findMany({
+      const { studentId, internshipId } = req.query;
+      const studentInternship = await prisma.studentInternship.findMany({
         where: {
-          internship: {
-            companyId: req.cookies.id,
-          },
+          studentId: studentId ? Number(studentId) : undefined,
+          internshipId: internshipId ? Number(internshipId) : undefined,
         },
       });
-      notFound(studentInternships, "student Internships");
+      notFound(studentInternship, "student internships not found");
+      const lastId = getLastId(studentInternship);
       res.status(200).json({
         success: true,
-        message: "company active internships retrieved ",
-        data: studentInternships,
+        message: "student internships retirved",
+        data: {
+          lastId,
+          list: studentInternship,
+        },
       });
     } catch (error) {
       next(error);
     }
   }
-
-  public async student(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
-    try {
-      const studentInternships = await prisma.student
-        .findUniqueOrThrow({
-          where: {
-            id: req.cookies.id,
-          },
-        })
-        .internships({
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-      notFound(studentInternships, "student Internships");
-      res.status(200).json({
-        success: true,
-        message: "student internships retrieved",
-        data: studentInternships,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-  public async internships(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id } = req.params;
-      const internships = await prisma.internship
-        .findUniqueOrThrow({
-          where: {
-            id: Number(id),
-            companyId: req.cookies.id,
-          },
-        })
-        .students({
-          orderBy: {
-            createdAt: "desc",
-          },
-          include: {
-            student: true,
-          },
-        });
-      res.status(200).json({ success: true, message: " students retrieved", data: internships });
+      const { studentId, internshipId } = req.query;
+      const studentInternship = await prisma.studentInternship.findMany({
+        where: {
+          studentId: studentId ? Number(studentId) : undefined,
+          internshipId: internshipId ? Number(internshipId) : undefined,
+        },
+        cursor: {
+          id: Number(id),
+        },
+        skip: 1,
+      });
+      notFound(studentInternship, "student internships not found");
+      const lastId = getLastId(studentInternship);
+      res.status(200).json({
+        success: true,
+        message: "student internships retirved",
+        data: {
+          lastId,
+          list: studentInternship,
+        },
+      });
     } catch (error) {
       next(error);
     }
