@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { ApplicationDTO, ResponseJSON } from "../types/response";
 import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
+import notFound from "../utils/not-found";
 
 export default class ApplicationController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -11,14 +12,13 @@ export default class ApplicationController {
 
       const student = await prisma.student.findUniqueOrThrow({
         where: {
-          id: Number(req.cookies.id),
-          NOT: {
-            document: null,
-          },
+          id: req.cookies.id,
         },
       });
 
-      const internship = await prisma.internship.findUniqueOrThrow({
+      notFound(student.document, "document");
+
+      await prisma.internship.findUniqueOrThrow({
         where: {
           id: Number(internshipId),
         },
@@ -41,9 +41,6 @@ export default class ApplicationController {
     try {
       const { studentId, internshipId, status } = req.query as unknown as ApplicationDTO;
       const applications = await prisma.application.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
         where: {
           studentId: studentId ? Number(studentId) : undefined,
           internshipId: internshipId ? Number(internshipId) : undefined,
@@ -53,9 +50,22 @@ export default class ApplicationController {
           studentId: true,
         },
         include: {
-          student: true,
+          student: internshipId ? true : undefined,
+          internship: studentId
+            ? {
+                include: {
+                  company: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              }
+            : undefined,
         },
       });
+      notFound(applications, "applications");
       const lastId = getLastId(applications);
       res.status(200).json({
         success: true,
@@ -82,9 +92,6 @@ export default class ApplicationController {
           studentId: studentId ? Number(studentId) : undefined,
           internshipId: internshipId ? Number(internshipId) : undefined,
           status: status ? status : undefined,
-        },
-        orderBy: {
-          createdAt: "desc",
         },
       });
       const lastId = getLastId(applications);

@@ -69,10 +69,6 @@ export default class PostController {
         where: {
           companyId: comapnyId ? comapnyId : undefined,
         },
-
-        orderBy: {
-          createdAt: "desc",
-        },
       });
 
       const lastId = getLastId(posts);
@@ -109,9 +105,6 @@ export default class PostController {
           companyId: comapnyId ? comapnyId : undefined,
         },
         skip: 1,
-        orderBy: {
-          createdAt: "desc",
-        },
       });
       const lastId = getLastId(posts);
       res.status(200).json({

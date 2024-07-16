@@ -7,7 +7,7 @@ import { jwtSecretKey } from "../utils/const";
 import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
-import { AccountType } from "../types/types";
+import { AccountType, sortOrder } from "../types/types";
 import { validatePassword } from "../utils/PasswordValidate";
 
 const account: AccountType = "student";
@@ -36,16 +36,14 @@ export default class StudentController {
   public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { email, password } = req.body;
-      const student = await prisma.student.findUnique({
+      const student = await prisma.student.findUniqueOrThrow({
         where: { email },
         omit: {
           password: false,
         },
       });
 
-      notFound(student, "student");
-
-      validatePassword(password, student.password);
+      await validatePassword(password, student.password, res);
 
       const token = jwt.sign({ id: student.id, account }, jwtSecretKey, {
         expiresIn: "7d",
@@ -64,9 +62,6 @@ export default class StudentController {
         },
         include: {
           major: true,
-        },
-        orderBy: {
-          createdAt: "desc",
         },
       });
 
@@ -96,9 +91,6 @@ export default class StudentController {
         },
         cursor: {
           id: Number(id),
-        },
-        orderBy: {
-          createdAt: "desc",
         },
       });
 

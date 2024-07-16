@@ -20,7 +20,8 @@ export const prisma = new PrismaClient({
   query: {
     $allModels: {
       findMany({ model, operation, args, query }) {
-        args = { ...args, take: 50 };
+        args = { ...args, take: 20, orderBy: { createdAt: "desc" } };
+
         return query(args);
       },
     },

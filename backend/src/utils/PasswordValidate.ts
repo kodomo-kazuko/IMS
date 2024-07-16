@@ -1,12 +1,14 @@
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
+import { Response } from "express";
 
-export async function validatePassword(inputPassword: string, currentPassword: string) {
-  try {
-    const isPasswordValid = await bcrypt.compare(inputPassword, currentPassword);
-    if (!isPasswordValid) {
-      throw new Error("password not found");
-    }
-  } catch (error) {
-    console.log(error);
+export async function validatePassword(
+  inputPassword: string,
+  currentPassword: string,
+  res: Response
+) {
+  const isPasswordValid = await bcrypt.compare(inputPassword, currentPassword);
+  if (!isPasswordValid) {
+    return res.status(401).json({ success: false, message: "Invalid password" });
   }
+  return true;
 }

@@ -34,15 +34,14 @@ export default class EmployeeController {
   public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     const { email, password } = req.body;
     try {
-      const employee = await prisma.employee.findUnique({
+      const employee = await prisma.employee.findUniqueOrThrow({
         where: { email },
         omit: {
           password: false,
         },
       });
 
-      notFound(employee, "employee");
-      validatePassword(password, employee.password);
+      await validatePassword(password, employee.password, res);
 
       const token = jwt.sign({ id: employee.id, account, access: employee.roleId }, jwtSecretKey, {
         expiresIn: "7d",

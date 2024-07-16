@@ -44,7 +44,7 @@ export default class CompanyController {
 
       notFound(company, "company");
 
-      validatePassword(password, company.password);
+      await validatePassword(password, company.password, res);
 
       const access = !company.isApproved;
 
@@ -59,11 +59,7 @@ export default class CompanyController {
 
   public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const companies = await prisma.company.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
+      const companies = await prisma.company.findMany();
 
       const lastId = getLastId(companies);
       res.status(200).json({
@@ -83,9 +79,6 @@ export default class CompanyController {
     try {
       const { id } = req.params;
       const companies = await prisma.company.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
         cursor: {
           id: Number(id),
         },

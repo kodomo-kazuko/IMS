@@ -55,7 +55,7 @@ export default class MentorController {
 
       notFound(mentor, "mentor");
 
-      validatePassword(password, mentor.password);
+      await validatePassword(password, mentor.password, res);
 
       const token = jwt.sign({ id: mentor.id, account: "mentor" }, jwtSecretKey, {
         expiresIn: "7d",
@@ -70,9 +70,6 @@ export default class MentorController {
     try {
       const { companyId } = req.query;
       const mentors = await prisma.mentor.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
         where: {
           companyId: companyId ? Number(companyId) : undefined,
         },
@@ -93,9 +90,6 @@ export default class MentorController {
       const { id } = req.params;
       const mentors = await prisma.mentor.findMany({
         skip: 1,
-        orderBy: {
-          createdAt: "desc",
-        },
         where: {
           companyId: companyId ? Number(companyId) : undefined,
         },
