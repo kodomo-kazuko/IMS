@@ -11,7 +11,17 @@ router.get(
   studentInternshipController.types /** #swagger.tags = ['StudentInternship'] #swagger.security = [{"bearerAuth": []}] */
 );
 
-router.get("/all/base", accessMiddleware("all"));
+router.get(
+  "/all/base",
+  accessMiddleware("all"),
+  studentInternshipController.base /** #swagger.tags = ['StudentInternship'] #swagger.security = [{"bearerAuth": []}] */
+);
+
+router.get(
+  "/all/:id",
+  accessMiddleware("all"),
+  studentInternshipController.cursor /** #swagger.tags = ['StudentInternship'] #swagger.security = [{"bearerAuth": []}] */
+);
 
 router.post(
   "/create",

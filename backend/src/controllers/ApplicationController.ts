@@ -8,7 +8,7 @@ import notFound from "../utils/not-found";
 export default class ApplicationController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { internshipId, type } = req.body;
+      const { internshipId } = req.body;
 
       const student = await prisma.student.findUniqueOrThrow({
         where: {
@@ -28,7 +28,6 @@ export default class ApplicationController {
         data: {
           studentId: req.cookies.id,
           internshipId: Number(internshipId),
-          type,
         },
       });
 
@@ -134,6 +133,21 @@ export default class ApplicationController {
         message: "retrieved application status types",
         data: applicationStatus,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const application = await prisma.application.findUniqueOrThrow({
+        where: {
+          id: Number(id),
+        },
+      });
+      res
+        .status(200)
+        .json({ success: true, message: "application returned successfully", data: application });
     } catch (error) {
       next(error);
     }

@@ -45,6 +45,7 @@ export async function fakeCompany() {
     phone: faker.lorem.words(5),
     weburl: faker.lorem.words(5),
     address: faker.lorem.words(5),
+    isApproved: true,
   };
 }
 export function fakeCompanyComplete() {
@@ -169,7 +170,7 @@ export function fakeInternship() {
 }
 export function fakeInternshipComplete() {
   return {
-    id: faker.number.int(),
+    // id: faker.number.int({ min: 1, max: 100 }),
     title: faker.lorem.words(5),
     type: faker.helpers.arrayElement([
       InternshipType.INTRODUCTION,
@@ -177,7 +178,7 @@ export function fakeInternshipComplete() {
       InternshipType.VOLUNTEER,
       InternshipType.PART_TIME,
     ] as const),
-    companyId: faker.number.int(),
+    companyId: faker.number.int({ min: 1, max: 100 }),
     createdAt: new Date(),
     enrollmentEndDate: faker.date.anytime(),
     startDate: faker.date.anytime(),
@@ -247,7 +248,7 @@ export function fakeMentorComplete() {
   };
 }
 
-export async function createStudents(numberOfStudents: number) {
+export async function createStudents(amount: number) {
   const majorData = fakeMajorComplete();
   await prisma.major.create({
     data: {
@@ -255,7 +256,7 @@ export async function createStudents(numberOfStudents: number) {
     },
   });
 
-  for (let i = 0; i < numberOfStudents; i++) {
+  for (let i = 0; i < amount; i++) {
     const studentData = await fakeStudent();
     await prisma.student.create({
       data: studentData,
@@ -263,10 +264,19 @@ export async function createStudents(numberOfStudents: number) {
   }
 }
 
-export async function createCompanies(numberOfStudents: number) {
-  for (let i = 0; i < numberOfStudents; i++) {
+export async function createCompanies(amount: number) {
+  for (let i = 0; i < amount; i++) {
     const data = await fakeCompany();
     await prisma.company.create({
+      data: data,
+    });
+  }
+}
+
+export async function createInternships(amount: number) {
+  for (let i = 0; i < amount; i++) {
+    const data = fakeInternshipComplete();
+    await prisma.internship.create({
       data: data,
     });
   }
