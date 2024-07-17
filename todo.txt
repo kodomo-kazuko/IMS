@@ -1,2 +1,0 @@
-1. make it so each student can have a single CV uploaded to their profile instead of sending it to each application
-2. fix seed on windows machines prisma migrate

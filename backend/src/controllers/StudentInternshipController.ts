@@ -43,11 +43,17 @@ export default class StudentInternshipController {
         res.status(400).json({ success: false, message: "Application is not approved." });
       }
 
+      const internship = await prisma.internship.findUniqueOrThrow({
+        where: {
+          id: Number(id),
+        },
+      });
+
       await prisma.studentInternship.create({
         data: {
           studentId: Number(req.cookies.id),
           internshipId: application.internshipId,
-          type: application.type,
+          type: internship.type,
           status: "PENDING",
         },
       });

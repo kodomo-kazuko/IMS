@@ -34,4 +34,10 @@ router.patch(
   accessMiddleware(["company"], 0),
   applicationController.approve /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
 );
+
+router.get(
+  "/:id",
+  accessMiddleware("all"),
+  applicationController.single /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
+);
 export default router;
