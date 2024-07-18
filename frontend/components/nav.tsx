@@ -49,7 +49,7 @@ export default function Navbar() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
-                                href="/dashboard/companyDetail"
+                                href="/internship"
                                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                             >
                                 <ShoppingCart className="h-5 w-5" />
