@@ -18,11 +18,32 @@ export default class ApplicationController {
 
       notFound(student.document, "document");
 
-      await prisma.internship.findUniqueOrThrow({
-        where: {
-          id: Number(internshipId),
-        },
-      });
+      const Requirements = await prisma.internship
+        .findUniqueOrThrow({
+          where: {
+            id: Number(internshipId),
+          },
+        })
+        .Requirement();
+
+      notFound(Requirements, "internship requirements");
+
+      let isEligible = false;
+
+      for (const requirement of Requirements) {
+        if (requirement.majorId === req.cookies.access) {
+          if (requirement.approvedApps.length < requirement.studentLimit) {
+            isEligible = true;
+            break;
+          }
+        }
+      }
+
+      if (!isEligible) {
+        return res
+          .status(403)
+          .json({ success: false, message: "You are not eligible to apply for this internship." });
+      }
 
       await prisma.application.create({
         data: {
@@ -31,11 +52,12 @@ export default class ApplicationController {
         },
       });
 
-      res.status(201).json({ success: true, message: "application created successfully" });
+      res.status(201).json({ success: true, message: "Application created successfully" });
     } catch (error) {
       next(error);
     }
   }
+
   public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { studentId, internshipId, status } = req.query as unknown as ApplicationDTO;
@@ -110,12 +132,14 @@ export default class ApplicationController {
     try {
       const { id } = req.body;
       const application = await prisma.application.findUniqueOrThrow({
-        where: { id: Number(id) },
+        where: {
+          id: Number(id),
+          internship: {
+            companyId: req.cookies.id,
+          },
+        },
       });
 
-      const internship = await prisma.internship.findUniqueOrThrow({
-        where: { id: application.internshipId },
-      });
       await prisma.application.update({
         where: { id: Number(id) },
         data: { status: "APPROVED" },

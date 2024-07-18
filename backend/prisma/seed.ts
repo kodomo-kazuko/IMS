@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { createCompanies, createInternships, createStudents } from "../src/types/fake-data";
+import { createCompanies, createInternships, createStudents } from "../src/types/faker-helpers";
 
 const prisma = new PrismaClient();
 
@@ -31,9 +31,9 @@ const seedDatabase = async () => {
       },
     });
 
-    await createStudents(100);
-    await createCompanies(100);
-    await createInternships(100);
+    await createStudents(50);
+    await createCompanies(50);
+    await createInternships(50);
   } catch (error) {
     console.error("Error during seeding:", (error as Error).message);
   } finally {

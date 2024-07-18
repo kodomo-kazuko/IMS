@@ -10,7 +10,7 @@ interface DecodedToken {
   id: number;
   iat: number;
   exp: number;
-  access?: number;
+  access: number;
 }
 
 const findUserMethods = {

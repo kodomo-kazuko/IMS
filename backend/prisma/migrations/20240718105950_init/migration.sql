@@ -2,10 +2,13 @@
 CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING', 'APPROVED', 'STARTED', 'REJECTED');
 
 -- CreateEnum
-CREATE TYPE "InternshipType" AS ENUM ('INTRODUCTION', 'PROFESSIONAL', 'VOLUNTEER', 'PART_TIME');
+CREATE TYPE "InternshipType" AS ENUM ('INTRODUCTION', 'PROFESSIONAL', 'VOLUNTEER', 'PART_TIME', 'ABCC');
 
 -- CreateEnum
 CREATE TYPE "InternshipStatus" AS ENUM ('PENDING', 'STARTED', 'FINISHED', 'CANCELLED');
+
+-- CreateEnum
+CREATE TYPE "AccountType" AS ENUM ('student', 'employee', 'company');
 
 -- CreateTable
 CREATE TABLE "Student" (
@@ -110,6 +113,7 @@ CREATE TABLE "Internship" (
     "title" TEXT NOT NULL,
     "type" "InternshipType" NOT NULL,
     "companyId" INTEGER NOT NULL,
+    "salary" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "enrollmentEndDate" TIMESTAMP(3) NOT NULL,
     "startDate" TIMESTAMP(3) NOT NULL,
@@ -117,6 +121,19 @@ CREATE TABLE "Internship" (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Internship_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Requirement" (
+    "id" SERIAL NOT NULL,
+    "internshipId" INTEGER NOT NULL,
+    "majorId" INTEGER NOT NULL,
+    "studentLimit" INTEGER NOT NULL,
+    "approvedApps" INTEGER[],
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Requirement_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -132,6 +149,18 @@ CREATE TABLE "StudentInternship" (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "StudentInternship_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Feedback" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "content" TEXT NOT NULL,
+    "account" "AccountType" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Feedback_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -157,19 +186,10 @@ CREATE UNIQUE INDEX "Student_email_key" ON "Student"("email");
 CREATE UNIQUE INDEX "Student_phone_key" ON "Student"("phone");
 
 -- CreateIndex
-CREATE INDEX "Student_id_idx" ON "Student"("id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Company_email_key" ON "Company"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Company_phone_key" ON "Company"("phone");
-
--- CreateIndex
-CREATE INDEX "Company_id_idx" ON "Company"("id");
-
--- CreateIndex
-CREATE INDEX "Application_studentId_internshipId_idx" ON "Application"("studentId", "internshipId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Application_studentId_internshipId_key" ON "Application"("studentId", "internshipId");
@@ -178,16 +198,10 @@ CREATE UNIQUE INDEX "Application_studentId_internshipId_key" ON "Application"("s
 CREATE UNIQUE INDEX "Major_name_key" ON "Major"("name");
 
 -- CreateIndex
-CREATE INDEX "Major_id_idx" ON "Major"("id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Employee_phone_key" ON "Employee"("phone");
-
--- CreateIndex
-CREATE INDEX "Employee_id_roleId_idx" ON "Employee"("id", "roleId");
 
 -- CreateIndex
 CREATE INDEX "Post_companyId_idx" ON "Post"("companyId");
@@ -199,10 +213,10 @@ CREATE UNIQUE INDEX "Post_internshipId_companyId_key" ON "Post"("internshipId", 
 CREATE UNIQUE INDEX "Role_name_key" ON "Role"("name");
 
 -- CreateIndex
-CREATE INDEX "Role_id_idx" ON "Role"("id");
+CREATE INDEX "Internship_companyId_idx" ON "Internship"("companyId");
 
 -- CreateIndex
-CREATE INDEX "Internship_companyId_idx" ON "Internship"("companyId");
+CREATE INDEX "Requirement_internshipId_idx" ON "Requirement"("internshipId");
 
 -- CreateIndex
 CREATE INDEX "StudentInternship_internshipId_studentId_idx" ON "StudentInternship"("internshipId", "studentId");
@@ -241,6 +255,12 @@ ALTER TABLE "Post" ADD CONSTRAINT "Post_internshipId_fkey" FOREIGN KEY ("interns
 ALTER TABLE "Internship" ADD CONSTRAINT "Internship_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Requirement" ADD CONSTRAINT "Requirement_internshipId_fkey" FOREIGN KEY ("internshipId") REFERENCES "Internship"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Requirement" ADD CONSTRAINT "Requirement_majorId_fkey" FOREIGN KEY ("majorId") REFERENCES "Major"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_internshipId_fkey" FOREIGN KEY ("internshipId") REFERENCES "Internship"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -248,6 +268,15 @@ ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_mentorId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_employee_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Employee"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_company_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Mentor" ADD CONSTRAINT "Mentor_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE CASCADE ON UPDATE CASCADE;

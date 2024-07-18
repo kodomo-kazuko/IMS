@@ -1,14 +1,14 @@
-import { ApplicationStatus, InternshipType, InternshipStatus, PrismaClient } from "@prisma/client";
+import {
+  ApplicationStatus,
+  InternshipType,
+  InternshipStatus,
+  AccountType,
+  PrismaClient,
+} from "@prisma/client";
 import { faker } from "@faker-js/faker";
-import bcrypt from "bcrypt";
+import { password } from "./faker-helpers";
 
 export const prisma = new PrismaClient();
-
-async function password() {
-  const password = String(process.env.PASSWORD);
-  const hashedPassword = await bcrypt.hash(password, 10);
-  return hashedPassword;
-}
 
 export async function fakeStudent() {
   const hashedPassword = await password();
@@ -16,9 +16,11 @@ export async function fakeStudent() {
     name: faker.person.fullName(),
     email: faker.internet.email(),
     password: hashedPassword,
-    phone: faker.lorem.words(8),
+    phone: faker.lorem.words(5),
     address: faker.lorem.words(5),
     majorId: faker.number.int({ min: 1, max: 1 }),
+    image: undefined,
+    document: undefined,
   };
 }
 export function fakeStudentComplete() {
@@ -45,7 +47,7 @@ export async function fakeCompany() {
     phone: faker.lorem.words(5),
     weburl: faker.lorem.words(5),
     address: faker.lorem.words(5),
-    isApproved: true,
+    image: undefined,
   };
 }
 export function fakeCompanyComplete() {
@@ -57,19 +59,10 @@ export function fakeCompanyComplete() {
     phone: faker.lorem.words(5),
     weburl: faker.lorem.words(5),
     address: faker.lorem.words(5),
+    image: undefined,
     isApproved: false,
     createdAt: new Date(),
     updatedAt: new Date(),
-  };
-}
-export function fakeApplication() {
-  return {
-    type: faker.helpers.arrayElement([
-      InternshipType.INTRODUCTION,
-      InternshipType.PROFESSIONAL,
-      InternshipType.VOLUNTEER,
-      InternshipType.PART_TIME,
-    ] as const),
   };
 }
 export function fakeApplicationComplete() {
@@ -77,12 +70,6 @@ export function fakeApplicationComplete() {
     id: faker.number.int(),
     studentId: faker.number.int(),
     internshipId: faker.number.int(),
-    type: faker.helpers.arrayElement([
-      InternshipType.INTRODUCTION,
-      InternshipType.PROFESSIONAL,
-      InternshipType.VOLUNTEER,
-      InternshipType.PART_TIME,
-    ] as const),
     status: ApplicationStatus.PENDING,
     appliedAt: new Date(),
     createdAt: new Date(),
@@ -97,13 +84,16 @@ export function fakeMajor() {
 export function fakeMajorComplete() {
   return {
     id: faker.number.int({ min: 1, max: 1 }),
-    name: faker.word.noun(1),
+    name: faker.person.fullName(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 }
-export function fakeEmployee() {
+export async function fakeEmployee() {
+  const hashedPassword = await password();
   return {
     name: faker.person.fullName(),
-    password: faker.lorem.words(5),
+    password: hashedPassword,
     image: undefined,
     email: faker.internet.email(),
     phone: faker.lorem.words(5),
@@ -152,6 +142,8 @@ export function fakeRoleComplete() {
   return {
     id: faker.number.int(),
     name: faker.person.fullName(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 }
 export function fakeInternship() {
@@ -162,7 +154,9 @@ export function fakeInternship() {
       InternshipType.PROFESSIONAL,
       InternshipType.VOLUNTEER,
       InternshipType.PART_TIME,
+      InternshipType.ABCC,
     ] as const),
+    salary: faker.datatype.boolean(),
     enrollmentEndDate: faker.date.anytime(),
     startDate: faker.date.anytime(),
     endDate: faker.date.anytime(),
@@ -170,15 +164,16 @@ export function fakeInternship() {
 }
 export function fakeInternshipComplete() {
   return {
-    // id: faker.number.int({ min: 1, max: 100 }),
     title: faker.lorem.words(5),
     type: faker.helpers.arrayElement([
       InternshipType.INTRODUCTION,
       InternshipType.PROFESSIONAL,
       InternshipType.VOLUNTEER,
       InternshipType.PART_TIME,
+      InternshipType.ABCC,
     ] as const),
-    companyId: faker.number.int({ min: 1, max: 100 }),
+    companyId: faker.number.int({ min: 1, max: 1 }),
+    salary: faker.datatype.boolean(),
     createdAt: new Date(),
     enrollmentEndDate: faker.date.anytime(),
     startDate: faker.date.anytime(),
@@ -186,13 +181,31 @@ export function fakeInternshipComplete() {
     updatedAt: new Date(),
   };
 }
+export function fakeInternshipLimit() {
+  return {
+    studentLimit: faker.number.int(),
+  };
+}
+export function fakeInternshipLimitComplete() {
+  return {
+    id: faker.number.int(),
+    internshipId: faker.number.int(),
+    majorId: faker.number.int(),
+    studentLimit: faker.number.int(),
+    approvedApps: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
 export function fakeStudentInternship() {
   return {
+    image: undefined,
     type: faker.helpers.arrayElement([
       InternshipType.INTRODUCTION,
       InternshipType.PROFESSIONAL,
       InternshipType.VOLUNTEER,
       InternshipType.PART_TIME,
+      InternshipType.ABCC,
     ] as const),
     status: faker.helpers.arrayElement([
       InternshipStatus.PENDING,
@@ -204,20 +217,47 @@ export function fakeStudentInternship() {
 }
 export function fakeStudentInternshipComplete() {
   return {
+    id: faker.number.int(),
     studentId: faker.number.int(),
     internshipId: faker.number.int(),
     mentorId: undefined,
+    image: undefined,
     type: faker.helpers.arrayElement([
       InternshipType.INTRODUCTION,
       InternshipType.PROFESSIONAL,
       InternshipType.VOLUNTEER,
       InternshipType.PART_TIME,
+      InternshipType.ABCC,
     ] as const),
     status: faker.helpers.arrayElement([
       InternshipStatus.PENDING,
       InternshipStatus.STARTED,
       InternshipStatus.FINISHED,
       InternshipStatus.CANCELLED,
+    ] as const),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
+export function fakeFeedback() {
+  return {
+    content: faker.lorem.words(5),
+    account: faker.helpers.arrayElement([
+      AccountType.student,
+      AccountType.employee,
+      AccountType.company,
+    ] as const),
+  };
+}
+export function fakeFeedbackComplete() {
+  return {
+    id: faker.number.int(),
+    userId: faker.number.int(),
+    content: faker.lorem.words(5),
+    account: faker.helpers.arrayElement([
+      AccountType.student,
+      AccountType.employee,
+      AccountType.company,
     ] as const),
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -246,38 +286,4 @@ export function fakeMentorComplete() {
     createdAt: new Date(),
     updatedAt: new Date(),
   };
-}
-
-export async function createStudents(amount: number) {
-  const majorData = fakeMajorComplete();
-  await prisma.major.create({
-    data: {
-      ...majorData,
-    },
-  });
-
-  for (let i = 0; i < amount; i++) {
-    const studentData = await fakeStudent();
-    await prisma.student.create({
-      data: studentData,
-    });
-  }
-}
-
-export async function createCompanies(amount: number) {
-  for (let i = 0; i < amount; i++) {
-    const data = await fakeCompany();
-    await prisma.company.create({
-      data: data,
-    });
-  }
-}
-
-export async function createInternships(amount: number) {
-  for (let i = 0; i < amount; i++) {
-    const data = fakeInternshipComplete();
-    await prisma.internship.create({
-      data: data,
-    });
-  }
 }

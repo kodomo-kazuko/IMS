@@ -45,7 +45,7 @@ export default class StudentController {
 
       await validatePassword(password, student.password, res);
 
-      const token = jwt.sign({ id: student.id, account }, jwtSecretKey, {
+      const token = jwt.sign({ id: student.id, account, access: student.majorId }, jwtSecretKey, {
         expiresIn: "7d",
       });
       res.status(200).json({ success: true, message: "Authentication successful", data: token });

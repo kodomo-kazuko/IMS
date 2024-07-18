@@ -30,7 +30,7 @@ model Student {
   major        Major               @relation(fields: [majorId], references: [id], onDelete: NoAction)
   internships  StudentInternship[]
 
-  @@index([id])
+  Feedback Feedback[] @relation(map: "Feedback_student_userId_fkey")
 }
 
 model Company {
@@ -49,7 +49,7 @@ model Company {
   mentors     Mentor[]
   posts       Post[]
 
-  @@index([id])
+  Feedback Feedback[] @relation(map: "Feedback_company_userId_fkey")
 }
 
 model Application {
@@ -64,17 +64,15 @@ model Application {
   student      Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@unique([studentId, internshipId])
-  @@index([studentId, internshipId])
 }
 
 model Major {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  students  Student[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
-
-  @@index([id])
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  students    Student[]
+  Requirement Requirement[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
 }
 
 model Employee {
@@ -89,7 +87,7 @@ model Employee {
   updatedAt DateTime @updatedAt
   role      Role     @relation(fields: [roleId], references: [id], onDelete: NoAction)
 
-  @@index([id, roleId])
+  Feedback Feedback[] @relation(map: "Feedback_employee_userId_fkey")
 }
 
 model Post {
@@ -115,8 +113,6 @@ model Role {
   employee  Employee[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now()) @updatedAt
-
-  @@index([id])
 }
 
 model Internship {
@@ -124,6 +120,7 @@ model Internship {
   title             String
   type              InternshipType
   companyId         Int
+  salary            Boolean
   createdAt         DateTime            @default(now())
   enrollmentEndDate DateTime
   startDate         DateTime
@@ -133,8 +130,23 @@ model Internship {
   company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
   posts             Post[]
   students          StudentInternship[]
+  Requirement       Requirement[]
 
   @@index([companyId])
+}
+
+model Requirement {
+  id           Int        @id @default(autoincrement())
+  internshipId Int
+  majorId      Int
+  studentLimit Int
+  approvedApps Int[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+  internship   Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+  major        Major      @relation(fields: [majorId], references: [id], onDelete: Cascade)
+
+  @@index([internshipId])
 }
 
 model StudentInternship {
@@ -155,6 +167,18 @@ model StudentInternship {
   @@index([internshipId, studentId])
 }
 
+model Feedback {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  content   String
+  account   AccountType
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
+  student   Student?    @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
+  employee  Employee?   @relation(fields: [userId], references: [id], map: "Feedback_employee_userId_fkey")
+  company   Company?    @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
+}
+
 model Mentor {
   id          Int                 @id @default(autoincrement())
   name        String
@@ -166,7 +190,7 @@ model Mentor {
   companyId   Int
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @default(now()) @updatedAt
-  company     Company             @relation(fields: [companyId], onDelete: Cascade, references: [id])
+  company     Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
   internships StudentInternship[]
 
   @@index([companyId])
@@ -184,6 +208,7 @@ enum InternshipType {
   PROFESSIONAL
   VOLUNTEER
   PART_TIME
+  ABCC
 }
 
 enum InternshipStatus {
@@ -191,4 +216,10 @@ enum InternshipStatus {
   STARTED
   FINISHED
   CANCELLED
+}
+
+enum AccountType {
+  student
+  employee
+  company
 }

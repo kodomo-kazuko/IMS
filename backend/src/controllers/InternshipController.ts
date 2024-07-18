@@ -7,7 +7,7 @@ import { prisma } from "../middleware/PrismMiddleware";
 export default class InternshipController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { title, type, enrollmentEndDate, startDate, endDate } = req.body;
+      const { title, type, enrollmentEndDate, startDate, endDate, salary } = req.body;
       const enrollISO = new Date(enrollmentEndDate).toISOString();
       const startISO = new Date(startDate).toISOString();
       const endISO = new Date(endDate).toISOString();
@@ -19,6 +19,7 @@ export default class InternshipController {
           startDate: startISO,
           endDate: endISO,
           companyId: req.cookies.id,
+          salary,
         },
       });
       res.status(201).json({ success: true, message: "Internship created successfully" });
