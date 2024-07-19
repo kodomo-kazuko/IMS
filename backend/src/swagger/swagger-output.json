@@ -1149,6 +1149,24 @@
         ]
       }
     },
+    "/company/image": {
+      "post": {
+        "tags": [
+          "Company"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/employee/signin": {
       "post": {
         "tags": [
@@ -1182,6 +1200,24 @@
             }
           }
         }
+      }
+    },
+    "/employee/image": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/employee/signup": {

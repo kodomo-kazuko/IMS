@@ -43,16 +43,31 @@ export default class RequirementController {
   }
   public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       await prisma.requirement.delete({
         where: {
-          id: Number(id),
+          id: Number(req.params.id),
           internship: {
             companyId: req.cookies.id,
           },
         },
       });
       res.status(200).json({ success: true, message: "requirement deleted" });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async edit(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const { studentLimit, majorId } = req.query;
+      await prisma.requirement.update({
+        where: {
+          id: Number(req.params.id),
+        },
+        data: {
+          studentLimit: Number(studentLimit),
+          majorId: Number(majorId),
+        },
+      });
     } catch (error) {
       next(error);
     }

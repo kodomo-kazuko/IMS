@@ -31,9 +31,8 @@ export default class MentorController {
 
   public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const mentor = await prisma.mentor.findUniqueOrThrow({
-        where: { id: Number(id) },
+        where: { id: Number(req.params.id) },
       });
       res
         .status(200)
@@ -87,14 +86,13 @@ export default class MentorController {
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { companyId } = req.query;
-      const { id } = req.params;
       const mentors = await prisma.mentor.findMany({
         skip: 1,
         where: {
           companyId: companyId ? Number(companyId) : undefined,
         },
         cursor: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
       });
       const lastId = getLastId(mentors);
@@ -109,10 +107,9 @@ export default class MentorController {
   }
   public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       await prisma.mentor.delete({
         where: {
-          id: Number(id),
+          id: Number(req.params.id),
           companyId: req.cookies.id,
         },
       });

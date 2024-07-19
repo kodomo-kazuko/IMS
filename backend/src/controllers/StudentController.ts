@@ -80,7 +80,6 @@ export default class StudentController {
   }
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const students = await prisma.student.findMany({
         skip: 1,
         omit: {
@@ -90,7 +89,7 @@ export default class StudentController {
           major: true,
         },
         cursor: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
       });
 
@@ -112,13 +111,13 @@ export default class StudentController {
     try {
       const student = await prisma.student.findUniqueOrThrow({
         where: {
-          id: Number(req.cookies.id),
+          id: req.cookies.id,
         },
       });
       notFound(req.file, "file");
 
       await prisma.student.update({
-        where: { id: Number(req.cookies.id) },
+        where: { id: req.cookies.id },
         data: {
           document: req.file.filename,
         },
@@ -131,10 +130,9 @@ export default class StudentController {
   }
   public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const student = await prisma.student.findUnique({
         where: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
       });
       res.status(200).json({ success: true, message: "retrieved student", data: student });
@@ -152,7 +150,7 @@ export default class StudentController {
           major: true,
         },
         where: {
-          id: Number(req.cookies.id),
+          id: req.cookies.id,
         },
       });
 
@@ -165,9 +163,9 @@ export default class StudentController {
   }
   public async uploadImage(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const student = await prisma.student.findUniqueOrThrow({
+      await prisma.student.findUniqueOrThrow({
         where: {
-          id: Number(req.cookies.id),
+          id: req.cookies.id,
           image: null,
         },
       });
@@ -175,7 +173,7 @@ export default class StudentController {
       notFound(req.file, "file");
 
       await prisma.student.update({
-        where: { id: Number(req.cookies.id) },
+        where: { id: req.cookies.id },
         data: {
           image: req.file.filename,
         },
@@ -188,10 +186,9 @@ export default class StudentController {
   }
   public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const student = await prisma.student.delete({
         where: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
       });
       student.image ? deleteFileOnDisk(student.image, "images") : undefined;

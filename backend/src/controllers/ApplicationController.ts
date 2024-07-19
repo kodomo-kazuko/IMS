@@ -104,11 +104,10 @@ export default class ApplicationController {
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { studentId, internshipId, status } = req.query as unknown as ApplicationDTO;
-      const { id } = req.params;
       const applications = await prisma.application.findMany({
         skip: 1,
         cursor: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
         where: {
           studentId: studentId ? Number(studentId) : undefined,
@@ -131,10 +130,9 @@ export default class ApplicationController {
   }
   public async approve(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const application = await prisma.application.findUniqueOrThrow({
         where: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
         include: {
           student: {
@@ -206,10 +204,9 @@ export default class ApplicationController {
   }
   public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const application = await prisma.application.findUniqueOrThrow({
         where: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
       });
       res

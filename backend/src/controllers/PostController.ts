@@ -38,9 +38,8 @@ export default class PostController {
 
   public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const post = await prisma.post.findUnique({
-        where: { id: Number(id) },
+        where: { id: Number(req.params.id) },
         include: {
           internship: true,
         },
@@ -88,10 +87,9 @@ export default class PostController {
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const comapnyId = Number(req.query.comapnyId);
-      const { id } = req.params;
       const posts = await prisma.post.findMany({
         cursor: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
         include: {
           company: {
@@ -122,10 +120,9 @@ export default class PostController {
 
   public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const post = await prisma.post.delete({
         where: {
-          id: Number(id),
+          id: Number(req.params.id),
           companyId: req.cookies.id,
         },
       });
@@ -138,15 +135,14 @@ export default class PostController {
 
   public async editData(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const { title, content, internshipId } = req.query;
 
       await prisma.post.findUniqueOrThrow({
-        where: { id: Number(id), companyId: req.cookies.id },
+        where: { id: Number(req.params.id), companyId: req.cookies.id },
       });
 
       await prisma.post.update({
-        where: { id: Number(id) },
+        where: { id: Number(req.params.id) },
         data: {
           title: title ? String(title) : undefined,
           content: content ? String(content) : undefined,
@@ -162,10 +158,8 @@ export default class PostController {
 
   public async editImage(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
-
       const existingPost = await prisma.post.findUniqueOrThrow({
-        where: { id: Number(id), companyId: req.cookies.id },
+        where: { id: Number(req.params.id), companyId: req.cookies.id },
       });
 
       notFound(req.file, "image");
@@ -177,7 +171,7 @@ export default class PostController {
       image = req.file.filename;
 
       await prisma.post.update({
-        where: { id: Number(id) },
+        where: { id: Number(req.params.id) },
         data: { image },
       });
 

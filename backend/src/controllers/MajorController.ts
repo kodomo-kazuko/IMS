@@ -70,9 +70,8 @@ export default class MajorController {
 
   public delete = async (req: Request, res: Response<ResponseJSON>, next: NextFunction) => {
     try {
-      const { id } = req.params;
       await prisma.major.delete({
-        where: { id: Number(id) },
+        where: { id: Number(req.params.id) },
       });
 
       await redisClient.del("majors");

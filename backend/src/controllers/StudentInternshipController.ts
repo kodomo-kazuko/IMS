@@ -51,7 +51,7 @@ export default class StudentInternshipController {
 
       await prisma.studentInternship.create({
         data: {
-          studentId: Number(req.cookies.id),
+          studentId: req.cookies.id,
           internshipId: application.internshipId,
           type: internship.type,
           status: "PENDING",
@@ -122,7 +122,6 @@ export default class StudentInternshipController {
   }
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const { studentId, internshipId } = req.query;
       const studentInternship = await prisma.studentInternship.findMany({
         where: {
@@ -130,7 +129,7 @@ export default class StudentInternshipController {
           internshipId: internshipId ? Number(internshipId) : undefined,
         },
         cursor: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
         skip: 1,
       });

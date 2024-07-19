@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import { allowedFileTypes } from "../types/types";
-import { error } from "console";
 
 const FILE_PATH = process.env.FILE_PATH;
 

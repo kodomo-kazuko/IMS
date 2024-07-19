@@ -1,6 +1,7 @@
 import { Router } from "express";
 import EmployeeController from "../controllers/EmployeeController";
 import accessMiddleware from "../middleware/AccessMiddleware";
+import upload from "../middleware/MulterMiddleware";
 
 const router = Router();
 const employeeController = new EmployeeController();
@@ -8,6 +9,13 @@ const employeeController = new EmployeeController();
 router.post(
   "/signin",
   employeeController.signin /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */
+);
+
+router.post(
+  "/image",
+  accessMiddleware(["employee"]),
+  upload("images"),
+  employeeController.uploadImage /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 router.post(

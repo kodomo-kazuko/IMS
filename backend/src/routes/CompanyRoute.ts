@@ -1,6 +1,7 @@
 import { Router } from "express";
 import CompanyController from "../controllers/CompanyController";
 import accessMiddleware from "../middleware/AccessMiddleware";
+import upload from "../middleware/MulterMiddleware";
 
 const router = Router();
 const companyController = new CompanyController();
@@ -38,6 +39,13 @@ router.get(
   "/account",
   accessMiddleware(["company"], 0),
   companyController.account /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */
+);
+
+router.post(
+  "/image",
+  accessMiddleware(["company"]),
+  upload("images"),
+  companyController.uploadImage /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 export default router;

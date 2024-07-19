@@ -52,11 +52,10 @@ export default class InternshipController {
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const companyId = Number(req.query.companyId);
-      const { id } = req.params;
       const internships = await prisma.internship.findMany({
         skip: 1,
         cursor: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
         where: {
           companyId: companyId ? companyId : undefined,
@@ -87,10 +86,9 @@ export default class InternshipController {
   }
   public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const internship = await prisma.internship.findUniqueOrThrow({
         where: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
       });
       res.status(200).json({ success: true, message: "internship retrieved", data: internship });

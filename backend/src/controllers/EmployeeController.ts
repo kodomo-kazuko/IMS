@@ -3,10 +3,11 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
 import { jwtSecretKey } from "../utils/const";
-import { deleteFileOnDisk } from "../utils/fileHandler";
+import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { AccountType } from "../types/types";
 import { prisma } from "../middleware/PrismMiddleware";
 import { validatePassword } from "../utils/PasswordValidate";
+import notFound from "../utils/not-found";
 
 const account: AccountType = "employee";
 
@@ -83,13 +84,36 @@ export default class EmployeeController {
   }
   public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const employee = await prisma.employee.delete({
         where: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
       });
       employee.image ? deleteFileOnDisk(employee.image, "images") : undefined;
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async uploadImage(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      await prisma.employee.findFirstOrThrow({
+        where: {
+          id: req.cookies.id,
+          image: null,
+        },
+      });
+      notFound(req.file, "image");
+
+      await prisma.employee.update({
+        where: {
+          id: req.cookies.id,
+        },
+        data: {
+          image: req.file.filename,
+        },
+      });
+      await saveFileToDisk(req.file, "images");
+      res.status(200).json({ success: true, message: "image uploaded" });
     } catch (error) {
       next(error);
     }

@@ -8,6 +8,7 @@ import { prisma } from "../middleware/PrismMiddleware";
 import { AccountType } from "../types/types";
 import { validatePassword } from "../utils/PasswordValidate";
 import notFound from "../utils/not-found";
+import { saveFileToDisk } from "../utils/fileHandler";
 
 const account: AccountType = "company";
 
@@ -77,10 +78,9 @@ export default class CompanyController {
 
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.params;
       const companies = await prisma.company.findMany({
         cursor: {
-          id: Number(id),
+          id: Number(req.params.id),
         },
         skip: 1,
       });
@@ -118,6 +118,30 @@ export default class CompanyController {
         },
       });
       res.status(200).json({ success: true, message: "company details retrieved", data: company });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async uploadImage(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      await prisma.company.findUniqueOrThrow({
+        where: {
+          id: req.cookies.id,
+          image: null,
+        },
+      });
+      notFound(req.file, "image");
+      await prisma.employee.update({
+        where: {
+          id: req.cookies.id,
+        },
+        data: {
+          image: req.file.filename,
+        },
+      });
+
+      await saveFileToDisk(req.file, "images");
+      res.status(200).json({ success: true, message: "image uploaded" });
     } catch (error) {
       next(error);
     }
