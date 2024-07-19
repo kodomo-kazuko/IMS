@@ -30,7 +30,7 @@ router.get(
 );
 
 router.patch(
-  "/approve",
+  "/approve/:id",
   accessMiddleware(["company"], 0),
   applicationController.approve /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
 );

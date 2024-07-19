@@ -35,7 +35,7 @@ export default class CompanyController {
   public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { email, password } = req.body;
-      const company = await prisma.company.findUnique({
+      const company = await prisma.company.findUniqueOrThrow({
         where: { email },
         omit: {
           password: false,
@@ -112,7 +112,7 @@ export default class CompanyController {
   }
   public async account(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const company = await prisma.company.findUniqueOrThrow({
+      const company = await prisma.company.findUnique({
         where: {
           id: req.cookies.id,
         },

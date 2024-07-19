@@ -146,6 +146,7 @@ model Requirement {
   internship   Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
   major        Major      @relation(fields: [majorId], references: [id], onDelete: Cascade)
 
+  @@unique([majorId, internshipId])
   @@index([internshipId])
 }
 

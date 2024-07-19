@@ -36,7 +36,7 @@ router.get(
 
 router.delete(
   "/delete/:id",
-  accessMiddleware(["company"]),
+  accessMiddleware(["company"], 0),
   mentorController.delete /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
 );
 

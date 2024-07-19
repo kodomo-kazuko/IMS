@@ -71,19 +71,20 @@ export default class ApplicationController {
           studentId: true,
         },
         include: {
-          student: internshipId ? true : undefined,
+          student: internshipId ? true : false,
           internship: studentId
             ? {
                 include: {
                   company: {
                     select: {
-                      id: true,
                       name: true,
+                      id: true,
+                      image: true,
                     },
                   },
                 },
               }
-            : undefined,
+            : false,
         },
       });
       notFound(applications, "applications");
@@ -130,25 +131,67 @@ export default class ApplicationController {
   }
   public async approve(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.body;
+      const { id } = req.params;
       const application = await prisma.application.findUniqueOrThrow({
         where: {
           id: Number(id),
-          internship: {
-            companyId: req.cookies.id,
+        },
+        include: {
+          student: {
+            select: {
+              majorId: true,
+            },
           },
         },
       });
 
-      await prisma.application.update({
-        where: { id: Number(id) },
-        data: { status: "APPROVED" },
-      });
+      const requirements = await prisma.internship
+        .findUniqueOrThrow({
+          where: {
+            id: application.internshipId,
+          },
+        })
+        .Requirement();
+      let isEligible = false;
+      let targetRequirementId: number | null = null;
+
+      for (const requirement of requirements) {
+        if (requirement.majorId === application.student.majorId) {
+          if (requirement.approvedApps.length < requirement.studentLimit) {
+            isEligible = true;
+            targetRequirementId = requirement.id;
+            break;
+          }
+        }
+      }
+
+      if (!isEligible) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Application does not meet the eligibility criteria" });
+      }
+
+      await prisma.$transaction([
+        prisma.application.update({
+          where: { id: application.id },
+          data: { status: "APPROVED" },
+        }),
+        prisma.requirement.update({
+          where: { id: targetRequirementId! },
+          data: {
+            approvedApps: {
+              push: application.id,
+            },
+          },
+        }),
+      ]);
+
       res.status(200).json({ success: true, message: "Application approved successfully" });
     } catch (error) {
       next(error);
     }
   }
+
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const applicationStatus = Object.values(ApplicationStatus);

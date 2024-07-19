@@ -1318,6 +1318,9 @@
                   },
                   "endDate": {
                     "example": "any"
+                  },
+                  "salary": {
+                    "example": "any"
                   }
                 }
               }
@@ -1416,6 +1419,100 @@
         ]
       }
     },
+    "/requirement/create": {
+      "post": {
+        "tags": [
+          "Requirement"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "majorId": {
+                    "example": "any"
+                  },
+                  "internshipId": {
+                    "example": "any"
+                  },
+                  "studentLimit": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requirement/single/{id}": {
+      "get": {
+        "tags": [
+          "Requirement"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/requirement/delete/{id}": {
+      "delete": {
+        "tags": [
+          "Requirement"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/application/types": {
       "get": {
         "tags": [
@@ -1443,6 +1540,9 @@
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         },
         "security": [
@@ -1556,12 +1656,22 @@
         ]
       }
     },
-    "/application/approve": {
+    "/application/approve/{id}": {
       "patch": {
         "tags": [
           "Application"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1571,21 +1681,7 @@
           {
             "bearerAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
     "/application/{id}": {

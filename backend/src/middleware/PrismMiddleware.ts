@@ -19,18 +19,10 @@ export const prisma = new PrismaClient({
 }).$extends({
   query: {
     $allModels: {
-      findMany({ model, operation, args, query }) {
+      async findMany({ model, operation, args, query }) {
         args = { ...args, take: 20, orderBy: { createdAt: "desc" } };
-
-        return query(args);
-      },
-    },
-
-    student: {
-      async findMany({ model, operation, args, query }) {
         const data = await query(args);
-        const dataArray = Array.isArray(data) ? data : [data];
-        const updatedData = updateURL(dataArray, ["image", "document"]);
+        const updatedData = updateURL(data as any, ["image", "document"]);
 
         return updatedData;
       },
@@ -38,47 +30,6 @@ export const prisma = new PrismaClient({
         const data = await query(args);
         const dataArray = Array.isArray(data) ? data : [data];
         const updatedData = updateURL(dataArray, ["image", "document"]);
-
-        return updatedData;
-      },
-    },
-    post: {
-      async findMany({ model, operation, args, query }) {
-        const data = await query(args);
-        const dataArray = Array.isArray(data) ? data : [data];
-        const updatedData = updateURL(dataArray, ["image"]);
-
-        return updatedData;
-      },
-      async findUnique({ model, operation, args, query }) {
-        const data = await query(args);
-        const dataArray = Array.isArray(data) ? data : [data];
-        const updatedData = updateURL(dataArray, ["image"]);
-
-        return updatedData;
-      },
-    },
-    company: {
-      async findMany({ model, operation, args, query }) {
-        const data = await query(args);
-        const dataArray = Array.isArray(data) ? data : [data];
-        const updatedData = updateURL(dataArray, ["image"]);
-
-        return updatedData;
-      },
-    },
-    employee: {
-      async findMany({ model, operation, args, query }) {
-        const data = await query(args);
-        const dataArray = Array.isArray(data) ? data : [data];
-        const updatedData = updateURL(dataArray, ["image"]);
-
-        return updatedData;
-      },
-      async findUnique({ model, operation, args, query }) {
-        const data = await query(args);
-        const dataArray = Array.isArray(data) ? data : [data];
-        const updatedData = updateURL(dataArray, ["image"]);
 
         return updatedData;
       },

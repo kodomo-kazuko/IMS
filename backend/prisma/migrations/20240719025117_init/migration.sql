@@ -219,6 +219,9 @@ CREATE INDEX "Internship_companyId_idx" ON "Internship"("companyId");
 CREATE INDEX "Requirement_internshipId_idx" ON "Requirement"("internshipId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Requirement_majorId_internshipId_key" ON "Requirement"("majorId", "internshipId");
+
+-- CreateIndex
 CREATE INDEX "StudentInternship_internshipId_studentId_idx" ON "StudentInternship"("internshipId", "studentId");
 
 -- CreateIndex

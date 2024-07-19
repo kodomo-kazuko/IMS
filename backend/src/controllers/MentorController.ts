@@ -46,7 +46,7 @@ export default class MentorController {
   public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { email, password } = req.body;
-      const mentor = await prisma.mentor.findUnique({
+      const mentor = await prisma.mentor.findUniqueOrThrow({
         where: { email },
         omit: {
           password: false,
