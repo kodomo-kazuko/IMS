@@ -13,13 +13,6 @@ interface DecodedToken {
   access: number;
 }
 
-const findUserMethods = {
-  employee: (id: number) => prisma.employee.findUniqueOrThrow({ where: { id } }),
-  company: (id: number) => prisma.company.findUniqueOrThrow({ where: { id } }),
-  student: (id: number) => prisma.student.findUniqueOrThrow({ where: { id } }),
-  mentor: (id: number) => prisma.mentor.findUniqueOrThrow({ where: { id } }),
-};
-
 export default function accessMiddleware(
   requiredAccounts: AccountType[] | "all",
   requiredAccessLevel?: number

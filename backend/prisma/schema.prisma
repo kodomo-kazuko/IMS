@@ -87,7 +87,7 @@ model Employee {
   updatedAt DateTime @updatedAt
   role      Role     @relation(fields: [roleId], references: [id], onDelete: NoAction)
 
-  Feedback Feedback[] @relation(map: "Feedback_employee_userId_fkey")
+  // Feedback Feedback[] @relation(map: "Feedback_employee_userId_fkey")
 }
 
 model Post {
@@ -163,21 +163,25 @@ model StudentInternship {
   student      Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @default(now()) @updatedAt
+  Feedback     Feedback[]
 
   @@unique([studentId, internshipId])
   @@index([internshipId, studentId])
 }
 
 model Feedback {
-  id        Int         @id @default(autoincrement())
-  userId    Int
-  content   String
-  account   AccountType
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @default(now()) @updatedAt
-  student   Student?    @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
-  employee  Employee?   @relation(fields: [userId], references: [id], map: "Feedback_employee_userId_fkey")
-  company   Company?    @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
+  id                Int               @id @default(autoincrement())
+  userId            Int
+  content           String
+  score             Int               @default(0)
+  internshipId      Int
+  account           AccountType
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @default(now()) @updatedAt
+  studentinternship StudentInternship @relation(fields: [internshipId], references: [id])
+  student           Student?          @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
+  // employee  Employee?   @relation(fields: [userId], references: [id], map: "Feedback_employee_userId_fkey")
+  company           Company?          @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
 }
 
 model Mentor {

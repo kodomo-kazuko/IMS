@@ -7,7 +7,6 @@ import { deleteFileOnDisk } from "../utils/fileHandler";
 import { AccountType } from "../types/types";
 import { prisma } from "../middleware/PrismMiddleware";
 import { validatePassword } from "../utils/PasswordValidate";
-import notFound from "../utils/not-found";
 
 const account: AccountType = "employee";
 

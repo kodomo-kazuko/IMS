@@ -7,7 +7,7 @@ import { jwtSecretKey } from "../utils/const";
 import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
-import { AccountType, sortOrder } from "../types/types";
+import { AccountType } from "../types/types";
 import { validatePassword } from "../utils/PasswordValidate";
 
 const account: AccountType = "student";

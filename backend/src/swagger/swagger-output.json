@@ -1457,7 +1457,7 @@
         }
       }
     },
-    "/requirement/single/{id}": {
+    "/requirement/internship/{id}": {
       "get": {
         "tags": [
           "Requirement"
@@ -1675,6 +1675,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         },
         "security": [

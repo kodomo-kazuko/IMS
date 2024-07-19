@@ -156,6 +156,8 @@ CREATE TABLE "Feedback" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "content" TEXT NOT NULL,
+    "score" INTEGER NOT NULL DEFAULT 0,
+    "internshipId" INTEGER NOT NULL,
     "account" "AccountType" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -273,10 +275,10 @@ ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_mentorId_fkey"
 ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_internshipId_fkey" FOREIGN KEY ("internshipId") REFERENCES "StudentInternship"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_employee_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Employee"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_company_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
