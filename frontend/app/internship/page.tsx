@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 
-import { ListFilter, MoreHorizontal, PlusCircle, Search } from "lucide-react";
+import { Check, ChevronsUpDown, ListFilter, MoreHorizontal, PlusCircle, Search } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -21,27 +21,62 @@ import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, Tabl
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import router, { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import axios from "axios";
+
 import api from "@/api/api";
-const invoices = [
-    {
-        invoice: "INV001",
-        paymentStatus: "Paid",
-        totalAmount: "$250.00",
-        paymentMethod: "Credit Card",
-    },
-];
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import TopNav from "@/components/topNac";
+
 
 export default function Internship() {
     const router = useRouter();
     const [internships, setInternships] = useState<any[]>([]);
+    const [internTypes, setInternTypes] = useState<any[]>([]);
     const [token, setToken] = useState("");
+    const [open, setOpen] = useState(false)
+    const [value, setValue] = useState("")
+    const [formData, setFormData] = useState({
+        title: '',
+        type: '',
+        enrollmentEndDate: '',
+        startDate: '',
+        endDate: '',
+    });
+    const handleChange = (e: any) => {
+        const { id, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [id]: value
+        }));
+    };
 
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+        try {
+            const response = await api.post('/internship/create', formData);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error submitting form', error);
+        }
+    };
     const handleLogOut = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
 
         localStorage.clear();
     };
+
+    const fetchIntroductionType = useCallback(async () => {
+        const storedToken = localStorage.getItem("token");
+        try {
+            const response = await api.get("/internship/types");
+            console.log(response.data.data);
+            setInternTypes(response.data.data);
+        } catch (error) {
+            console.error("Failed to fetch intoduction Type:", error);
+
+        }
+    }, []);
 
     const fetchCompanyList = useCallback(async () => {
         try {
@@ -49,61 +84,28 @@ export default function Internship() {
             console.log(storedToken);
             if (!storedToken) {
                 router.push("/login");
-                return; // Exit function if no token
+                return;
             }
 
-            const response = await api.get("/internship/all/base", {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`,
-                },
-            });
+            const response = await api.get("/internship/all/base");
             console.log(response.data.data.list);
             setInternships(response.data.data.list);
         } catch (error) {
             console.error("Failed to fetch company list:", error);
-            // Handle error as needed
+
         }
     }, [router]);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            router.push("/login");
-        } else {
-            fetchCompanyList();
-        }
+        fetchIntroductionType();
+        fetchCompanyList();
     }, [router, fetchCompanyList, token]);
+
 
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-                <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                    <div className="relative ml-auto flex-1 md:grow-0">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input type="search" placeholder="Search..." className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]" />
-                    </div>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
-                                {/* <Image
-                                    src="/placeholder-user.jpg"
-                                    width={36}
-                                    height={36}
-                                    alt="Avatar"
-                                    className="overflow-hidden rounded-full"
-                                /> */}
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Settings</DropdownMenuItem>
-                            <DropdownMenuItem>Support</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={handleLogOut}>Logout</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </header>
+                <TopNav />
                 <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
                     <Tabs defaultValue="all">
                         <div className="flex items-center">
@@ -112,31 +114,53 @@ export default function Internship() {
                                     <DialogTrigger asChild>
                                         <Button size="sm" className="h-8 gap-1">
                                             <PlusCircle className="h-3.5 w-3.5" />
-                                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Company</span>
+                                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Internship</span>
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent className="sm:max-w-[425px]">
                                         <DialogHeader>
-                                            <DialogTitle>Add Company</DialogTitle>
+                                            <DialogTitle>Add Internshp</DialogTitle>
                                             <DialogDescription>Make changes to your profile here. Click save when you&apos;re done.</DialogDescription>
                                         </DialogHeader>
-                                        <div className="grid gap-4 py-4">
+                                        <form onSubmit={handleSubmit} className="grid gap-4 py-4">
+
+
                                             <div className="grid grid-cols-4 items-center gap-4">
-                                                <Label htmlFor="name" className="text-right">
-                                                    Name
+                                                <Label htmlFor="title" className="text-right">
+                                                    Title
                                                 </Label>
-                                                <Input id="name" defaultValue="ACMA" className="col-span-3" />
+                                                <Input id="title" value={formData.title} onChange={handleChange} className="col-span-3" />
                                             </div>
                                             <div className="grid grid-cols-4 items-center gap-4">
-                                                <Label htmlFor="username" className="text-right">
-                                                    Email
+                                                <Label htmlFor="type" className="text-right">
+                                                    Type
                                                 </Label>
-                                                <Input id="username" defaultValue="@ACMA" className="col-span-3" />
+                                                <Input id="type" value={formData.type} onChange={handleChange} className="col-span-3" />
                                             </div>
-                                        </div>
-                                        <DialogFooter>
-                                            <Button type="submit">Save changes</Button>
-                                        </DialogFooter>
+
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="enrollmentEndDate" className="text-right">
+                                                    Enrollment End Date
+                                                </Label>
+                                                <Input id="enrollmentEndDate" value={formData.enrollmentEndDate} onChange={handleChange} className="col-span-3" />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="startDate" className="text-right">
+                                                    Start date
+                                                </Label>
+                                                <Input id="startDate" value={formData.startDate} onChange={handleChange} className="col-span-3" />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="endDate" className="text-right">
+                                                    End date
+                                                </Label>
+                                                <Input id="endDate" value={formData.endDate} onChange={handleChange} className="col-span-3" />
+                                            </div>
+                                            <DialogFooter>
+                                                <Button type="submit">Save changes</Button>
+                                            </DialogFooter>
+                                        </form>
+
                                     </DialogContent>
                                 </Dialog>
                             </div>
