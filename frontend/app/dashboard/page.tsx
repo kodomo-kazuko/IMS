@@ -24,6 +24,7 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import api from "@/api/api";
 import TopNav from "@/components/topNac";
+import CompanyService from "../service/companyService";
 const invoices = [
     {
         invoice: "INV001",
@@ -32,7 +33,7 @@ const invoices = [
         paymentMethod: "Credit Card",
     },
 ];
-
+const companyService = new CompanyService();
 export default function Dashboard() {
     const router = useRouter();
     const [companies, setCompanies] = useState<any[]>([]);
@@ -79,16 +80,18 @@ export default function Dashboard() {
                 return; // Exit function if no token
             }
 
-            const response = await api.get("/company/all/base", {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`,
-                },
-            });
-            console.log(response.data.data.list);
-            setCompanies(response.data.data.list);
+            // const response = await api.get("/company/all/base", {
+            //     headers: {
+            //         Authorization: `Bearer ${storedToken}`,
+            //     },
+            // });
+
+            const response = await companyService.getCompanies();
+            console.log(response.data.list);
+            setCompanies(response.data.list);
         } catch (error) {
             console.error("Failed to fetch company list:", error);
-            // Handle error as needed
+
         }
     }, [router]);
 
