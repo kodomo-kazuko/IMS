@@ -40,4 +40,10 @@ router.get(
   accessMiddleware("all"),
   applicationController.single /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
 );
+
+router.get(
+  "/count",
+  accessMiddleware(["employee"]),
+  applicationController.count /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
+);
 export default router;

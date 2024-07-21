@@ -197,4 +197,12 @@ export default class StudentController {
       next(error);
     }
   }
+  public async count(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const studentCount = await prisma.student.count();
+      return res
+        .status(200)
+        .json({ success: true, message: "student count retrieved", data: studentCount });
+    } catch (error) {}
+  }
 }

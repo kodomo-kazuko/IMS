@@ -23,7 +23,7 @@ const FILE_PATH = process.env.FILE_PATH;
 
 router.use(
   "/",
-  accessMiddleware("all"),
+  // accessMiddleware("all"),
   express.static(
     path.join(__dirname + `../../${FILE_PATH}`)
     /** #swagger.tags = ['Upload'] #swagger.security = [{"bearerAuth": []}] */

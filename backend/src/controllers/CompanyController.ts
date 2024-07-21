@@ -131,7 +131,7 @@ export default class CompanyController {
         },
       });
       notFound(req.file, "image");
-      await prisma.employee.update({
+      await prisma.company.update({
         where: {
           id: req.cookies.id,
         },
@@ -145,5 +145,13 @@ export default class CompanyController {
     } catch (error) {
       next(error);
     }
+  }
+  public async count(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const companyCount = await prisma.company.count();
+      return res
+        .status(200)
+        .json({ success: true, message: "company count retrieved", data: companyCount });
+    } catch (error) {}
   }
 }

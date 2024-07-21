@@ -216,4 +216,12 @@ export default class ApplicationController {
       next(error);
     }
   }
+  public async count(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const applicationCount = await prisma.application.count();
+      return res
+        .status(200)
+        .json({ success: true, message: "application count retrieved", data: applicationCount });
+    } catch (error) {}
+  }
 }

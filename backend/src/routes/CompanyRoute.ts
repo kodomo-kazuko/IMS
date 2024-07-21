@@ -48,4 +48,10 @@ router.post(
   companyController.uploadImage /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */
 );
 
+router.get(
+  "/count",
+  accessMiddleware(["employee"]),
+  companyController.count /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */
+);
+
 export default router;

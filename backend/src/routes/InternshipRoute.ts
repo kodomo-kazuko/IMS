@@ -35,4 +35,10 @@ router.get(
   internshipController.single /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
 );
 
+router.get(
+  "/count",
+  accessMiddleware(["employee"]),
+  internshipController.count /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
+);
+
 export default router;

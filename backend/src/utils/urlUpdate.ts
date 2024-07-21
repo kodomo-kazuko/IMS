@@ -7,53 +7,74 @@ const SERVER_IP = process.env.IP || "localhost";
 const SERVER_PORT = process.env.PORT || 8080;
 const FILE_PATH = process.env.FILE_PATH || "uploads";
 
-function getAllowedType(fieldValue: string): string {
+function getAllowedType(fieldValue: string): string | null {
   const extension = fieldValue.slice(fieldValue.lastIndexOf(".")).toLowerCase();
   for (const [type, extensions] of Object.entries(uploadFilter)) {
     if (extensions.includes(extension)) {
       return type;
     }
   }
-  return "others"; // Default folder if no match is found
+  return null; // Return null if no match is found
 }
 
 function updateField(fieldValue: string): string {
   const subfolder = getAllowedType(fieldValue);
   if (!subfolder) {
-    throw new Error(`Unrecognized file extension: ${fieldValue}`);
+    return fieldValue; // Return original fieldValue if no matching extension is found
   }
   return `http://${SERVER_IP}:${SERVER_PORT}/${FILE_PATH}/${subfolder}/${fieldValue}`;
 }
 
+function isDateField(value: any): boolean {
+  return value instanceof Date || (typeof value === "string" && !isNaN(Date.parse(value)));
+}
+
 export default function updateURL<T extends Record<string, any>>(
   itemOrItems: T | T[],
-  fieldNames: (keyof T)[]
+  fieldNames: (keyof T)[],
+  fieldsToIgnore: (keyof T)[] = []
 ): T | T[] {
   const updateSingleItem = (item: T): T => {
     const updatedFields = fieldNames.reduce((acc, fieldName) => {
+      if (fieldsToIgnore.includes(fieldName) || isDateField(item[fieldName])) {
+        acc[fieldName] = item[fieldName];
+        return acc;
+      }
+
       const fieldValue = item[fieldName];
       if (fieldValue !== null && fieldValue !== undefined) {
         if (typeof fieldValue === "string") {
-          acc[fieldName] = updateField(fieldValue) as T[keyof T];
+          const updatedValue = updateField(fieldValue);
+          acc[fieldName] = updatedValue as T[keyof T];
         } else if (Array.isArray(fieldValue)) {
           acc[fieldName] = fieldValue.map((nestedItem: any) =>
             typeof nestedItem === "string"
               ? updateField(nestedItem)
-              : updateURL(nestedItem, fieldNames)
+              : updateURL(nestedItem, fieldNames, fieldsToIgnore)
           ) as T[keyof T];
-        } else if (typeof fieldValue === "object") {
-          acc[fieldName] = updateURL(fieldValue, fieldNames) as T[keyof T];
+        } else if (typeof fieldValue === "object" && !Array.isArray(fieldValue)) {
+          acc[fieldName] = updateURL(fieldValue, fieldNames, fieldsToIgnore) as T[keyof T];
+        } else {
+          acc[fieldName] = fieldValue;
         }
+      } else {
+        acc[fieldName] = fieldValue;
       }
       return acc;
     }, {} as Partial<T>);
 
     // Recursively update nested objects that are not specified in fieldNames
     Object.keys(item).forEach((key) => {
-      if (!fieldNames.includes(key as keyof T)) {
+      if (!fieldNames.includes(key as keyof T) && !fieldsToIgnore.includes(key as keyof T)) {
         const fieldValue = item[key];
-        if (typeof fieldValue === "object" && fieldValue !== null) {
-          updatedFields[key as keyof T] = updateURL(fieldValue, fieldNames) as T[keyof T];
+        if (typeof fieldValue === "object" && fieldValue !== null && !isDateField(fieldValue)) {
+          updatedFields[key as keyof T] = updateURL(
+            fieldValue,
+            fieldNames,
+            fieldsToIgnore
+          ) as T[keyof T];
+        } else {
+          updatedFields[key as keyof T] = fieldValue;
         }
       }
     });

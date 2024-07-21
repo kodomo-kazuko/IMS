@@ -971,6 +971,24 @@
         ]
       }
     },
+    "/student/count": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/company/signin": {
       "post": {
         "tags": [
@@ -1151,6 +1169,24 @@
     },
     "/company/image": {
       "post": {
+        "tags": [
+          "Company"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/company/count": {
+      "get": {
         "tags": [
           "Company"
         ],
@@ -1455,6 +1491,24 @@
         ]
       }
     },
+    "/internship/count": {
+      "get": {
+        "tags": [
+          "Internship"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/requirement/create": {
       "post": {
         "tags": [
@@ -1739,6 +1793,24 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/application/count": {
+      "get": {
+        "tags": [
+          "Application"
+        ],
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"

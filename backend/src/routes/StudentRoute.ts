@@ -60,4 +60,10 @@ router.delete(
   accessMiddleware(["employee"], 1),
   studentController.delete /** #swagger.tags = ['Student'] #swagger.security = [{"bearerAuth": []}] */
 );
+
+router.get(
+  "/count",
+  accessMiddleware(["employee"]),
+  studentController.count /** #swagger.tags = ['Student'] #swagger.security = [{"bearerAuth": []}] */
+);
 export default router;

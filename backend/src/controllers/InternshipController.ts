@@ -96,4 +96,12 @@ export default class InternshipController {
       next(error);
     }
   }
+  public async count(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const internshipCount = await prisma.internship.count();
+      return res
+        .status(200)
+        .json({ success: true, message: "internship count retrieved", data: internshipCount });
+    } catch (error) {}
+  }
 }
