@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import CompanyService from "@/app/service/companyService"
 import { fromJSON } from "postcss"
+import { useRouter } from "next/navigation"
 
 const FormSchema = z.object({
     name: z.string().min(2, {
@@ -42,6 +43,7 @@ const FormSchema = z.object({
 const companyService = new CompanyService();
 
 export default function InputForm() {
+    const router = useRouter();
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -67,6 +69,8 @@ export default function InputForm() {
                     </pre>
                 )
             })
+            router.push("/dashboard")
+
         } else {
             console.log("fuck you its not working go to toilet and touch your self")
         }

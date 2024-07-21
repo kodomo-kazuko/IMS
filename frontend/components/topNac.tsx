@@ -12,14 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-const invoices = [
-    {
-        invoice: "INV001",
-        paymentStatus: "Paid",
-        totalAmount: "$250.00",
-        paymentMethod: "Credit Card",
-    },
-];
 
 export default function TopNav() {
     const handleLogOut = async (e: { preventDefault: () => void }) => {
