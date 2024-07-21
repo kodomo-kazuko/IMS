@@ -23,6 +23,7 @@ import router, { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import api from "@/api/api";
+import TopNav from "@/components/topNac";
 const invoices = [
     {
         invoice: "INV001",
@@ -103,33 +104,7 @@ export default function Dashboard() {
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-                <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                    <div className="relative ml-auto flex-1 md:grow-0">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input type="search" placeholder="Search..." className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]" />
-                    </div>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
-                                {/* <Image
-                                    src="/placeholder-user.jpg"
-                                    width={36}
-                                    height={36}
-                                    alt="Avatar"
-                                    className="overflow-hidden rounded-full"
-                                /> */}
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Settings</DropdownMenuItem>
-                            <DropdownMenuItem>Support</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={handleLogOut}>Logout</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </header>
+                <TopNav />
                 <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
                     <Tabs defaultValue="all">
                         <div className="flex items-center">
@@ -208,13 +183,13 @@ export default function Dashboard() {
 
                                                     <TableRow key={company.id} onClick={() => router.push(`/dashboard/detail/${company.id}`)}>
                                                         <TableCell className="hidden sm:table-cell">
-                                                            {/* <Image
-                                                                    alt="Product image"
-                                                                    className="aspect-square rounded-md object-cover"
-                                                                    height="64"
-                                                                    src={company.image}
-                                                                    width="64"
-                                                                /> */}
+                                                            <Image
+                                                                alt="Product image"
+                                                                className="aspect-square rounded-md object-cover"
+                                                                height="64"
+                                                                src={company.image ? company.image : "/placeholder.svg"}
+                                                                width="64"
+                                                            />
                                                         </TableCell>
                                                         <TableCell className="font-medium">{company.name}</TableCell>
                                                         <TableCell>

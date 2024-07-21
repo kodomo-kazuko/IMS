@@ -1,16 +1,13 @@
 import Link from "next/link"
 import React from 'react'
 import {
-    File,
+
     Home,
     LineChart,
-    ListFilter,
-    MoreHorizontal,
+
     Package,
     Package2,
-    PanelLeft,
-    PlusCircle,
-    Search,
+
     Settings,
     ShoppingCart,
     Users2,
@@ -44,7 +41,7 @@ export default function Navbar() {
                                 <span className="sr-only">Dashboard</span>
                             </Link>
                         </TooltipTrigger>
-                        <TooltipContent side="right">Dashboard</TooltipContent>
+                        <TooltipContent side="right">Company</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -53,10 +50,10 @@ export default function Navbar() {
                                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                             >
                                 <ShoppingCart className="h-5 w-5" />
-                                <span className="sr-only">Orders</span>
+                                <span className="sr-only">Internship</span>
                             </Link>
                         </TooltipTrigger>
-                        <TooltipContent side="right">Orders</TooltipContent>
+                        <TooltipContent side="right">Internship</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -68,7 +65,7 @@ export default function Navbar() {
                                 <span className="sr-only">Products</span>
                             </Link>
                         </TooltipTrigger>
-                        <TooltipContent side="right">Products</TooltipContent>
+                        <TooltipContent side="right">Students</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -80,7 +77,7 @@ export default function Navbar() {
                                 <span className="sr-only">Customers</span>
                             </Link>
                         </TooltipTrigger>
-                        <TooltipContent side="right">Customers</TooltipContent>
+                        <TooltipContent side="right">Applications</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
