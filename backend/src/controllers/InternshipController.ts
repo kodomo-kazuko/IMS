@@ -35,6 +35,9 @@ export default class InternshipController {
         where: {
           companyId: companyId ? companyId : undefined,
         },
+        include: {
+          Requirement: true,
+        },
       });
       const lastId = getLastId(internships);
       res.status(200).json({
@@ -103,5 +106,18 @@ export default class InternshipController {
         .status(200)
         .json({ success: true, message: "internship count retrieved", data: internshipCount });
     } catch (error) {}
+  }
+  public async delete(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      await prisma.internship.delete({
+        where: {
+          id: Number(req.params.id),
+          companyId: req.cookies.id,
+        },
+      });
+      res.status(200).json({ success: true, message: "internship deleted" });
+    } catch (error) {
+      next(error);
+    }
   }
 }

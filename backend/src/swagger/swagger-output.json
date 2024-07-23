@@ -1509,6 +1509,34 @@
         ]
       }
     },
+    "/internship/delete/{id}": {
+      "delete": {
+        "tags": [
+          "Internship"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/requirement/create": {
       "post": {
         "tags": [

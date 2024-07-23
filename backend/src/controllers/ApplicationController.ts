@@ -169,22 +169,19 @@ export default class ApplicationController {
           .json({ success: false, message: "Application does not meet the eligibility criteria" });
       }
 
-      await prisma.$transaction([
-        prisma.application.update({
-          where: { id: application.id },
-          data: { status: "APPROVED" },
-        }),
-        prisma.requirement.update({
+      await prisma.application.update({
+        where: { id: application.id },
+        data: { status: "APPROVED" },
+      }),
+        await prisma.requirement.update({
           where: { id: targetRequirementId! },
           data: {
             approvedApps: {
-              push: application.id,
+              push: Number(req.params.id),
             },
           },
         }),
-      ]);
-
-      res.status(200).json({ success: true, message: "Application approved successfully" });
+        res.status(200).json({ success: true, message: "Application approved successfully" });
     } catch (error) {
       next(error);
     }

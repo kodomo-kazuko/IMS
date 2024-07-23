@@ -1,0 +1,20 @@
+model Feedback {
+    id                Int               @id @default(autoincrement())
+    userId            Int
+    content           String
+    score             Int               @default(0)
+    internshipId      Int
+    account           AccountType
+    createdAt         DateTime          @default(now())
+    updatedAt         DateTime          @default(now()) @updatedAt
+    studentinternship StudentInternship @relation(fields: [internshipId], references: [id])
+    student           Student?          @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
+    // employee  Employee?   @relation(fields: [userId], references: [id], map: "Feedback_employee_userId_fkey")
+    company           Company?          @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
+}
+
+enum AccountType {
+    student
+    employee
+    company
+}

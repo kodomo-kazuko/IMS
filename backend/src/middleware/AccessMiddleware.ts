@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { AccountType } from "../types/types";
 import { ResponseJSON } from "../types/response";
 import { jwtSecretKey } from "../utils/const";
-import { prisma } from "./PrismMiddleware";
 
 interface DecodedToken {
   account: AccountType;

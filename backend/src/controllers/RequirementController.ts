@@ -1,6 +1,7 @@
 import { prisma } from "../middleware/PrismMiddleware";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
+import notFound from "../utils/not-found";
 
 export default class RequirementController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -34,6 +35,7 @@ export default class RequirementController {
           },
         })
         .Requirement();
+      notFound(requirements, "requirements");
       res
         .status(200)
         .json({ success: true, message: "requirements retrieved", data: requirements });

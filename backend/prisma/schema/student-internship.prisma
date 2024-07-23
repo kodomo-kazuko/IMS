@@ -1,0 +1,25 @@
+model StudentInternship {
+    id           Int              @id @default(autoincrement())
+    studentId    Int
+    internshipId Int
+    mentorId     Int?
+    image        String?
+    type         InternshipType
+    status       InternshipStatus
+    internship   Internship       @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+    mentor       Mentor?          @relation(fields: [mentorId], references: [id])
+    student      Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    createdAt    DateTime         @default(now())
+    updatedAt    DateTime         @default(now()) @updatedAt
+    Feedback     Feedback[]
+
+    @@unique([studentId, internshipId])
+    @@index([internshipId, studentId])
+}
+
+enum InternshipStatus {
+    PENDING
+    STARTED
+    FINISHED
+    CANCELLED
+}
