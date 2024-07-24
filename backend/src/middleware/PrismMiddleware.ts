@@ -23,15 +23,15 @@ export const prisma = new PrismaClient({
       async findMany({ model, operation, args, query }) {
         args = { ...args, take: 20, orderBy: { updatedAt: "desc" } };
         const data = await query(args);
+        notFound(data, model);
         const updatedData = updateURL(data as any, ["image", "document"]);
-        notFound(updatedData, "data");
         return updatedData;
       },
       async findUnique({ model, operation, args, query }) {
         const data = await query(args);
+        notFound(data, model);
         const dataArray = Array.isArray(data) ? data : [data];
-        const updatedData = updateURL(dataArray, ["image", "document"]);
-        notFound(updatedData, "data");
+        const updatedData = updateURL(dataArray as any, ["image", "document"]);
         return updatedData;
       },
     },

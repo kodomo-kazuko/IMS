@@ -35,9 +35,6 @@ export default class InternshipController {
         where: {
           companyId: companyId ? companyId : undefined,
         },
-        include: {
-          Requirement: true,
-        },
       });
       const lastId = getLastId(internships);
       res.status(200).json({

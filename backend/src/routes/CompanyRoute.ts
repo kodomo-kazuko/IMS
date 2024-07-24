@@ -54,4 +54,10 @@ router.get(
   companyController.count /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */
 );
 
+router.get(
+  "/:id",
+  accessMiddleware(["employee"]),
+  companyController.single /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */
+);
+
 export default router;

@@ -154,4 +154,16 @@ export default class CompanyController {
         .json({ success: true, message: "company count retrieved", data: companyCount });
     } catch (error) {}
   }
+  public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const company = await prisma.company.findUnique({
+        where: {
+          id: req.params.id ? Number(req.params.id) : undefined,
+        },
+      });
+      res.status(200).json({ success: true, message: "company retrieved", data: company });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

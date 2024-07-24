@@ -26,7 +26,7 @@ const ErrorMiddleware = (
   const status = 500;
   const message = error.message || "Something went wrong";
 
-  console.log(error.message);
+  console.log(error);
 
   res.status(status).json({
     success: false,
