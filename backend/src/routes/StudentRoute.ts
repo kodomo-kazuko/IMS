@@ -49,12 +49,6 @@ router.post(
   studentController.uploadImage /** #swagger.tags = ['Student'] #swagger.security = [{"bearerAuth": []}] */
 );
 
-router.get(
-  "/:id",
-  accessMiddleware(["company", "employee", "mentor"]),
-  studentController.single /** #swagger.tags = ['Student'] #swagger.security = [{"bearerAuth": []}] */
-);
-
 router.delete(
   "/delete/:id",
   accessMiddleware(["employee"], 1),
@@ -65,5 +59,11 @@ router.get(
   "/count",
   accessMiddleware(["employee"]),
   studentController.count /** #swagger.tags = ['Student'] #swagger.security = [{"bearerAuth": []}] */
+);
+
+router.get(
+  "/:id",
+  accessMiddleware(["company", "employee", "mentor"]),
+  studentController.single /** #swagger.tags = ['Student'] #swagger.security = [{"bearerAuth": []}] */
 );
 export default router;

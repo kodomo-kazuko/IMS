@@ -30,12 +30,6 @@ router.get(
 );
 
 router.get(
-  "/:id",
-  accessMiddleware("all"),
-  internshipController.single /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
-);
-
-router.get(
   "/count",
   accessMiddleware(["employee"]),
   internshipController.count /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
@@ -45,6 +39,12 @@ router.delete(
   "/delete/:id",
   accessMiddleware(["company"]),
   internshipController.delete /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
+);
+
+router.get(
+  "/:id",
+  accessMiddleware("all"),
+  internshipController.single /** #swagger.tags = ['Internship'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 export default router;

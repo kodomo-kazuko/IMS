@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import updateURL from "../utils/urlUpdate";
 import notFound from "../utils/not-found";
+import { OrderFilter } from "../utils/orderFilter";
 
 export const prisma = new PrismaClient({
   omit: {
@@ -21,7 +22,8 @@ export const prisma = new PrismaClient({
   query: {
     $allModels: {
       async findMany({ model, operation, args, query }) {
-        args = { ...args, take: 20, orderBy: { updatedAt: "desc" } };
+        args = { ...args, take: 20 };
+        args = OrderFilter(args);
         const data = await query(args);
         notFound(data, model);
         const updatedData = updateURL(data as any, ["image", "document"]);

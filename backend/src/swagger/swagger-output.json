@@ -241,6 +241,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -272,6 +279,13 @@
           },
           {
             "name": "comapnyId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
             "in": "query",
             "schema": {
               "type": "string"
@@ -774,6 +788,15 @@
           "Student"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -797,6 +820,13 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -1030,6 +1060,15 @@
           "Company"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1053,6 +1092,13 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -1222,6 +1268,24 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/company/score": {
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
           }
         },
         "security": [
@@ -1442,6 +1506,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1473,6 +1544,13 @@
           },
           {
             "name": "companyId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
             "in": "query",
             "schema": {
               "type": "string"

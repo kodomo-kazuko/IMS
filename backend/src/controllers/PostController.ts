@@ -67,6 +67,7 @@ export default class PostController {
         },
         where: {
           companyId: comapnyId ? comapnyId : undefined,
+          title: req.query.title ? String(req.query.title) : undefined,
         },
       });
 
@@ -101,6 +102,7 @@ export default class PostController {
         },
         where: {
           companyId: comapnyId ? comapnyId : undefined,
+          title: req.query.title ? String(req.query.title) : undefined,
         },
         skip: 1,
       });

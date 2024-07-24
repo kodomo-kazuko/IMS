@@ -2,7 +2,7 @@ model Feedback {
     id                Int               @id @default(autoincrement())
     userId            Int
     content           String
-    score             Int               @default(0)
+    score             Int
     internshipId      Int
     account           AccountType
     createdAt         DateTime          @default(now())

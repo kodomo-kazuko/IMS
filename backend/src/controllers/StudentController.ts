@@ -63,6 +63,11 @@ export default class StudentController {
         include: {
           major: true,
         },
+        where: {
+          name: {
+            search: req.query.name ? String(req.query.name) : undefined,
+          },
+        },
       });
 
       const lastId = getLastId(students);
@@ -90,6 +95,11 @@ export default class StudentController {
         },
         cursor: {
           id: Number(req.params.id),
+        },
+        where: {
+          name: {
+            search: req.query.name ? String(req.query.name) : undefined,
+          },
         },
       });
 

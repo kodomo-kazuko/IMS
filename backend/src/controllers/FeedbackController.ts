@@ -8,6 +8,10 @@ import notFound from "../utils/not-found";
 export default class FeedbackController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      // const feedback = await prisma.feedback.create({
+      //   data: {
+      //   }
+      // })
     } catch (error) {
       next(error);
     }

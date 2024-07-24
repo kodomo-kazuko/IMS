@@ -60,8 +60,13 @@ export default class CompanyController {
 
   public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const companies = await prisma.company.findMany();
-
+      const companies = await prisma.company.findMany({
+        where: {
+          name: {
+            search: req.query.name ? String(req.query.name) : undefined,
+          },
+        },
+      });
       const lastId = getLastId(companies);
       res.status(200).json({
         success: true,
@@ -81,6 +86,11 @@ export default class CompanyController {
       const companies = await prisma.company.findMany({
         cursor: {
           id: Number(req.params.id),
+        },
+        where: {
+          name: {
+            search: req.query.name ? String(req.query.name) : undefined,
+          },
         },
         skip: 1,
       });
@@ -158,10 +168,34 @@ export default class CompanyController {
     try {
       const company = await prisma.company.findUnique({
         where: {
-          id: req.params.id ? Number(req.params.id) : undefined,
+          id: Number(req.params.id),
         },
       });
       res.status(200).json({ success: true, message: "company retrieved", data: company });
+    } catch (error) {
+      next(error);
+    }
+  }
+  public async score(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+    try {
+      const company = await prisma.company.findMany({
+        include: {
+          internships: {
+            select: {
+              students: {
+                select: {
+                  Feedback: {
+                    select: {
+                      score: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+      res.status(200).json({ success: true, message: "company score retrieved", data: company });
     } catch (error) {
       next(error);
     }

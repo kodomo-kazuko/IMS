@@ -26,12 +26,6 @@ router.get(
   postController.cursor /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */
 );
 
-router.get(
-  "/:id",
-  accessMiddleware("all"),
-  postController.single /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */
-);
-
 router.patch(
   "/edit/:id/data",
   accessMiddleware(["company"], 0),
@@ -48,6 +42,12 @@ router.delete(
   "/delete/:id",
   accessMiddleware(["company"], 0),
   postController.delete /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */
+);
+
+router.get(
+  "/:id",
+  accessMiddleware("all"),
+  postController.single /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 export default router;

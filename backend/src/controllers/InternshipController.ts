@@ -34,6 +34,7 @@ export default class InternshipController {
       const internships = await prisma.internship.findMany({
         where: {
           companyId: companyId ? companyId : undefined,
+          title: req.query.title ? String(req.query.title) : undefined,
         },
       });
       const lastId = getLastId(internships);
@@ -59,6 +60,7 @@ export default class InternshipController {
         },
         where: {
           companyId: companyId ? companyId : undefined,
+          title: req.query.title ? String(req.query.title) : undefined,
         },
       });
       const lastId = getLastId(internships);

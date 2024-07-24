@@ -28,16 +28,16 @@ router.get(
   mentorController.cursor /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
 );
 
-router.get(
-  "/:id",
-  accessMiddleware(["employee"]),
-  mentorController.single /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
-);
-
 router.delete(
   "/delete/:id",
   accessMiddleware(["company"], 0),
   mentorController.delete /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
+);
+
+router.get(
+  "/:id",
+  accessMiddleware(["employee"]),
+  mentorController.single /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */
 );
 
 export default router;
