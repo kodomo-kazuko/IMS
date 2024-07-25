@@ -11,10 +11,3 @@ model Application {
 
     @@unique([studentId, internshipId])
 }
-
-enum ApplicationStatus {
-    PENDING
-    APPROVED
-    STARTED
-    REJECTED
-}

@@ -12,10 +12,3 @@ model Feedback {
     // employee  Employee?   @relation(fields: [userId], references: [id], map: "Feedback_employee_userId_fkey")
     company           Company?          @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
 }
-
-enum AccountType {
-    student
-    employee
-    company
-    mentor
-}

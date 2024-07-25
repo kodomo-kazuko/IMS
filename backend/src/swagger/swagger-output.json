@@ -304,34 +304,6 @@
         ]
       }
     },
-    "/post/{id}": {
-      "get": {
-        "tags": [
-          "Post"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
     "/post/edit/{id}/data": {
       "patch": {
         "tags": [
@@ -411,6 +383,34 @@
     },
     "/post/delete/{id}": {
       "delete": {
+        "tags": [
+          "Post"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/post/{id}": {
+      "get": {
         "tags": [
           "Post"
         ],
@@ -691,8 +691,8 @@
         ]
       }
     },
-    "/mentor/{id}": {
-      "get": {
+    "/mentor/delete/{id}": {
+      "delete": {
         "tags": [
           "Mentor"
         ],
@@ -719,8 +719,8 @@
         ]
       }
     },
-    "/mentor/delete/{id}": {
-      "delete": {
+    "/mentor/{id}": {
+      "get": {
         "tags": [
           "Mentor"
         ],
@@ -945,34 +945,6 @@
         ]
       }
     },
-    "/student/{id}": {
-      "get": {
-        "tags": [
-          "Student"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
     "/student/delete/{id}": {
       "delete": {
         "tags": [
@@ -1007,6 +979,34 @@
           "Student"
         ],
         "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/student/{id}": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1163,12 +1163,22 @@
         }
       }
     },
-    "/company/approve": {
+    "/company/approve/{id}": {
       "patch": {
         "tags": [
           "Company"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1178,21 +1188,7 @@
           {
             "bearerAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "companyId": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
     "/company/account": {
@@ -1249,6 +1245,24 @@
         ]
       }
     },
+    "/company/score": {
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/company/{id}": {
       "get": {
         "tags": [
@@ -1268,24 +1282,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/company/score": {
-      "get": {
-        "tags": [
-          "Company"
-        ],
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
           }
         },
         "security": [
@@ -1569,8 +1565,26 @@
         ]
       }
     },
-    "/internship/{id}": {
+    "/internship/count": {
       "get": {
+        "tags": [
+          "Internship"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/internship/delete/{id}": {
+      "delete": {
         "tags": [
           "Internship"
         ],
@@ -1597,26 +1611,8 @@
         ]
       }
     },
-    "/internship/count": {
+    "/internship/{id}": {
       "get": {
-        "tags": [
-          "Internship"
-        ],
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/internship/delete/{id}": {
-      "delete": {
         "tags": [
           "Internship"
         ],
@@ -1755,12 +1751,22 @@
         ]
       }
     },
-    "/application/create": {
+    "/application/create/{id}": {
       "post": {
         "tags": [
           "Application"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -1773,21 +1779,7 @@
           {
             "bearerAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "internshipId": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
     "/application/all/base": {
@@ -1880,6 +1872,24 @@
         ]
       }
     },
+    "/application/count": {
+      "get": {
+        "tags": [
+          "Application"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/application/approve/{id}": {
       "patch": {
         "tags": [
@@ -1927,24 +1937,6 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/application/count": {
-      "get": {
-        "tags": [
-          "Application"
-        ],
-        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -2072,21 +2064,7 @@
           {
             "bearerAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
     "/student-internship/start": {

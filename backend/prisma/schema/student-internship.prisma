@@ -16,10 +16,3 @@ model StudentInternship {
     @@unique([studentId, internshipId])
     @@index([internshipId, studentId])
 }
-
-enum InternshipStatus {
-    PENDING
-    STARTED
-    FINISHED
-    CANCELLED
-}

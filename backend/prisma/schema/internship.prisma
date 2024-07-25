@@ -17,11 +17,3 @@ model Internship {
 
     @@index([companyId])
 }
-
-enum InternshipType {
-    INTRODUCTION
-    PROFESSIONAL
-    VOLUNTEER
-    PART_TIME
-    ABCC
-}

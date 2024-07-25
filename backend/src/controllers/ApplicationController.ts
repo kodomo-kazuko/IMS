@@ -173,7 +173,6 @@ export default class ApplicationController {
       for (const requirement of requirements) {
         if (requirement.majorId === application.student.majorId) {
           if (requirement.approvedApps.includes(application.studentId)) {
-            // Student already approved
             return res.status(400).json({ success: false, message: "Student already approved" });
           }
 

@@ -13,3 +13,32 @@ datasource db {
 //   provider = "prisma-generator-fake-data"
 //   output   = "../types/fake-data.ts"
 // }
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  STARTED
+  REJECTED
+}
+
+enum AccountType {
+  student
+  employee
+  company
+  mentor
+}
+
+enum InternshipType {
+  INTRODUCTION
+  PROFESSIONAL
+  VOLUNTEER
+  PART_TIME
+  ABCC
+}
+
+enum InternshipStatus {
+  PENDING
+  STARTED
+  FINISHED
+  CANCELLED
+}

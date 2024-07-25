@@ -19,12 +19,12 @@ export default class StudentInternshipController {
   }
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { id } = req.body;
+      const id = Number(req.params.id);
 
       const startedInternship = await prisma.studentInternship.findFirst({
         where: {
           studentId: req.cookies.id,
-          internshipId: Number(id),
+          internshipId: id,
         },
       });
       if (startedInternship) {

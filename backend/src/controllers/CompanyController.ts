@@ -101,9 +101,8 @@ export default class CompanyController {
 
   public async approve(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { companyId } = req.body;
       await prisma.company.update({
-        where: { id: companyId },
+        where: { id: Number(req.params.id) },
         data: { isApproved: true },
       });
       res.status(200).json({ success: true, message: "Company approval updated successfully" });

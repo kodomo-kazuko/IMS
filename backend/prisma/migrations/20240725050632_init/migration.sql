@@ -2,7 +2,7 @@
 CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING', 'APPROVED', 'STARTED', 'REJECTED');
 
 -- CreateEnum
-CREATE TYPE "AccountType" AS ENUM ('student', 'employee', 'company');
+CREATE TYPE "AccountType" AS ENUM ('student', 'employee', 'company', 'mentor');
 
 -- CreateEnum
 CREATE TYPE "InternshipType" AS ENUM ('INTRODUCTION', 'PROFESSIONAL', 'VOLUNTEER', 'PART_TIME', 'ABCC');
@@ -60,7 +60,7 @@ CREATE TABLE "Feedback" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "content" TEXT NOT NULL,
-    "score" INTEGER NOT NULL DEFAULT 0,
+    "score" INTEGER NOT NULL,
     "internshipId" INTEGER NOT NULL,
     "account" "AccountType" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
