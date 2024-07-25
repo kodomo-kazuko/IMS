@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { ResponseJSON } from "../types/response";
-import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
 
@@ -71,14 +70,10 @@ export default class PostController {
         },
       });
 
-      const lastId = getLastId(posts);
       res.status(200).json({
         success: true,
         message: "Retrieved all posts",
-        data: {
-          lastId,
-          list: posts,
-        },
+        data: posts,
       });
     } catch (error) {
       next(error);
@@ -106,14 +101,10 @@ export default class PostController {
         },
         skip: 1,
       });
-      const lastId = getLastId(posts);
       res.status(200).json({
         success: true,
         message: "Retrieved all posts",
-        data: {
-          lastId,
-          list: posts,
-        },
+        data: posts,
       });
     } catch (error) {
       next(error);

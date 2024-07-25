@@ -1,7 +1,6 @@
 import { InternshipType } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
-import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
 
 export default class InternshipController {
@@ -37,14 +36,10 @@ export default class InternshipController {
           title: req.query.title ? String(req.query.title) : undefined,
         },
       });
-      const lastId = getLastId(internships);
       res.status(200).json({
         success: true,
         message: "Internships retrieved successfully",
-        data: {
-          lastId,
-          list: internships,
-        },
+        data: internships,
       });
     } catch (error) {
       next(error);
@@ -63,14 +58,10 @@ export default class InternshipController {
           title: req.query.title ? String(req.query.title) : undefined,
         },
       });
-      const lastId = getLastId(internships);
       res.status(200).json({
         success: true,
         message: "Internships retrieved successfully",
-        data: {
-          lastId,
-          list: internships,
-        },
+        data: internships,
       });
     } catch (error) {
       next(error);

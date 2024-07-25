@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
-import getLastId from "../utils/lastId";
 
 export default class StudentInternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
@@ -107,14 +106,10 @@ export default class StudentInternshipController {
         },
       });
       notFound(studentInternship, "student internships not found");
-      const lastId = getLastId(studentInternship);
       res.status(200).json({
         success: true,
         message: "student internships retirved",
-        data: {
-          lastId,
-          list: studentInternship,
-        },
+        data: studentInternship,
       });
     } catch (error) {
       next(error);
@@ -134,14 +129,10 @@ export default class StudentInternshipController {
         skip: 1,
       });
       notFound(studentInternship, "student internships not found");
-      const lastId = getLastId(studentInternship);
       res.status(200).json({
         success: true,
         message: "student internships retirved",
-        data: {
-          lastId,
-          list: studentInternship,
-        },
+        data: studentInternship,
       });
     } catch (error) {
       next(error);

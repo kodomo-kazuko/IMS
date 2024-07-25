@@ -1,7 +1,6 @@
 import { ApplicationStatus } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ApplicationDTO, ResponseJSON } from "../types/response";
-import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
 
@@ -88,14 +87,11 @@ export default class ApplicationController {
         },
       });
       notFound(applications, "applications");
-      const lastId = getLastId(applications);
+
       res.status(200).json({
         success: true,
         message: "successfully retirved applications",
-        data: {
-          lastId,
-          list: applications,
-        },
+        data: applications,
       });
     } catch (error) {
       next(error);
@@ -135,14 +131,11 @@ export default class ApplicationController {
             : false,
         },
       });
-      const lastId = getLastId(applications);
+
       res.status(200).json({
         success: true,
         message: "successfully retirved applications",
-        data: {
-          lastId,
-          list: applications,
-        },
+        data: applications,
       });
     } catch (error) {
       next(error);

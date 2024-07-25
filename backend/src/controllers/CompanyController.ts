@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
 import { jwtSecretKey } from "../utils/const";
-import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
 import { AccountType } from "@prisma/client";
 import { validatePassword } from "../utils/PasswordValidate";
@@ -67,14 +66,10 @@ export default class CompanyController {
           },
         },
       });
-      const lastId = getLastId(companies);
       res.status(200).json({
         success: true,
         message: "Companies retrieved successfully",
-        data: {
-          lastId,
-          list: companies,
-        },
+        data: companies,
       });
     } catch (error) {
       next(error);
@@ -94,14 +89,10 @@ export default class CompanyController {
         },
         skip: 1,
       });
-      const lastId = getLastId(companies);
       res.status(200).json({
         success: true,
         message: "Companies retrieved successfully",
-        data: {
-          lastId,
-          list: companies,
-        },
+        data: companies,
       });
     } catch (error) {
       next(error);

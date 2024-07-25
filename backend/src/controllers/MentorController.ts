@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { jwtSecretKey } from "../utils/const";
-import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
 import { validatePassword } from "../utils/PasswordValidate";
 import notFound from "../utils/not-found";
@@ -73,11 +72,10 @@ export default class MentorController {
           companyId: companyId ? Number(companyId) : undefined,
         },
       });
-      const lastId = getLastId(mentors);
       res.status(200).json({
         success: true,
         message: "Mentors retrieved successfully",
-        data: { lastId, list: mentors },
+        data: mentors,
       });
     } catch (error) {
       next(error);
@@ -95,11 +93,11 @@ export default class MentorController {
           id: Number(req.params.id),
         },
       });
-      const lastId = getLastId(mentors);
+
       res.status(200).json({
         success: true,
         message: "Mentors retrieved successfully",
-        data: { lastId, list: mentors },
+        data: mentors,
       });
     } catch (error) {
       next(error);

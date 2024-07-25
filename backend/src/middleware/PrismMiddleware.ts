@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import updateURL from "../utils/urlUpdate";
 import notFound from "../utils/not-found";
 import { OrderFilter } from "../utils/orderFilter";
+import getLastId from "../utils/lastId";
 
 export const prisma = new PrismaClient({
   omit: {
@@ -27,7 +28,8 @@ export const prisma = new PrismaClient({
         const data = await query(args);
         notFound(data, model);
         const updatedData = updateURL(data as any, ["image", "document"]);
-        return updatedData;
+        const lastId = getLastId(updatedData)
+        return {lastId, list: updatedData};
       },
       async findUnique({ model, operation, args, query }) {
         const data = await query(args);

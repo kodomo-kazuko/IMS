@@ -4,7 +4,6 @@ import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { jwtSecretKey } from "../utils/const";
-import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
 import { AccountType } from "@prisma/client";
@@ -69,15 +68,10 @@ export default class StudentController {
           },
         },
       });
-
-      const lastId = getLastId(students);
       res.status(200).json({
         success: true,
         message: "Students retrieved successfully",
-        data: {
-          lastId,
-          list: students,
-        },
+        data: students,
       });
     } catch (error) {
       next(error);
@@ -102,16 +96,10 @@ export default class StudentController {
           },
         },
       });
-
-      const lastId = getLastId(students);
-
       res.status(200).json({
         success: true,
         message: "Students retrieved successfully",
-        data: {
-          lastId,
-          list: students,
-        },
+        data: students,
       });
     } catch (error) {
       next(error);

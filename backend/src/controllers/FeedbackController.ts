@@ -1,7 +1,6 @@
 import { ApplicationStatus } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ApplicationDTO, ResponseJSON } from "../types/response";
-import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
 
