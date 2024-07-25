@@ -132,7 +132,7 @@ CREATE TABLE "Requirement" (
     "internshipId" INTEGER NOT NULL,
     "majorId" INTEGER NOT NULL,
     "studentLimit" INTEGER NOT NULL,
-    "approvedApps" INTEGER[],
+    "approvedCount" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -195,6 +195,9 @@ CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Employee_phone_key" ON "Employee"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Feedback_account_internshipId_userId_key" ON "Feedback"("account", "internshipId", "userId");
 
 -- CreateIndex
 CREATE INDEX "Internship_companyId_idx" ON "Internship"("companyId");

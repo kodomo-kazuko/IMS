@@ -18,3 +18,8 @@ export interface ApplicationDTO {
   internshipId: string;
   status: ApplicationStatus;
 }
+
+export type ReturnType = {
+  lastId: Number;
+  list: [];
+};

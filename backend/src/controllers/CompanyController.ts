@@ -170,8 +170,14 @@ export default class CompanyController {
   }
   public async score(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const company = await prisma.company.findMany({
-        include: {
+      const companies: any = await prisma.company.findMany({
+        where: {
+          id: req.query.id ? Number(req.query.id) : undefined,
+        },
+        select: {
+          id: true,
+          image: true,
+          name: true,
           internships: {
             select: {
               students: {
@@ -187,7 +193,44 @@ export default class CompanyController {
           },
         },
       });
-      res.status(200).json({ success: true, message: "company score retrieved", data: company });
+
+      const array = companies.list;
+
+      console.log(array);
+
+      const companyScores = array.map(
+        (company: { internships: any[]; id: any; name: any; image: any }) => {
+          let totalScore = 0;
+          let feedbackCount = 0;
+
+          company.internships.forEach((internship) => {
+            internship.students.forEach((student: { Feedback: any[] }) => {
+              student.Feedback.forEach((feedback) => {
+                totalScore += feedback.score;
+                feedbackCount += 1;
+              });
+            });
+          });
+
+          const averageScore = feedbackCount > 0 ? totalScore / feedbackCount : 0;
+
+          return {
+            id: company.id,
+            name: company.name,
+            image: company.image,
+            averageScore,
+          };
+        }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Company scores retrieved",
+        data: {
+          lastId: companies.length > 0 ? companies[companies.length - 1].id : null,
+          list: companyScores,
+        },
+      });
     } catch (error) {
       next(error);
     }

@@ -11,4 +11,6 @@ model Feedback {
     student           Student?          @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
     // employee  Employee?   @relation(fields: [userId], references: [id], map: "Feedback_employee_userId_fkey")
     company           Company?          @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
+
+    @@unique([account, internshipId, userId])
 }

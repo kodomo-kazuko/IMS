@@ -20,7 +20,6 @@ export default class StudentInternshipController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const id = Number(req.params.id);
-
       const startedInternship = await prisma.studentInternship.findFirst({
         where: {
           studentId: req.cookies.id,
@@ -33,7 +32,7 @@ export default class StudentInternshipController {
 
       const application = await prisma.application.findUniqueOrThrow({
         where: {
-          id: Number(id),
+          id,
           studentId: req.cookies.id,
         },
       });
@@ -44,7 +43,7 @@ export default class StudentInternshipController {
 
       const internship = await prisma.internship.findUniqueOrThrow({
         where: {
-          id: Number(id),
+          id: application.internshipId,
         },
       });
 
@@ -57,7 +56,7 @@ export default class StudentInternshipController {
         },
       });
 
-      res.status(200).json({ success: true, message: "Internship pending!" });
+      res.status(200).json({ success: true, message: "Internship started and is pending!" });
     } catch (error) {
       next(error);
     }
