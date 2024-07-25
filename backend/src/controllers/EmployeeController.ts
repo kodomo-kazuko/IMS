@@ -4,10 +4,10 @@ import jwt from "jsonwebtoken";
 import { ResponseJSON } from "../types/response";
 import { jwtSecretKey } from "../utils/const";
 import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
-import { AccountType } from "../types/types";
 import { prisma } from "../middleware/PrismMiddleware";
 import { validatePassword } from "../utils/PasswordValidate";
 import notFound from "../utils/not-found";
+import { AccountType } from "@prisma/client";
 
 const account: AccountType = "employee";
 

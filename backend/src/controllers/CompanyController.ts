@@ -5,7 +5,7 @@ import { ResponseJSON } from "../types/response";
 import { jwtSecretKey } from "../utils/const";
 import getLastId from "../utils/lastId";
 import { prisma } from "../middleware/PrismMiddleware";
-import { AccountType } from "../types/types";
+import { AccountType } from "@prisma/client";
 import { validatePassword } from "../utils/PasswordValidate";
 import notFound from "../utils/not-found";
 import { saveFileToDisk } from "../utils/fileHandler";
@@ -162,7 +162,9 @@ export default class CompanyController {
       return res
         .status(200)
         .json({ success: true, message: "company count retrieved", data: companyCount });
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
   public async single(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {

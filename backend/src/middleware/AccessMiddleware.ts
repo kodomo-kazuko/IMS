@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { AccountType } from "../types/types";
+import { AccountType } from "@prisma/client";
 import { ResponseJSON } from "../types/response";
 import { jwtSecretKey } from "../utils/const";
 
