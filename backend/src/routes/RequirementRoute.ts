@@ -18,6 +18,12 @@ router.get(
   requirementController.internship /** #swagger.tags = ['Requirement'] #swagger.security = [{"bearerAuth": []}] */
 );
 
+router.patch(
+  "/edit/:id",
+  accessMiddleware(["company"]),
+  requirementController.edit /** #swagger.tags = ['Requirement'] #swagger.security = [{"bearerAuth": []}] */
+);
+
 router.delete(
   "/delete/:id",
   accessMiddleware(["company"], 0),

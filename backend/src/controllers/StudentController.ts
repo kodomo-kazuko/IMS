@@ -145,7 +145,12 @@ export default class StudentController {
           majorId: true,
         },
         include: {
-          major: true,
+          major: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
         where: {
           id: req.cookies.id,

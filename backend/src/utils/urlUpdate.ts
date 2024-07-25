@@ -14,13 +14,13 @@ function getAllowedType(fieldValue: string): string | null {
       return type;
     }
   }
-  return null; // Return null if no match is found
+  return null;
 }
 
 function updateField(fieldValue: string): string {
   const subfolder = getAllowedType(fieldValue);
   if (!subfolder) {
-    return fieldValue; // Return original fieldValue if no matching extension is found
+    return fieldValue;
   }
   return `http://${SERVER_IP}:${SERVER_PORT}/${FILE_PATH}/${subfolder}/${fieldValue}`;
 }
@@ -63,7 +63,6 @@ export default function updateURL<T extends Record<string, any>>(
       return acc;
     }, {} as Partial<T>);
 
-    // Recursively update nested objects that are not specified in fieldNames
     Object.keys(item).forEach((key) => {
       if (!fieldNames.includes(key as keyof T) && !fieldsToIgnore.includes(key as keyof T)) {
         const fieldValue = item[key];

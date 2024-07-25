@@ -64,12 +64,16 @@ export default class RequirementController {
       await prisma.requirement.update({
         where: {
           id: Number(req.params.id),
+          internship: {
+            companyId: req.cookies.id,
+          },
         },
         data: {
-          studentLimit: Number(studentLimit),
-          majorId: Number(majorId),
+          studentLimit: studentLimit ? Number(studentLimit) : undefined,
+          // majorId: majorId ? Number(majorId) : undefined,
         },
       });
+      res.status(200).json({ success: true, message: "requirement updated" });
     } catch (error) {
       next(error);
     }

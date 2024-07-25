@@ -17,43 +17,85 @@ export default class StudentInternshipController {
       next(error);
     }
   }
+
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const id = Number(req.params.id);
+      const studentId = req.cookies.id;
+      const internshipId = Number(req.params.id);
+
+      // Check if the student already has an active internship
       const startedInternship = await prisma.studentInternship.findFirst({
         where: {
-          studentId: req.cookies.id,
-          internshipId: id,
+          studentId,
+          internshipId,
         },
       });
+
       if (startedInternship) {
-        res.status(300).json({ success: false, message: "You already have an active internship." });
+        return res
+          .status(409)
+          .json({ success: false, message: "You already have an active internship." });
       }
 
+      // Find the application
       const application = await prisma.application.findUniqueOrThrow({
         where: {
-          id,
-          studentId: req.cookies.id,
+          id: internshipId,
+          studentId,
         },
       });
 
       if (application.status !== "APPROVED") {
-        res.status(400).json({ success: false, message: "Application is not approved." });
+        return res.status(400).json({ success: false, message: "Application is not approved." });
       }
 
+      // Find the internship
       const internship = await prisma.internship.findUniqueOrThrow({
         where: {
           id: application.internshipId,
         },
       });
 
-      await prisma.studentInternship.create({
-        data: {
-          studentId: req.cookies.id,
-          internshipId: application.internshipId,
-          type: internship.type,
-          status: "PENDING",
-        },
+      // Start a transaction
+      const result = await prisma.$transaction(async (prisma) => {
+        // Create the student internship
+        const newInternship = await prisma.studentInternship.create({
+          data: {
+            studentId,
+            internshipId: application.internshipId,
+            type: internship.type,
+            status: "PENDING",
+          },
+        });
+
+        // Update the requirement
+        const requirement = await prisma.requirement.findFirstOrThrow({
+          where: {
+            internshipId: internship.id,
+            major: req.cookies.access,
+          },
+        });
+
+        await prisma.requirement.update({
+          where: {
+            id: requirement.id,
+          },
+          data: {
+            studentLimit: { decrement: 1 },
+          },
+        });
+
+        // Cancel all other applications
+        await prisma.application.updateMany({
+          where: {
+            studentId,
+          },
+          data: {
+            status: "CANCELLED",
+          },
+        });
+
+        return newInternship;
       });
 
       res.status(200).json({ success: true, message: "Internship started and is pending!" });

@@ -23,6 +23,7 @@ enum ApplicationStatus {
   APPROVED
   STARTED
   REJECTED
+  CANCELLED
 }
 
 enum AccountType {

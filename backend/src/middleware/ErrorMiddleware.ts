@@ -8,11 +8,6 @@ import {
   PrismaClientValidationError,
 } from "@prisma/client/runtime/library";
 
-// interface Error {
-//   status?: number;
-//   message?: string;
-// }
-
 const ErrorMiddleware = (
   error:
     | PrismaClientRustPanicError
