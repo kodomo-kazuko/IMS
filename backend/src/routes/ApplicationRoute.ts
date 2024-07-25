@@ -12,7 +12,7 @@ router.get(
 );
 
 router.post(
-  "/create",
+  "/create/:id",
   accessMiddleware(["student"]),
   applicationController.create /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */
 );

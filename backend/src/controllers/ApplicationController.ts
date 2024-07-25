@@ -8,8 +8,7 @@ import notFound from "../utils/not-found";
 export default class ApplicationController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const { internshipId } = req.body;
-
+      const internshipId = Number(req.params.id);
       const student = await prisma.student.findUniqueOrThrow({
         where: {
           id: req.cookies.id,
@@ -21,7 +20,7 @@ export default class ApplicationController {
       const Requirements = await prisma.internship
         .findUniqueOrThrow({
           where: {
-            id: Number(internshipId),
+            id: internshipId,
           },
         })
         .Requirement();
@@ -68,7 +67,8 @@ export default class ApplicationController {
           status: status ? status : undefined,
         },
         omit: {
-          studentId: true,
+          studentId: internshipId ? true : false,
+          internshipId: studentId ? true : false,
         },
         include: {
           student: internshipId ? true : false,
@@ -114,6 +114,26 @@ export default class ApplicationController {
           internshipId: internshipId ? Number(internshipId) : undefined,
           status: status ? status : undefined,
         },
+        omit: {
+          studentId: internshipId ? true : false,
+          internshipId: studentId ? true : false,
+        },
+        include: {
+          student: internshipId ? true : false,
+          internship: studentId
+            ? {
+                include: {
+                  company: {
+                    select: {
+                      name: true,
+                      id: true,
+                      image: true,
+                    },
+                  },
+                },
+              }
+            : false,
+        },
       });
       const lastId = getLastId(applications);
       res.status(200).json({
@@ -133,6 +153,9 @@ export default class ApplicationController {
       const application = await prisma.application.findUniqueOrThrow({
         where: {
           id: Number(req.params.id),
+          internship: {
+            companyId: req.cookies.id,
+          },
         },
         include: {
           student: {
@@ -150,11 +173,17 @@ export default class ApplicationController {
           },
         })
         .Requirement();
+
       let isEligible = false;
       let targetRequirementId: number | null = null;
 
       for (const requirement of requirements) {
         if (requirement.majorId === application.student.majorId) {
+          if (requirement.approvedApps.includes(application.studentId)) {
+            // Student already approved
+            return res.status(400).json({ success: false, message: "Student already approved" });
+          }
+
           if (requirement.approvedApps.length < requirement.studentLimit) {
             isEligible = true;
             targetRequirementId = requirement.id;
@@ -172,16 +201,18 @@ export default class ApplicationController {
       await prisma.application.update({
         where: { id: application.id },
         data: { status: "APPROVED" },
-      }),
-        await prisma.requirement.update({
-          where: { id: targetRequirementId! },
-          data: {
-            approvedApps: {
-              push: Number(req.params.id),
-            },
+      });
+
+      await prisma.requirement.update({
+        where: { id: targetRequirementId! },
+        data: {
+          approvedApps: {
+            push: application.studentId,
           },
-        }),
-        res.status(200).json({ success: true, message: "Application approved successfully" });
+        },
+      });
+
+      res.status(200).json({ success: true, message: "Application approved successfully" });
     } catch (error) {
       next(error);
     }
@@ -205,6 +236,12 @@ export default class ApplicationController {
         where: {
           id: Number(req.params.id),
         },
+        omit: {
+          studentId: true,
+        },
+        include: {
+          student: true,
+        },
       });
       res
         .status(200)
@@ -219,6 +256,8 @@ export default class ApplicationController {
       return res
         .status(200)
         .json({ success: true, message: "application count retrieved", data: applicationCount });
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 }
