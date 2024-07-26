@@ -34,7 +34,13 @@ export default class RequirementController {
             id: internshipId,
           },
         })
-        .Requirement();
+        .requirements({
+          include: {
+            _count: {
+              select: { Application: true },
+            },
+          },
+        });
       notFound(requirements, "requirements");
       res
         .status(200)

@@ -16,6 +16,7 @@ CREATE TABLE "Application" (
     "studentId" INTEGER NOT NULL,
     "internshipId" INTEGER NOT NULL,
     "status" "ApplicationStatus" NOT NULL DEFAULT 'pending',
+    "requirementId" INTEGER,
     "appliedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -156,8 +157,7 @@ CREATE TABLE "StudentInternship" (
     "internshipId" INTEGER NOT NULL,
     "mentorId" INTEGER,
     "image" TEXT,
-    "type" "InternshipType" NOT NULL,
-    "status" "InternshipStatus" NOT NULL,
+    "status" "InternshipStatus" NOT NULL DEFAULT 'pending',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -246,6 +246,9 @@ ALTER TABLE "Application" ADD CONSTRAINT "Application_internshipId_fkey" FOREIGN
 
 -- AddForeignKey
 ALTER TABLE "Application" ADD CONSTRAINT "Application_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Application" ADD CONSTRAINT "Application_requirementId_fkey" FOREIGN KEY ("requirementId") REFERENCES "Requirement"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Employee" ADD CONSTRAINT "Employee_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("id") ON DELETE NO ACTION ON UPDATE CASCADE;

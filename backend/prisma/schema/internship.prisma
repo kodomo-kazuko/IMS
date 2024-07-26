@@ -13,7 +13,7 @@ model Internship {
     company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
     posts             Post[]
     students          StudentInternship[]
-    Requirement       Requirement[]
+    requirements      Requirement[]
 
     @@index([companyId])
 }

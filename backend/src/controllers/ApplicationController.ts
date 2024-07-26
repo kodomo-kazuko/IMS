@@ -5,33 +5,44 @@ import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
 
 export default class ApplicationController {
-  public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
+  public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const internshipId = Number(req.params.id);
+      const studentId = Number(req.cookies.id);
+
       const student = await prisma.student.findUniqueOrThrow({
         where: {
-          id: req.cookies.id,
+          id: studentId,
         },
       });
 
       notFound(student.document, "document");
 
-      const Requirements = await prisma.internship
+      const requirements = await prisma.internship
         .findUniqueOrThrow({
           where: {
             id: internshipId,
           },
         })
-        .Requirement();
+        .requirements();
 
-      notFound(Requirements, "internship requirements");
+      notFound(requirements, "internship requirements");
 
       let isEligible = false;
+      let requirementId: number;
 
-      for (const requirement of Requirements) {
+      for (const requirement of requirements) {
         if (requirement.majorId === req.cookies.access) {
-          if (requirement.approvedCount < requirement.studentLimit) {
+          const approvedCount = await prisma.application.count({
+            where: {
+              requirementId: requirement.id,
+              status: "approved",
+            },
+          });
+
+          if (approvedCount < requirement.studentLimit) {
             isEligible = true;
+            requirementId = requirement.id;
             break;
           }
         }
@@ -45,8 +56,9 @@ export default class ApplicationController {
 
       await prisma.application.create({
         data: {
-          studentId: req.cookies.id,
-          internshipId: Number(internshipId),
+          studentId: studentId,
+          internshipId: internshipId,
+          requirementId: requirementId!,
         },
       });
 
@@ -164,13 +176,19 @@ export default class ApplicationController {
             id: application.internshipId,
           },
         })
-        .Requirement();
+        .requirements();
 
       let isEligible = false;
       let targetRequirementId: number | null = null;
 
       for (const requirement of requirements) {
-        if (requirement.approvedCount < requirement.studentLimit) {
+        const approvedCount = await prisma.application.count({
+          where: {
+            requirementId: requirement.id,
+            status: "approved",
+          },
+        });
+        if (approvedCount < requirement.studentLimit) {
           isEligible = true;
           targetRequirementId = requirement.id;
           break;

@@ -4,8 +4,7 @@ model StudentInternship {
     internshipId Int
     mentorId     Int?
     image        String?
-    type         InternshipType
-    status       InternshipStatus
+    status       InternshipStatus @default(pending)
     internship   Internship       @relation(fields: [internshipId], references: [id], onDelete: Cascade)
     mentor       Mentor?          @relation(fields: [mentorId], references: [id])
     student      Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)

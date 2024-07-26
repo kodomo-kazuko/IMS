@@ -63,25 +63,7 @@ export default class StudentInternshipController {
           data: {
             studentId,
             internshipId: application.internshipId,
-            type: internship.type,
             status: "pending",
-          },
-        });
-
-        // Update the requirement
-        const requirement = await prisma.requirement.findFirstOrThrow({
-          where: {
-            internshipId: internship.id,
-            major: req.cookies.access,
-          },
-        });
-
-        await prisma.requirement.update({
-          where: {
-            id: requirement.id,
-          },
-          data: {
-            studentLimit: { decrement: 1 },
           },
         });
 
@@ -89,6 +71,14 @@ export default class StudentInternshipController {
         await prisma.application.updateMany({
           where: {
             studentId,
+            OR: [
+              {
+                status: "approved",
+              },
+              {
+                status: "pending",
+              },
+            ],
           },
           data: {
             status: "cancelled",
