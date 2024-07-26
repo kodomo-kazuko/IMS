@@ -42,8 +42,6 @@ export default class CompanyController {
         },
       });
 
-      notFound(company, "company");
-
       await validatePassword(password, company.password, res);
 
       const access = !company.isApproved;
@@ -130,17 +128,17 @@ export default class CompanyController {
           image: null,
         },
       });
-      notFound(req.file, "image");
+
       await prisma.company.update({
         where: {
           id: req.cookies.id,
         },
         data: {
-          image: req.file.filename,
+          image: req.file!.filename,
         },
       });
 
-      await saveFileToDisk(req.file, "images");
+      await saveFileToDisk(req.file!, "images");
       res.status(200).json({ success: true, message: "image uploaded" });
     } catch (error) {
       next(error);

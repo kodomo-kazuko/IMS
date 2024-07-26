@@ -86,7 +86,6 @@ export default class ApplicationController {
             : false,
         },
       });
-      notFound(applications, "applications");
 
       res.status(200).json({
         success: true,
@@ -186,7 +185,7 @@ export default class ApplicationController {
 
       await prisma.application.update({
         where: { id: application.id },
-        data: { status: "APPROVED" },
+        data: { status: "approved" },
       });
 
       const updatedRequirement = await prisma.requirement.update({

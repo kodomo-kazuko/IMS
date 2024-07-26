@@ -1251,6 +1251,15 @@
           "Company"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1298,8 +1307,8 @@
         ],
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         },
         "security": [
@@ -1805,6 +1814,48 @@
         ]
       }
     },
+    "/requirement/edit/{id}": {
+      "patch": {
+        "tags": [
+          "Requirement"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "studentLimit",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "majorId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/requirement/delete/{id}": {
       "delete": {
         "tags": [
@@ -2163,11 +2214,11 @@
           "200": {
             "description": "OK"
           },
-          "300": {
-            "description": "Multiple Choices"
-          },
           "400": {
             "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
           }
         },
         "security": [

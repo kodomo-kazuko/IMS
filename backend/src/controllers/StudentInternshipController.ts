@@ -45,7 +45,7 @@ export default class StudentInternshipController {
         },
       });
 
-      if (application.status !== "APPROVED") {
+      if (application.status !== "approved") {
         return res.status(400).json({ success: false, message: "Application is not approved." });
       }
 
@@ -64,7 +64,7 @@ export default class StudentInternshipController {
             studentId,
             internshipId: application.internshipId,
             type: internship.type,
-            status: "PENDING",
+            status: "pending",
           },
         });
 
@@ -91,7 +91,7 @@ export default class StudentInternshipController {
             studentId,
           },
           data: {
-            status: "CANCELLED",
+            status: "cancelled",
           },
         });
 
@@ -129,7 +129,7 @@ export default class StudentInternshipController {
         },
         data: {
           mentorId: mentor.id,
-          status: "STARTED",
+          status: "started",
         },
       });
       res.status(200).json({ success: true, message: "internship started!" });
@@ -146,7 +146,7 @@ export default class StudentInternshipController {
           internshipId: internshipId ? Number(internshipId) : undefined,
         },
       });
-      notFound(studentInternship, "student internships not found");
+      notFound(studentInternship, "student internships");
       res.status(200).json({
         success: true,
         message: "student internships retirved",
@@ -169,7 +169,7 @@ export default class StudentInternshipController {
         },
         skip: 1,
       });
-      notFound(studentInternship, "student internships not found");
+      notFound(studentInternship, "student internships");
       res.status(200).json({
         success: true,
         message: "student internships retirved",

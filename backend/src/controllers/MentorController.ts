@@ -51,8 +51,6 @@ export default class MentorController {
         },
       });
 
-      notFound(mentor, "mentor");
-
       await validatePassword(password, mentor.password, res);
 
       const token = jwt.sign({ id: mentor.id, account: "mentor" }, jwtSecretKey, {

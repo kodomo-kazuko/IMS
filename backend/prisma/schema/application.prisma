@@ -2,7 +2,7 @@ model Application {
     id           Int               @id @default(autoincrement())
     studentId    Int
     internshipId Int
-    status       ApplicationStatus @default(PENDING)
+    status       ApplicationStatus @default(pending)
     appliedAt    DateTime          @default(now())
     createdAt    DateTime          @default(now())
     updatedAt    DateTime          @default(now()) @updatedAt

@@ -102,17 +102,16 @@ export default class EmployeeController {
           image: null,
         },
       });
-      notFound(req.file, "image");
 
       await prisma.employee.update({
         where: {
           id: req.cookies.id,
         },
         data: {
-          image: req.file.filename,
+          image: req.file!.filename,
         },
       });
-      await saveFileToDisk(req.file, "images");
+      await saveFileToDisk(req.file!, "images");
       res.status(200).json({ success: true, message: "image uploaded" });
     } catch (error) {
       next(error);

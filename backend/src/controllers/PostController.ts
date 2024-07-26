@@ -16,18 +16,16 @@ export default class PostController {
         },
       });
 
-      notFound(req.file, "file");
-
       await prisma.post.create({
         data: {
           title,
           content,
           companyId: req.cookies.id,
           internshipId: Number(internshipId),
-          image: req.file.filename,
+          image: req.file!.filename,
         },
       });
-      await saveFileToDisk(req.file, "images");
+      await saveFileToDisk(req.file!, "images");
 
       res.status(201).json({ success: true, message: "Post created successfully" });
     } catch (error) {
@@ -155,20 +153,18 @@ export default class PostController {
         where: { id: Number(req.params.id), companyId: req.cookies.id },
       });
 
-      notFound(req.file, "image");
-
       let image = existingPost.image;
 
       await deleteFileOnDisk(image, "images");
 
-      image = req.file.filename;
+      image = req.file!.filename;
 
       await prisma.post.update({
         where: { id: Number(req.params.id) },
         data: { image },
       });
 
-      await saveFileToDisk(req.file, "images");
+      await saveFileToDisk(req.file!, "images");
       res.status(200).json({ success: true, message: "Post image updated successfully" });
     } catch (error) {
       next(error);
