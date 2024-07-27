@@ -19,11 +19,11 @@ generator erd {
 // }
 
 enum ApplicationStatus {
-  PENDING
-  APPROVED
-  STARTED
-  REJECTED
-  CANCELLED
+  pending
+  approved
+  started
+  rejected
+  cancelled
 }
 
 enum AccountType {
@@ -34,16 +34,16 @@ enum AccountType {
 }
 
 enum InternshipType {
-  INTRODUCTION
-  PROFESSIONAL
-  VOLUNTEER
-  PART_TIME
-  ABCC
+  introduction
+  professional
+  volunteer
+  part_time
+  abcc
 }
 
 enum InternshipStatus {
-  PENDING
-  STARTED
-  FINISHED
-  CANCELLED
+  pending
+  started
+  finished
+  cancelled
 }

@@ -45,7 +45,7 @@ export default class StudentInternshipController {
         },
       });
 
-      if (application.status !== "APPROVED") {
+      if (application.status !== "approved") {
         return res.status(400).json({ success: false, message: "Application is not approved." });
       }
 
@@ -63,25 +63,7 @@ export default class StudentInternshipController {
           data: {
             studentId,
             internshipId: application.internshipId,
-            type: internship.type,
-            status: "PENDING",
-          },
-        });
-
-        // Update the requirement
-        const requirement = await prisma.requirement.findFirstOrThrow({
-          where: {
-            internshipId: internship.id,
-            major: req.cookies.access,
-          },
-        });
-
-        await prisma.requirement.update({
-          where: {
-            id: requirement.id,
-          },
-          data: {
-            studentLimit: { decrement: 1 },
+            status: "pending",
           },
         });
 
@@ -89,9 +71,17 @@ export default class StudentInternshipController {
         await prisma.application.updateMany({
           where: {
             studentId,
+            OR: [
+              {
+                status: "approved",
+              },
+              {
+                status: "pending",
+              },
+            ],
           },
           data: {
-            status: "CANCELLED",
+            status: "cancelled",
           },
         });
 
@@ -129,7 +119,7 @@ export default class StudentInternshipController {
         },
         data: {
           mentorId: mentor.id,
-          status: "STARTED",
+          status: "started",
         },
       });
       res.status(200).json({ success: true, message: "internship started!" });
@@ -146,7 +136,7 @@ export default class StudentInternshipController {
           internshipId: internshipId ? Number(internshipId) : undefined,
         },
       });
-      notFound(studentInternship, "student internships not found");
+      notFound(studentInternship, "student internships");
       res.status(200).json({
         success: true,
         message: "student internships retirved",
@@ -169,7 +159,7 @@ export default class StudentInternshipController {
         },
         skip: 1,
       });
-      notFound(studentInternship, "student internships not found");
+      notFound(studentInternship, "student internships");
       res.status(200).json({
         success: true,
         message: "student internships retirved",

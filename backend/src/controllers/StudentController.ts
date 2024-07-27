@@ -112,15 +112,14 @@ export default class StudentController {
           id: req.cookies.id,
         },
       });
-      notFound(req.file, "file");
 
       await prisma.student.update({
         where: { id: req.cookies.id },
         data: {
-          document: req.file.filename,
+          document: req.file!.filename,
         },
       });
-      await saveFileToDisk(req.file, "documents");
+      await saveFileToDisk(req.file!, "documents");
       res.status(201).json({ success: true, message: "document uploaded successfully" });
     } catch (error) {
       next(error);
@@ -157,8 +156,6 @@ export default class StudentController {
         },
       });
 
-      notFound(student, "student");
-
       res.status(200).json({ success: true, message: "retrieved student", data: student });
     } catch (error) {
       next(error);
@@ -173,15 +170,13 @@ export default class StudentController {
         },
       });
 
-      notFound(req.file, "file");
-
       await prisma.student.update({
         where: { id: req.cookies.id },
         data: {
-          image: req.file.filename,
+          image: req.file!.filename,
         },
       });
-      await saveFileToDisk(req.file, "images");
+      await saveFileToDisk(req.file!, "images");
       res.status(201).json({ success: true, message: "Image uploaded successfully" });
     } catch (error) {
       next(error);
