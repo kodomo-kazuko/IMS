@@ -30,7 +30,7 @@ export default function Component({ params }: { params: { slug: string } }) {
                 return; // Exit function if no token
             }
 
-            const response = await api.get(`/student/${params.slug}`, {
+            const response = await api.get(`/company/${params.slug}`, {
                 headers: {
                     Authorization: `Bearer ${storedToken}`,
                 },

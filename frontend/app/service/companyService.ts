@@ -18,4 +18,9 @@ export default class CompanyService {
     const data = response.data;
     return data;
   }
+  async signInCompany(company: any) {
+    const response = await api.post("/company/signin", company);
+    const data = response.data;
+    return data;
+  }
 }
