@@ -53,7 +53,6 @@ const defaultFrameworks: Framework[] = [
 
 const ComboboxDemo: React.FC<ComboboxDemoProps> = ({ value, onChange, frameworks = defaultFrameworks }) => {
     const [open, setOpen] = useState(false);
-    const [val, setVal] = useState("");
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -62,7 +61,7 @@ const ComboboxDemo: React.FC<ComboboxDemoProps> = ({ value, onChange, frameworks
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[200px] justify-between"
+                    className="w-[280px] justify-between"
 
                 >
                     {value

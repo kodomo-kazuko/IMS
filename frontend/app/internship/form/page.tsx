@@ -23,6 +23,7 @@ import { useCallback, useEffect, useState } from "react";
 import ComboboxDemo from "@/components/combobox";
 import InternshipService from "@/app/service/internshipService";
 import toNewArray from "@/utils/toArray";
+import DatePickerDemo from "@/components/datepicker";
 
 const FormSchema = z.object({
     title: z.string().min(2, {
@@ -31,16 +32,10 @@ const FormSchema = z.object({
     type: z.string().min(2, {
         message: "Name must be at least 2 characters.",
     }),
-    enrollmentEndDate: z.string().min(2, {
-        message: "Name must be at least 2 characters.",
-    }),
-    startDate: z.string().min(2, {
-        message: "Name must be at least 2 characters.",
-    }),
-    endDate: z.string().min(2, {
-        message: "Name must be at least 2 characters.",
-    }),
-    salary: z.string().min(2, {
+    enrollmentEndDate: z.date().optional(),
+    startDate: z.date().optional(),
+    endDate: z.date().optional(),
+    salary: z.string().min(0, {
         message: "Name must be at least 2 characters.",
     }),
 });
@@ -54,9 +49,9 @@ export default function InputForm() {
         defaultValues: {
             title: "",
             type: "",
-            enrollmentEndDate: "",
-            startDate: "",
-            endDate: "",
+            enrollmentEndDate: undefined,
+            startDate: undefined,
+            endDate: undefined,
             salary: "",
         },
     });
@@ -92,7 +87,7 @@ export default function InputForm() {
 
     return (
         <div className="flex min-h-screen w-full flex-col justify-center items-center bg-muted/40">
-            <h1 className="text-3xl font-bold">Company Add</h1>
+            <h1 className="text-3xl font-bold">Internship Add</h1>
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
@@ -116,6 +111,7 @@ export default function InputForm() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Type</FormLabel>
+                                    <br />
                                     <FormControl>
                                         <ComboboxDemo
                                             value={field.value}
@@ -128,15 +124,15 @@ export default function InputForm() {
                                 </FormItem>
                             )}
                         />
-
                         <FormField
                             control={form.control}
                             name="enrollmentEndDate"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Enrollment End Date</FormLabel>
+                                    <br />
                                     <FormControl>
-                                        <Input placeholder="shadcn" {...field} />
+                                        <DatePickerDemo value={field.value} onChange={field.onChange} />
                                     </FormControl>
                                     <FormDescription></FormDescription>
                                     <FormMessage />
@@ -149,8 +145,9 @@ export default function InputForm() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Start Date</FormLabel>
+                                    <br />
                                     <FormControl>
-                                        <Input placeholder="shadcn" {...field} />
+                                        <DatePickerDemo value={field.value} onChange={field.onChange} />
                                     </FormControl>
                                     <FormDescription></FormDescription>
                                     <FormMessage />
@@ -163,8 +160,9 @@ export default function InputForm() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>End Date</FormLabel>
+                                    <br />
                                     <FormControl>
-                                        <Input placeholder="shadcn" {...field} />
+                                        <DatePickerDemo value={field.value} onChange={field.onChange} />
                                     </FormControl>
                                     <FormDescription></FormDescription>
                                     <FormMessage />
