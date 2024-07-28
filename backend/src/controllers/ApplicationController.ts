@@ -33,14 +33,14 @@ export default class ApplicationController {
 
       for (const requirement of requirements) {
         if (requirement.majorId === req.cookies.access) {
-          const approvedCount = await prisma.application.count({
+          const startedCount = await prisma.application.count({
             where: {
               requirementId: requirement.id,
-              status: "approved",
+              status: "started",
             },
           });
 
-          if (approvedCount < requirement.studentLimit) {
+          if (startedCount < requirement.studentLimit) {
             isEligible = true;
             requirementId = requirement.id;
             break;
@@ -182,13 +182,13 @@ export default class ApplicationController {
       let targetRequirementId: number | null = null;
 
       for (const requirement of requirements) {
-        const approvedCount = await prisma.application.count({
+        const startedCount = await prisma.application.count({
           where: {
             requirementId: requirement.id,
-            status: "approved",
+            status: "started",
           },
         });
-        if (approvedCount < requirement.studentLimit) {
+        if (startedCount < requirement.studentLimit) {
           isEligible = true;
           targetRequirementId = requirement.id;
           break;
@@ -204,13 +204,6 @@ export default class ApplicationController {
       await prisma.application.update({
         where: { id: application.id },
         data: { status: "approved" },
-      });
-
-      const updatedRequirement = await prisma.requirement.update({
-        where: { id: targetRequirementId! },
-        data: {
-          approvedCount: { increment: 1 },
-        },
       });
 
       res.status(200).json({ success: true, message: "Application approved successfully" });

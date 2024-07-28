@@ -85,6 +85,15 @@ export default class StudentInternshipController {
           },
         });
 
+        await prisma.application.update({
+          where: {
+            id: application.id,
+          },
+          data: {
+            status: "started",
+          },
+        });
+
         return newInternship;
       });
 

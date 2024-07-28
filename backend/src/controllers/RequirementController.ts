@@ -37,7 +37,13 @@ export default class RequirementController {
         .requirements({
           include: {
             _count: {
-              select: { Application: true },
+              select: {
+                Application: {
+                  where: {
+                    status: "approved",
+                  },
+                },
+              },
             },
           },
         });

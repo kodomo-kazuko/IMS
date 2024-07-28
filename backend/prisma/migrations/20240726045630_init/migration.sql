@@ -133,7 +133,6 @@ CREATE TABLE "Requirement" (
     "internshipId" INTEGER NOT NULL,
     "majorId" INTEGER NOT NULL,
     "studentLimit" INTEGER NOT NULL,
-    "approvedCount" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
