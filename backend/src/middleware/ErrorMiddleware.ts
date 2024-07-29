@@ -14,7 +14,8 @@ const ErrorMiddleware = (
     | PrismaClientValidationError
     | PrismaClientKnownRequestError
     | PrismaClientInitializationError
-    | PrismaClientUnknownRequestError,
+    | PrismaClientUnknownRequestError
+    | Error,
   _req: Request,
   res: Response<ResponseJSON>,
   _next: NextFunction

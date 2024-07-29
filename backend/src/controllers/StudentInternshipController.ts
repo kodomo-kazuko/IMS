@@ -23,6 +23,13 @@ export default class StudentInternshipController {
       const studentId = req.cookies.id;
       const internshipId = Number(req.params.id);
 
+      if (isNaN(internshipId)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid internship ID.",
+        });
+      }
+
       // Check if the student already has an active internship
       const startedInternship = await prisma.studentInternship.findFirst({
         where: {
@@ -58,15 +65,15 @@ export default class StudentInternshipController {
 
       const requirement = application.requirement;
 
-      const count = await prisma.application.count({
+      const startedCount = await prisma.application.count({
         where: {
           status: "started",
           requirementId: application.requirementId,
         },
       });
 
-      if (requirement!.studentLimit <= count) {
-        return res.status(300).json({
+      if (requirement.studentLimit <= startedCount) {
+        return res.status(409).json({
           success: false,
           message: "Student limit reached.",
         });
@@ -83,12 +90,25 @@ export default class StudentInternshipController {
           },
         });
 
-        // Cancel all other applications
+        // Update the current application status to "started"
+        await prisma.application.update({
+          where: {
+            id: application.id,
+          },
+          data: {
+            status: "started",
+          },
+        });
+
+        // Optionally, cancel other pending or approved applications if necessary
         await prisma.application.updateMany({
           where: {
             studentId,
             status: {
               in: ["approved", "pending"],
+            },
+            NOT: {
+              id: application.id,
             },
           },
           data: {

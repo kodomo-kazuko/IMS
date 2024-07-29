@@ -154,11 +154,20 @@ export default class ApplicationController {
   }
   public async approve(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const applicationId = Number(req.params.id);
+      const companyId = Number(req.cookies.id);
+
+      if (isNaN(applicationId) || isNaN(companyId)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid application or company ID" });
+      }
+
       const application = await prisma.application.findUniqueOrThrow({
         where: {
-          id: Number(req.params.id),
+          id: applicationId,
           internship: {
-            companyId: req.cookies.id,
+            companyId: companyId,
           },
         },
         include: {
@@ -167,32 +176,21 @@ export default class ApplicationController {
               majorId: true,
             },
           },
+          requirement: true,
         },
       });
 
-      const requirements = await prisma.internship
-        .findUniqueOrThrow({
-          where: {
-            id: application.internshipId,
-          },
-        })
-        .requirements();
-
       let isEligible = false;
-      let targetRequirementId: number | null = null;
 
-      for (const requirement of requirements) {
-        const startedCount = await prisma.application.count({
-          where: {
-            requirementId: requirement.id,
-            status: "started",
-          },
-        });
-        if (startedCount < requirement.studentLimit) {
-          isEligible = true;
-          targetRequirementId = requirement.id;
-          break;
-        }
+      const startedCount = await prisma.application.count({
+        where: {
+          requirementId: application.requirementId,
+          status: "started",
+        },
+      });
+
+      if (startedCount < application.requirement.studentLimit) {
+        isEligible = true;
       }
 
       if (!isEligible) {
@@ -202,7 +200,7 @@ export default class ApplicationController {
       }
 
       await prisma.application.update({
-        where: { id: application.id },
+        where: { id: applicationId },
         data: { status: "approved" },
       });
 
@@ -235,6 +233,11 @@ export default class ApplicationController {
         },
         include: {
           student: true,
+          internship: {
+            include: {
+              company: true,
+            },
+          },
         },
       });
       res

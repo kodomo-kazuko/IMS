@@ -47,6 +47,7 @@ export async function fakeCompany() {
     phone: faker.lorem.words(5),
     weburl: faker.lorem.words(5),
     address: faker.lorem.words(5),
+    isApproved: true,
     image: undefined,
   };
 }

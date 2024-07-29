@@ -7,6 +7,7 @@ import { jwtSecretKey } from "../utils/const";
 import { prisma } from "../middleware/PrismMiddleware";
 import { AccountType } from "@prisma/client";
 import { validatePassword } from "../utils/PasswordValidate";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const account: AccountType = "student";
 
@@ -111,6 +112,10 @@ export default class StudentController {
           id: req.cookies.id,
         },
       });
+
+      student.document
+        ? res.status(400).json({ success: false, message: "you already have a document" })
+        : undefined;
 
       await prisma.student.update({
         where: { id: req.cookies.id },
