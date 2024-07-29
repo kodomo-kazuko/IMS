@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { ResponseJSON } from "../types/response";
 import { prisma } from "../middleware/PrismMiddleware";
-import notFound from "../utils/not-found";
 
 export default class PostController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {

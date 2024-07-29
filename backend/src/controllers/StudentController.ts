@@ -5,7 +5,6 @@ import { ResponseJSON } from "../types/response";
 import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { jwtSecretKey } from "../utils/const";
 import { prisma } from "../middleware/PrismMiddleware";
-import notFound from "../utils/not-found";
 import { AccountType } from "@prisma/client";
 import { validatePassword } from "../utils/PasswordValidate";
 

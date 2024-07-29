@@ -40,7 +40,7 @@ export default class RequirementController {
               select: {
                 Application: {
                   where: {
-                    status: "approved",
+                    status: "started",
                   },
                 },
               },

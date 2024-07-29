@@ -6,7 +6,6 @@ import { jwtSecretKey } from "../utils/const";
 import { prisma } from "../middleware/PrismMiddleware";
 import { AccountType } from "@prisma/client";
 import { validatePassword } from "../utils/PasswordValidate";
-import notFound from "../utils/not-found";
 import { saveFileToDisk } from "../utils/fileHandler";
 
 const account: AccountType = "company";

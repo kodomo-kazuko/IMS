@@ -32,9 +32,10 @@ export default class StudentInternshipController {
       });
 
       if (startedInternship) {
-        return res
-          .status(409)
-          .json({ success: false, message: "You already have an active internship." });
+        return res.status(409).json({
+          success: false,
+          message: "You already have an active internship.",
+        });
       }
 
       // Find the application
@@ -43,18 +44,33 @@ export default class StudentInternshipController {
           id: internshipId,
           studentId,
         },
+        include: {
+          requirement: true,
+        },
       });
 
       if (application.status !== "approved") {
-        return res.status(400).json({ success: false, message: "Application is not approved." });
+        return res.status(400).json({
+          success: false,
+          message: "Application is not approved.",
+        });
       }
 
-      // Find the internship
-      const internship = await prisma.internship.findUniqueOrThrow({
+      const requirement = application.requirement;
+
+      const count = await prisma.application.count({
         where: {
-          id: application.internshipId,
+          status: "started",
+          requirementId: application.requirementId,
         },
       });
+
+      if (requirement!.studentLimit <= count) {
+        return res.status(300).json({
+          success: false,
+          message: "Student limit reached.",
+        });
+      }
 
       // Start a transaction
       const result = await prisma.$transaction(async (prisma) => {
@@ -71,33 +87,22 @@ export default class StudentInternshipController {
         await prisma.application.updateMany({
           where: {
             studentId,
-            OR: [
-              {
-                status: "approved",
-              },
-              {
-                status: "pending",
-              },
-            ],
+            status: {
+              in: ["approved", "pending"],
+            },
           },
           data: {
             status: "cancelled",
           },
         });
 
-        await prisma.application.update({
-          where: {
-            id: application.id,
-          },
-          data: {
-            status: "started",
-          },
-        });
-
         return newInternship;
       });
 
-      res.status(200).json({ success: true, message: "Internship started and is pending!" });
+      res.status(200).json({
+        success: true,
+        message: "Internship started and is pending!",
+      });
     } catch (error) {
       next(error);
     }

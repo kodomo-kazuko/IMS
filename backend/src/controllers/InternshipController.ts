@@ -35,6 +35,12 @@ export default class InternshipController {
           companyId: companyId ? companyId : undefined,
           title: req.query.title ? String(req.query.title) : undefined,
         },
+        omit: {
+          companyId: true,
+        },
+        include: {
+          company: true,
+        },
       });
       res.status(200).json({
         success: true,
@@ -56,6 +62,12 @@ export default class InternshipController {
         where: {
           companyId: companyId ? companyId : undefined,
           title: req.query.title ? String(req.query.title) : undefined,
+        },
+        omit: {
+          companyId: true,
+        },
+        include: {
+          company: true,
         },
       });
       res.status(200).json({
