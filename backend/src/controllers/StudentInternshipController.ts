@@ -86,7 +86,6 @@ export default class StudentInternshipController {
           data: {
             studentId,
             internshipId: application.internshipId,
-            status: "pending",
           },
         });
 
@@ -153,7 +152,7 @@ export default class StudentInternshipController {
         },
         data: {
           mentorId: mentor.id,
-          status: "started",
+          status: "ready",
         },
       });
       res.status(200).json({ success: true, message: "internship started!" });
@@ -170,7 +169,6 @@ export default class StudentInternshipController {
           internshipId: internshipId ? Number(internshipId) : undefined,
         },
       });
-      notFound(studentInternship, "student internships");
       res.status(200).json({
         success: true,
         message: "student internships retirved",
@@ -193,7 +191,6 @@ export default class StudentInternshipController {
         },
         skip: 1,
       });
-      notFound(studentInternship, "student internships");
       res.status(200).json({
         success: true,
         message: "student internships retirved",

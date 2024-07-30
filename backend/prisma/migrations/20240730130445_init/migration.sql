@@ -8,7 +8,7 @@ CREATE TYPE "AccountType" AS ENUM ('student', 'employee', 'company', 'mentor');
 CREATE TYPE "InternshipType" AS ENUM ('introduction', 'professional', 'volunteer', 'part_time', 'abcc');
 
 -- CreateEnum
-CREATE TYPE "InternshipStatus" AS ENUM ('pending', 'started', 'finished', 'cancelled');
+CREATE TYPE "InternshipStatus" AS ENUM ('pending', 'started', 'finished', 'cancelled', 'ready');
 
 -- CreateTable
 CREATE TABLE "Application" (
@@ -155,7 +155,6 @@ CREATE TABLE "StudentInternship" (
     "studentId" INTEGER NOT NULL,
     "internshipId" INTEGER NOT NULL,
     "mentorId" INTEGER,
-    "image" TEXT,
     "status" "InternshipStatus" NOT NULL DEFAULT 'pending',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

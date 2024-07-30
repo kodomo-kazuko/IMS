@@ -3,7 +3,6 @@ model StudentInternship {
     studentId    Int
     internshipId Int
     mentorId     Int?
-    image        String?
     status       InternshipStatus @default(pending)
     internship   Internship       @relation(fields: [internshipId], references: [id], onDelete: Cascade)
     mentor       Mentor?          @relation(fields: [mentorId], references: [id])

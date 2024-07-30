@@ -7,6 +7,7 @@ import {
   PrismaClientUnknownRequestError,
   PrismaClientValidationError,
 } from "@prisma/client/runtime/library";
+import logger from "../logs/logger";
 
 const ErrorMiddleware = (
   error:
@@ -23,7 +24,8 @@ const ErrorMiddleware = (
   const status = 500;
   const message = error.message || "Something went wrong";
 
-  console.log(error);
+  // Log the error using the logger
+  logger.error(error);
 
   res.status(status).json({
     success: false,

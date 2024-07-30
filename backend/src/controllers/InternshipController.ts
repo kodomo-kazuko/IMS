@@ -39,7 +39,19 @@ export default class InternshipController {
           companyId: true,
         },
         include: {
-          company: true,
+          company: {
+            select: {
+              name: true,
+              image: true,
+              id: true,
+            },
+          },
+          requirements: {
+            select: {
+              id: true,
+              studentLimit: true,
+            },
+          },
         },
       });
       res.status(200).json({
