@@ -24,7 +24,6 @@ const ErrorMiddleware = (
   const status = 500;
   const message = error.message || "Something went wrong";
 
-  // Log the error using the logger
   logger.error(error);
 
   res.status(status).json({

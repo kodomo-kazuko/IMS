@@ -1,13 +1,13 @@
 import { prisma } from "../middleware/PrismMiddleware";
 import { InternshipStatus } from "@prisma/client";
-import dayjs from "dayjs";
 import logger from "../logs/logger";
+import { subDays } from "date-fns";
 
 // Function to update status to ACTIVE if today is between startDate and endDate
 export async function updateInternshipStatusToActive() {
   logger.info("Running cron job to update student internship statuses to ACTIVE");
 
-  const today = dayjs().startOf("day").toDate();
+  const today = new Date();
 
   try {
     await prisma.$transaction(async (prisma) => {
@@ -45,7 +45,8 @@ export async function updateInternshipStatusToActive() {
 export async function updateInternshipStatusToFinished() {
   logger.info("Running cron job to update student internship statuses to FINISHED");
 
-  const today = dayjs().startOf("day").toDate();
+  const today = new Date();
+  const yesterday = subDays(today, 1);
 
   try {
     await prisma.$transaction(async (prisma) => {
@@ -53,7 +54,10 @@ export async function updateInternshipStatusToFinished() {
         where: {
           status: InternshipStatus.started,
           internship: {
-            endDate: today,
+            endDate: {
+              gte: yesterday,
+              lt: today,
+            },
           },
         },
         data: {
@@ -65,7 +69,7 @@ export async function updateInternshipStatusToFinished() {
 
       if (updatedInternships.count === 0) {
         logger.warn(
-          "No internships were updated to FINISHED. There might be no active internships with today's end date."
+          "No internships were updated to FINISHED. There might be no active internships with yesterday's end date."
         );
       }
     });
