@@ -45,11 +45,14 @@ export default class FeedbackController {
           },
         },
       });
-      res.status(200).json({ success: true, message: "feedback retrieved", data: feedback });
+      res
+        .status(200)
+        .json({ success: true, message: "Feedback retrieved successfully", data: feedback });
     } catch (error) {
       next(error);
     }
   }
+
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const feedback = await prisma.feedback.findMany({

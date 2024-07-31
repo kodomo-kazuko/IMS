@@ -23,13 +23,13 @@ export const prisma = new PrismaClient({
   query: {
     $allModels: {
       async findMany({ model, operation, args, query }) {
-        args = { ...args, take: 20 };
+        args = { ...args, take: 50 };
         args = OrderFilter(args);
         const data = await query(args);
         notFound(data, model);
         const updatedData = updateURL(data as any, ["image", "document"]);
-        const lastId = getLastId(updatedData)
-        return {lastId, list: updatedData};
+        const lastId = getLastId(updatedData);
+        return { lastId, list: updatedData };
       },
       async findUnique({ model, operation, args, query }) {
         const data = await query(args);

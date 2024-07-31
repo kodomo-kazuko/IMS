@@ -3,12 +3,17 @@ import { Major } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { prisma } from "../middleware/PrismMiddleware";
+import { validateInput } from "../utils/validateInput";
 const redisClient = createRedisClient();
 
 export default class MajorController {
   private updateCache = async () => {
-    const majors = await prisma.major.findMany();
-    await redisClient.set("majors", JSON.stringify(majors));
+    try {
+      const majors = await prisma.major.findMany();
+      await redisClient.set("majors", JSON.stringify(majors));
+    } catch (error) {
+      console.error("Failed to update cache:", error);
+    }
   };
 
   public create = async (
@@ -18,6 +23,7 @@ export default class MajorController {
   ) => {
     try {
       const { name } = req.body;
+      validateInput({ name }, res);
       await prisma.major.create({
         data: { name },
       });
@@ -109,5 +115,3 @@ export default class MajorController {
     }
   };
 }
-
-const majorController = new MajorController();

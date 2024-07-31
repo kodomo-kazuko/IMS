@@ -3,13 +3,13 @@ model Application {
     studentId     Int
     internshipId  Int
     status        ApplicationStatus @default(pending)
-    requirementId Int?
+    requirementId Int
     appliedAt     DateTime          @default(now())
     createdAt     DateTime          @default(now())
     updatedAt     DateTime          @default(now()) @updatedAt
     internship    Internship        @relation(fields: [internshipId], references: [id], onDelete: Cascade)
     student       Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
-    requirement   Requirement?      @relation(fields: [requirementId], references: [id], onDelete: SetNull)
+    requirement   Requirement       @relation(fields: [requirementId], references: [id], onDelete: Cascade)
 
     @@unique([studentId, internshipId])
 }

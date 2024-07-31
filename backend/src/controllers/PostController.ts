@@ -2,12 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { ResponseJSON } from "../types/response";
 import { prisma } from "../middleware/PrismMiddleware";
-import notFound from "../utils/not-found";
+import { validateInput } from "../utils/validateInput";
 
 export default class PostController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { title, content, internshipId } = req.body;
+
+      validateInput({ title, content, internshipId }, res);
 
       await prisma.internship.findUniqueOrThrow({
         where: {
@@ -52,7 +54,7 @@ export default class PostController {
 
   public async base(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const comapnyId = Number(req.query.comapnyId);
+      const companyId = Number(req.query.comapnyId);
       const posts = await prisma.post.findMany({
         include: {
           company: {
@@ -63,8 +65,10 @@ export default class PostController {
           },
         },
         where: {
-          companyId: comapnyId ? comapnyId : undefined,
-          title: req.query.title ? String(req.query.title) : undefined,
+          companyId: companyId ? companyId : undefined,
+          title: {
+            search: req.query.title ? String(req.query.title) : undefined,
+          },
         },
       });
 
@@ -80,7 +84,7 @@ export default class PostController {
 
   public async cursor(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const comapnyId = Number(req.query.comapnyId);
+      const companyId = Number(req.query.comapnyId);
       const posts = await prisma.post.findMany({
         cursor: {
           id: Number(req.params.id),
@@ -94,8 +98,10 @@ export default class PostController {
           },
         },
         where: {
-          companyId: comapnyId ? comapnyId : undefined,
-          title: req.query.title ? String(req.query.title) : undefined,
+          companyId: companyId ? companyId : undefined,
+          title: {
+            search: req.query.title ? String(req.query.title) : undefined,
+          },
         },
         skip: 1,
       });

@@ -2,8 +2,7 @@ import { InternshipStatus } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { prisma } from "../middleware/PrismMiddleware";
-import notFound from "../utils/not-found";
-
+import { validateInput } from "../utils/validateInput";
 export default class StudentInternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
@@ -23,6 +22,13 @@ export default class StudentInternshipController {
       const studentId = req.cookies.id;
       const internshipId = Number(req.params.id);
 
+      if (isNaN(internshipId)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid internship ID.",
+        });
+      }
+
       // Check if the student already has an active internship
       const startedInternship = await prisma.studentInternship.findFirst({
         where: {
@@ -32,9 +38,10 @@ export default class StudentInternshipController {
       });
 
       if (startedInternship) {
-        return res
-          .status(409)
-          .json({ success: false, message: "You already have an active internship." });
+        return res.status(409).json({
+          success: false,
+          message: "You already have an active internship.",
+        });
       }
 
       // Find the application
@@ -43,18 +50,33 @@ export default class StudentInternshipController {
           id: internshipId,
           studentId,
         },
+        include: {
+          requirement: true,
+        },
       });
 
       if (application.status !== "approved") {
-        return res.status(400).json({ success: false, message: "Application is not approved." });
+        return res.status(400).json({
+          success: false,
+          message: "Application is not approved.",
+        });
       }
 
-      // Find the internship
-      const internship = await prisma.internship.findUniqueOrThrow({
+      const requirement = application.requirement;
+
+      const startedCount = await prisma.application.count({
         where: {
-          id: application.internshipId,
+          status: "started",
+          requirementId: application.requirementId,
         },
       });
+
+      if (requirement.studentLimit <= startedCount) {
+        return res.status(409).json({
+          success: false,
+          message: "Student limit reached.",
+        });
+      }
 
       // Start a transaction
       const result = await prisma.$transaction(async (prisma) => {
@@ -63,22 +85,29 @@ export default class StudentInternshipController {
           data: {
             studentId,
             internshipId: application.internshipId,
-            status: "pending",
           },
         });
 
-        // Cancel all other applications
+        // Update the current application status to "started"
+        await prisma.application.update({
+          where: {
+            id: application.id,
+          },
+          data: {
+            status: "started",
+          },
+        });
+
+        // Optionally, cancel other pending or approved applications if necessary
         await prisma.application.updateMany({
           where: {
             studentId,
-            OR: [
-              {
-                status: "approved",
-              },
-              {
-                status: "pending",
-              },
-            ],
+            status: {
+              in: ["approved", "pending"],
+            },
+            NOT: {
+              id: application.id,
+            },
           },
           data: {
             status: "cancelled",
@@ -88,7 +117,10 @@ export default class StudentInternshipController {
         return newInternship;
       });
 
-      res.status(200).json({ success: true, message: "Internship started and is pending!" });
+      res.status(200).json({
+        success: true,
+        message: "Internship pending a mentor",
+      });
     } catch (error) {
       next(error);
     }
@@ -97,6 +129,7 @@ export default class StudentInternshipController {
   public async start(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id, mentorId } = req.body;
+      validateInput({ id, mentorId }, res);
       const studentinertnship = await prisma.studentInternship.findUniqueOrThrow({
         where: {
           id: Number(id),
@@ -119,7 +152,7 @@ export default class StudentInternshipController {
         },
         data: {
           mentorId: mentor.id,
-          status: "started",
+          status: "ready",
         },
       });
       res.status(200).json({ success: true, message: "internship started!" });
@@ -136,7 +169,6 @@ export default class StudentInternshipController {
           internshipId: internshipId ? Number(internshipId) : undefined,
         },
       });
-      notFound(studentInternship, "student internships");
       res.status(200).json({
         success: true,
         message: "student internships retirved",
@@ -159,7 +191,6 @@ export default class StudentInternshipController {
         },
         skip: 1,
       });
-      notFound(studentInternship, "student internships");
       res.status(200).json({
         success: true,
         message: "student internships retirved",

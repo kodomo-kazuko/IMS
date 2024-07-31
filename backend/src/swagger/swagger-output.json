@@ -8,6 +8,9 @@
   "servers": [
     {
       "url": "http://10.147.17.74:8080/"
+    },
+    {
+      "url": "http://localhost:8080/"
     }
   ],
   "paths": {
@@ -2030,8 +2033,8 @@
         ],
         "description": "",
         "responses": {
-          "200": {
-            "description": "OK"
+          "default": {
+            "description": ""
           }
         },
         "security": [

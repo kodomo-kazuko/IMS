@@ -5,10 +5,35 @@ import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
 
 export default class ApplicationController {
-  public async create(req: Request, res: Response, next: NextFunction) {
+  public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const internshipId = Number(req.params.id);
-      const studentId = Number(req.cookies.id);
+      const studentId = req.cookies.id;
+
+      const activeInternship = await prisma.student
+        .findUnique({
+          where: {
+            id: studentId,
+          },
+        })
+        .internships({
+          where: {
+            NOT: [
+              {
+                status: "finished",
+              },
+              {
+                status: "cancelled",
+              },
+            ],
+          },
+        });
+
+      if (activeInternship!.length > 0) {
+        return res
+          .status(400)
+          .json({ success: false, message: "you have an active internship already" });
+      }
 
       const student = await prisma.student.findUniqueOrThrow({
         where: {
@@ -33,14 +58,14 @@ export default class ApplicationController {
 
       for (const requirement of requirements) {
         if (requirement.majorId === req.cookies.access) {
-          const approvedCount = await prisma.application.count({
+          const startedCount = await prisma.application.count({
             where: {
               requirementId: requirement.id,
-              status: "approved",
+              status: "started",
             },
           });
 
-          if (approvedCount < requirement.studentLimit) {
+          if (startedCount < requirement.studentLimit) {
             isEligible = true;
             requirementId = requirement.id;
             break;
@@ -154,11 +179,20 @@ export default class ApplicationController {
   }
   public async approve(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
+      const applicationId = Number(req.params.id);
+      const companyId = Number(req.cookies.id);
+
+      if (isNaN(applicationId) || isNaN(companyId)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid application or company ID" });
+      }
+
       const application = await prisma.application.findUniqueOrThrow({
         where: {
-          id: Number(req.params.id),
+          id: applicationId,
           internship: {
-            companyId: req.cookies.id,
+            companyId: companyId,
           },
         },
         include: {
@@ -167,32 +201,21 @@ export default class ApplicationController {
               majorId: true,
             },
           },
+          requirement: true,
         },
       });
 
-      const requirements = await prisma.internship
-        .findUniqueOrThrow({
-          where: {
-            id: application.internshipId,
-          },
-        })
-        .requirements();
-
       let isEligible = false;
-      let targetRequirementId: number | null = null;
 
-      for (const requirement of requirements) {
-        const approvedCount = await prisma.application.count({
-          where: {
-            requirementId: requirement.id,
-            status: "approved",
-          },
-        });
-        if (approvedCount < requirement.studentLimit) {
-          isEligible = true;
-          targetRequirementId = requirement.id;
-          break;
-        }
+      const startedCount = await prisma.application.count({
+        where: {
+          requirementId: application.requirementId,
+          status: "started",
+        },
+      });
+
+      if (startedCount < application.requirement.studentLimit) {
+        isEligible = true;
       }
 
       if (!isEligible) {
@@ -202,15 +225,8 @@ export default class ApplicationController {
       }
 
       await prisma.application.update({
-        where: { id: application.id },
+        where: { id: applicationId },
         data: { status: "approved" },
-      });
-
-      const updatedRequirement = await prisma.requirement.update({
-        where: { id: targetRequirementId! },
-        data: {
-          approvedCount: { increment: 1 },
-        },
       });
 
       res.status(200).json({ success: true, message: "Application approved successfully" });
@@ -242,6 +258,11 @@ export default class ApplicationController {
         },
         include: {
           student: true,
+          internship: {
+            include: {
+              company: true,
+            },
+          },
         },
       });
       res

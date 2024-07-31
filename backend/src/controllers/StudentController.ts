@@ -5,9 +5,9 @@ import { ResponseJSON } from "../types/response";
 import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { jwtSecretKey } from "../utils/const";
 import { prisma } from "../middleware/PrismMiddleware";
-import notFound from "../utils/not-found";
 import { AccountType } from "@prisma/client";
 import { validatePassword } from "../utils/PasswordValidate";
+import { validateInput } from "../utils/validateInput";
 
 const account: AccountType = "student";
 
@@ -15,6 +15,7 @@ export default class StudentController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { name, email, password, majorId, phone, address } = req.body;
+      validateInput({ name, email, password, majorId, phone, address }, res);
       const hashedPassword = await bcrypt.hash(password, 10);
       await prisma.student.create({
         data: {
@@ -35,6 +36,7 @@ export default class StudentController {
   public async signin(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { email, password } = req.body;
+      validateInput({ email, password }, res);
       const student = await prisma.student.findUniqueOrThrow({
         where: { email },
         omit: {
@@ -112,6 +114,10 @@ export default class StudentController {
           id: req.cookies.id,
         },
       });
+
+      student.document
+        ? res.status(400).json({ success: false, message: "you already have a document" })
+        : undefined;
 
       await prisma.student.update({
         where: { id: req.cookies.id },

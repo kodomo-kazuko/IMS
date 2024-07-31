@@ -5,12 +5,12 @@ import { ResponseJSON } from "../types/response";
 import { jwtSecretKey } from "../utils/const";
 import { prisma } from "../middleware/PrismMiddleware";
 import { validatePassword } from "../utils/PasswordValidate";
-import notFound from "../utils/not-found";
-
+import { validateInput } from "../utils/validateInput";
 export default class MentorController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { name, position, email, phone, password } = req.body;
+      validateInput({ name, position, email, phone, password }, res);
       const hashedPassword = await bcrypt.hash(password, 10);
       await prisma.mentor.create({
         data: {
