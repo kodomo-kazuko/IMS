@@ -45,47 +45,7 @@ export default function Component() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2">
-                                {/* <RadioGroup defaultValue="en">
-                                    <div>
-                                        {({ active }) => (
-                                            <div
-                                                className={classNames(
-                                                    "flex items-center p-3 rounded-md cursor-pointer",
-                                                    active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-100 dark:hover:bg-gray-800",
-                                                )}
-                                            >
-                                                <div className="mr-2" />
-                                                English
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div>
-                                        {({ active }) => (
-                                            <div
-                                                className={classNames(
-                                                    "flex items-center p-3 rounded-md cursor-pointer",
-                                                    active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-100 dark:hover:bg-gray-800",
-                                                )}
-                                            >
-                                                <div className="mr-2" />
-                                                French
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div>
-                                        {({ active }) => (
-                                            <div
-                                                className={classNames(
-                                                    "flex items-center p-3 rounded-md cursor-pointer",
-                                                    active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-100 dark:hover:bg-gray-800",
-                                                )}
-                                            >
-                                                <div className="mr-2" />
-                                                Spanish
-                                            </div>
-                                        )}
-                                    </div>
-                                </RadioGroup> */}
+
                             </div>
                         </CardContent>
                     </Card>

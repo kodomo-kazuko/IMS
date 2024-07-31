@@ -101,19 +101,19 @@ export default function Component({ params }: { params: { slug: string } }) {
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Name</Label>
-                                <Input id="name" placeholder="E.g. Jane Doe" defaultValue={student.name} />
+                                <Input id="name" readOnly placeholder="E.g. Jane Doe" defaultValue={student.name} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
-                                <Input id="email" placeholder="E.g. jane@example.com" defaultValue={student.email} />
+                                <Input id="email" readOnly placeholder="E.g. jane@example.com" defaultValue={student.email} />
                             </div>
                             <div className="space-y-2">
                                 <Label>Address</Label>
-                                <Textarea id="bio" placeholder="Enter your bio" className="mt-1" style={{ minHeight: "100px" }} defaultValue={student.address} />
+                                <Textarea id="bio" readOnly placeholder="Enter your bio" className="mt-1" style={{ minHeight: "100px" }} defaultValue={student.address} />
                             </div>
                             <div className="space-y-2">
                                 <Label>Description</Label>
-                                <Textarea id="description" placeholder="Enter your Description" className="mt-1" style={{ minHeight: "100px" }} defaultValue={student.address} />
+                                <Textarea id="description" readOnly placeholder="Enter your Description" className="mt-1" style={{ minHeight: "100px" }} defaultValue={student.address} />
                             </div>
                         </CardContent>
                     </Card>

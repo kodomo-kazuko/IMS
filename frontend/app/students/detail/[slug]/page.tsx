@@ -2,7 +2,7 @@
 import api from "@/api/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
+import StudentTable from "@/components/student/StudentApplyTable";
 // import { RadioGroup, RadioGroup.Option, RadioGroup.Option.Label, RadioGroup.Option.Input } from "@/components/ui/radio-group"
 
 export default function Component({ params }: { params: { slug: string } }) {
@@ -85,6 +87,7 @@ export default function Component({ params }: { params: { slug: string } }) {
         }
     }, [router, fetchStudentApplicationList, token]);
     return (
+
         <div className="mx-auto max-w-4xl my-10">
             <div className="px-4 space-y-6 sm:px-6">
                 <header className="space-y-2">
@@ -92,7 +95,6 @@ export default function Component({ params }: { params: { slug: string } }) {
                         <img src="/placeholder.svg" alt="Avatar" width="96" height="96" className="rounded-full" />
                         <div className="space-y-1">
                             <h1 className="text-2xl font-bold">{student.name}</h1>
-                            <Button size="sm">Change photo</Button>
                         </div>
                     </div>
                 </header>
@@ -101,67 +103,41 @@ export default function Component({ params }: { params: { slug: string } }) {
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Name</Label>
-                                <Input id="name" placeholder="E.g. Jane Doe" defaultValue={student.name} />
+                                <Input id="name" readOnly placeholder="E.g. Jane Doe" defaultValue={student.name} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
-                                <Input id="email" placeholder="E.g. jane@example.com" defaultValue={student.email} />
+                                <Input id="email" readOnly placeholder="E.g. jane@example.com" defaultValue={student.email} />
                             </div>
                             <div className="space-y-2">
                                 <Label>Address</Label>
-                                <Textarea id="bio" placeholder="Enter your bio" className="mt-1" style={{ minHeight: "100px" }} defaultValue={student.address} />
+                                <Textarea id="bio" readOnly placeholder="Enter your bio" className="mt-1" style={{ minHeight: "100px" }} defaultValue={student.address} />
                             </div>
                         </CardContent>
                     </Card>
 
                     <Card>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Type</TableHead>
-                                    <TableHead>Company</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Applied at</TableHead>
-                                    <TableHead className="hidden md:table-cell"></TableHead>
-                                    <TableHead>
-                                        <span className="sr-only">Actions</span>
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
+                        <Tabs defaultValue="applied" className="w-full">
+                            <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="applied">Account</TabsTrigger>
+                                <TabsTrigger value="accepted">Password</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="applied">
+                                <Card>
+                                    <StudentTable headers={["Company", "Type", "Status", "Applied at", "Start Date", "End Date"]} data={applications} />
+                                </Card>
+                            </TabsContent>
+                            <TabsContent value="accepted">
+                                <Card>
+                                    <StudentTable headers={["Company", "Type", "Status", "Applied at", "Start Date", "End Date"]} data={applications} />
+                                </Card>
+                            </TabsContent>
+                        </Tabs>
 
-
-                                {applications.map((application) => (
-
-                                    <TableRow key={application.id}>
-
-                                        <TableCell className="font-medium">
-                                            {application.type}
-                                        </TableCell>
-                                        <TableCell>
-                                            {application.internship.company.name}
-                                        </TableCell>
-                                        <TableCell>
-                                            {application.status}
-                                        </TableCell>
-                                        <TableCell>
-                                            {application.appliedAt}
-                                        </TableCell>
-
-                                    </TableRow>
-
-                                ))}
-
-
-
-                            </TableBody>
-                        </Table>
                     </Card>
                 </div>
-                <div className="pt-6">
-                    <Button>Save</Button>
-                </div>
             </div>
+
         </div>
     )
 }

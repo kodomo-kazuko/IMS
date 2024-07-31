@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/popover"
 
 type DatePickerProps = {
-    value: Date | undefined
-    onChange: (value: Date | undefined) => void
+    value: string | undefined
+    onChange: (value: string | undefined) => void
 }
 
 const DatePickerDemo: React.FC<DatePickerProps> = ({ value, onChange }) => {
@@ -30,15 +30,15 @@ const DatePickerDemo: React.FC<DatePickerProps> = ({ value, onChange }) => {
                     )}
                 >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {value ? format(value, "PPP") : <span>Pick a date</span>}
+                    {value ? format(value, "yyyy-MM-dd") : <span>Pick a date</span>}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
                 <Calendar
                     mode="single"
-                    selected={value}
+                    selected={value ? new Date(value) : undefined}
                     onSelect={(selectedDate) => {
-                        onChange(selectedDate ?? undefined);
+                        onChange(selectedDate ? format(selectedDate, "yyyy-MM-dd").toString() : undefined);
                     }}
                     initialFocus
                 />
