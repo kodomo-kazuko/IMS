@@ -2,11 +2,15 @@ import { prisma } from "../middleware/PrismMiddleware";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import notFound from "../utils/not-found";
+import { validateInput } from "../utils/validateInput";
 
 export default class RequirementController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { majorId, internshipId, studentLimit } = req.body;
+
+      validateInput({ majorId, internshipId, studentLimit }, res);
+
       await prisma.internship.findUniqueOrThrow({
         where: {
           id: Number(internshipId),
@@ -73,7 +77,10 @@ export default class RequirementController {
   public async edit(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { studentLimit, majorId } = req.query;
-      await prisma.requirement.update({
+
+      validateInput({ studentLimit, majorId }, res);
+
+      const updatedRequirement = await prisma.requirement.updateMany({
         where: {
           id: Number(req.params.id),
           internship: {
@@ -82,10 +89,15 @@ export default class RequirementController {
         },
         data: {
           studentLimit: studentLimit ? Number(studentLimit) : undefined,
-          // majorId: majorId ? Number(majorId) : undefined,
+          majorId: majorId ? Number(majorId) : undefined,
         },
       });
-      res.status(200).json({ success: true, message: "requirement updated" });
+
+      if (updatedRequirement.count === 0) {
+        return res.status(404).json({ success: false, message: "Requirement not found" });
+      }
+
+      res.status(200).json({ success: true, message: "Requirement updated" });
     } catch (error) {
       next(error);
     }

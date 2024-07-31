@@ -2,6 +2,7 @@ import { InternshipStatus } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { prisma } from "../middleware/PrismMiddleware";
+import { validateInput } from "../utils/validateInput";
 export default class StudentInternshipController {
   public async types(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
@@ -128,6 +129,7 @@ export default class StudentInternshipController {
   public async start(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id, mentorId } = req.body;
+      validateInput({ id, mentorId }, res);
       const studentinertnship = await prisma.studentInternship.findUniqueOrThrow({
         where: {
           id: Number(id),

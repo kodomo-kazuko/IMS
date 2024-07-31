@@ -5,10 +5,35 @@ import { prisma } from "../middleware/PrismMiddleware";
 import notFound from "../utils/not-found";
 
 export default class ApplicationController {
-  public async create(req: Request, res: Response, next: NextFunction) {
+  public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const internshipId = Number(req.params.id);
-      const studentId = Number(req.cookies.id);
+      const studentId = req.cookies.id;
+
+      const activeInternship = await prisma.student
+        .findUnique({
+          where: {
+            id: studentId,
+          },
+        })
+        .internships({
+          where: {
+            NOT: [
+              {
+                status: "finished",
+              },
+              {
+                status: "cancelled",
+              },
+            ],
+          },
+        });
+
+      if (activeInternship!.length > 0) {
+        return res
+          .status(400)
+          .json({ success: false, message: "you have an active internship already" });
+      }
 
       const student = await prisma.student.findUniqueOrThrow({
         where: {

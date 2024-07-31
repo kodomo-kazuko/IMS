@@ -1,11 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { ResponseJSON } from "../types/response";
 import { prisma } from "../middleware/PrismMiddleware";
+import { validateInput } from "../utils/validateInput";
 
 export default class RoleController {
   public async create(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { name } = req.body;
+      validateInput({ name }, res);
       await prisma.role.create({
         data: {
           name,
@@ -34,6 +36,7 @@ export default class RoleController {
   public async edit(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { id, name } = req.body;
+      validateInput({ name, id }, res);
       await prisma.role.update({
         where: {
           id: Number(id),

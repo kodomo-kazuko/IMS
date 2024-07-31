@@ -7,12 +7,14 @@ import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import { prisma } from "../middleware/PrismMiddleware";
 import { validatePassword } from "../utils/PasswordValidate";
 import { AccountType } from "@prisma/client";
+import { validateInput } from "../utils/validateInput";
 
 const account: AccountType = "employee";
 
 export default class EmployeeController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     const { name, email, password, roleId, phone } = req.body;
+    validateInput({ name, email, password, roleId, phone }, res);
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       await prisma.employee.create({
@@ -88,11 +90,17 @@ export default class EmployeeController {
           id: Number(req.params.id),
         },
       });
-      employee.image ? deleteFileOnDisk(employee.image, "images") : undefined;
+
+      if (employee.image) {
+        deleteFileOnDisk(employee.image, "images");
+      }
+
+      res.status(200).json({ success: true, message: "Employee deleted successfully" });
     } catch (error) {
       next(error);
     }
   }
+
   public async uploadImage(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       await prisma.employee.findFirstOrThrow({

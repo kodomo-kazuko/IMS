@@ -7,6 +7,7 @@ import { prisma } from "../middleware/PrismMiddleware";
 import { AccountType } from "@prisma/client";
 import { validatePassword } from "../utils/PasswordValidate";
 import { saveFileToDisk } from "../utils/fileHandler";
+import { validateInput } from "../utils/validateInput";
 
 const account: AccountType = "company";
 
@@ -14,6 +15,9 @@ export default class CompanyController {
   public async signup(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
       const { name, email, password, phone, address, weburl } = req.body;
+
+      validateInput({ name, email, password, phone, address, weburl }, res);
+
       const hashedPassword = await bcrypt.hash(password, 10);
       await prisma.company.create({
         data: {
@@ -167,10 +171,9 @@ export default class CompanyController {
   }
   public async score(req: Request, res: Response<ResponseJSON>, next: NextFunction) {
     try {
-      const companies: any = await prisma.company.findMany({
-        where: {
-          id: req.query.id ? Number(req.query.id) : undefined,
-        },
+      const companyId = req.query.id ? Number(req.query.id) : undefined;
+      const companies = await prisma.company.findMany({
+        where: { id: companyId },
         select: {
           id: true,
           image: true,
@@ -191,42 +194,32 @@ export default class CompanyController {
         },
       });
 
-      const array = companies.list;
+      const companyScores = companies.map((company) => {
+        let totalScore = 0;
+        let feedbackCount = 0;
 
-      console.log(array);
-
-      const companyScores = array.map(
-        (company: { internships: any[]; id: any; name: any; image: any }) => {
-          let totalScore = 0;
-          let feedbackCount = 0;
-
-          company.internships.forEach((internship) => {
-            internship.students.forEach((student: { Feedback: any[] }) => {
-              student.Feedback.forEach((feedback) => {
-                totalScore += feedback.score;
-                feedbackCount += 1;
-              });
+        company.internships.forEach((internship) => {
+          internship.students.forEach((student) => {
+            student.Feedback.forEach((feedback) => {
+              totalScore += feedback.score;
+              feedbackCount += 1;
             });
           });
+        });
 
-          const averageScore = feedbackCount > 0 ? totalScore / feedbackCount : 0;
-
-          return {
-            id: company.id,
-            name: company.name,
-            image: company.image,
-            averageScore,
-          };
-        }
-      );
+        const averageScore = feedbackCount > 0 ? totalScore / feedbackCount : 0;
+        return {
+          id: company.id,
+          name: company.name,
+          image: company.image,
+          averageScore,
+        };
+      });
 
       res.status(200).json({
         success: true,
         message: "Company scores retrieved",
-        data: {
-          lastId: companies.length > 0 ? companies[companies.length - 1].id : null,
-          list: companyScores,
-        },
+        data: companyScores,
       });
     } catch (error) {
       next(error);
