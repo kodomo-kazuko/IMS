@@ -83,30 +83,7 @@ export default function Component() {
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Type</TableHead>
-                                    <TableHead>Company</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Applied at</TableHead>
-                                    <TableHead className="hidden md:table-cell"></TableHead>
-                                    <TableHead>
-                                        <span className="sr-only">Actions</span>
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
 
-
-
-
-
-
-                            </TableBody>
-                        </Table>
-                    </Card>
                 </div>
                 <div className="pt-6">
                     <Button>Save</Button>

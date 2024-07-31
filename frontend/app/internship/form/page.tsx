@@ -2,9 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { boolean, z } from "zod";
-
-import Autocomplete from "@mui/material/Autocomplete";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -17,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-hot-toast";
-import CompanyService from "@/app/service/companyService";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import ComboboxDemo from "@/components/combobox";
