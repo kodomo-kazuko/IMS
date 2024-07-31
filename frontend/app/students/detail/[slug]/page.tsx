@@ -1,20 +1,14 @@
 "use client";
 import api from "@/api/api";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useParams } from "next/navigation";
-
 import { Textarea } from "@/components/ui/textarea"
-import { MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
+import StudentTabsComponent from "@/components/student/StudentTabs";
 import StudentTable from "@/components/student/StudentApplyTable";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 // import { RadioGroup, RadioGroup.Option, RadioGroup.Option.Label, RadioGroup.Option.Input } from "@/components/ui/radio-group"
 
 export default function Component({ params }: { params: { slug: string } }) {
@@ -29,7 +23,7 @@ export default function Component({ params }: { params: { slug: string } }) {
             console.log(storedToken);
             if (!storedToken) {
                 router.push("/login");
-                return; // Exit function if no token
+                return;
             }
 
             const response = await api.get(`/student/${params.slug}`, {
@@ -47,7 +41,6 @@ export default function Component({ params }: { params: { slug: string } }) {
 
         } catch (error) {
             console.error("Failed to fetch student application list:", error);
-            // Handle error as needed
         }
     }, [router]);
     const fetchStudentApplicationList = useCallback(async () => {
@@ -116,28 +109,11 @@ export default function Component({ params }: { params: { slug: string } }) {
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <Tabs defaultValue="applied" className="w-full">
-                            <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger value="applied">Account</TabsTrigger>
-                                <TabsTrigger value="accepted">Password</TabsTrigger>
-                            </TabsList>
-                            <TabsContent value="applied">
-                                <Card>
-                                    <StudentTable headers={["Company", "Type", "Status", "Applied at", "Start Date", "End Date"]} data={applications} />
-                                </Card>
-                            </TabsContent>
-                            <TabsContent value="accepted">
-                                <Card>
-                                    <StudentTable headers={["Company", "Type", "Status", "Applied at", "Start Date", "End Date"]} data={applications} />
-                                </Card>
-                            </TabsContent>
-                        </Tabs>
-
-                    </Card>
+                    <StudentTabsComponent applied={applications} accepted={applications} />
                 </div>
             </div>
 
         </div>
+
     )
 }
