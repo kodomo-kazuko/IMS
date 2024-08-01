@@ -1,19 +1,5 @@
 "use client";
-import {
-    MoreHorizontal,
-    PlusCircle,
-} from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -23,22 +9,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -46,6 +16,7 @@ import api from "@/api/api";
 import TopNav from "@/components/topNac";
 import toast from "react-hot-toast";
 import InternshipService from "../service/internshipService";
+import InternshipTable from "@/components/internship/InternshipTable";
 
 const internshipService = new InternshipService();
 
@@ -79,7 +50,6 @@ export default function Internship() {
         }
     };
 
-
     const fetchInternshipList = useCallback(async () => {
         try {
             const response = await internshipService.getInternships();
@@ -97,7 +67,6 @@ export default function Internship() {
 
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
-
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
                 <TopNav />
                 <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
@@ -114,7 +83,6 @@ export default function Internship() {
                                         Add Internship
                                     </span>
                                 </Button>
-
                             </div>
                         </div>
                         <TabsContent value="all">
@@ -126,111 +94,7 @@ export default function Internship() {
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Title</TableHead>
-                                                <TableHead>Type</TableHead>
-                                                <TableHead>Profession</TableHead>
-                                                <TableHead>Salary</TableHead>
-                                                <TableHead>Number of applicants</TableHead>
-                                                <TableHead className="hidden md:table-cell">
-                                                    Deadline
-                                                </TableHead>
-                                                <TableHead className="hidden md:table-cell">
-                                                    Start Date
-                                                </TableHead>
-                                                <TableHead className="hidden md:table-cell">
-                                                    End Date
-                                                </TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            <Dialog>
-                                                {internships?.map((internship) => (
-                                                    <DialogTrigger asChild key={internship.id}>
-                                                        <TableRow key={internship.id}>
-                                                            <TableCell className="font-medium">
-                                                                {internship.title}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <Badge variant="outline">
-                                                                    {internship.type}
-                                                                </Badge>
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <Badge variant="outline">
-                                                                    {internship.type}
-                                                                </Badge>
-                                                            </TableCell>
-
-                                                            <TableCell>
-                                                                <Badge variant="outline">
-                                                                    {internship.salary === false
-                                                                        ? "Unpaid"
-                                                                        : "Paid"}
-                                                                </Badge>
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                {/* <Badge variant="outline">
-                                                                    {
-                                                                        internship.Requirement[0]?.approvedApps
-                                                                            .length
-                                                                    }
-                                                                    /{internship.Requirement[0]?.studentLimit}
-                                                                </Badge> */}
-                                                            </TableCell>
-                                                            <TableCell className="hidden md:table-cell">
-                                                                {internship.enrollmentEndDate.slice(0, 10)}
-                                                            </TableCell>
-                                                            <TableCell className="hidden md:table-cell">
-                                                                {internship.startDate.slice(0, 10)}
-                                                            </TableCell>
-                                                            <TableCell className="hidden md:table-cell">
-                                                                {internship.endDate.slice(0, 10)}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <DropdownMenu>
-                                                                    <DropdownMenuTrigger asChild>
-                                                                        <Button
-                                                                            aria-haspopup="true"
-                                                                            size="icon"
-                                                                            variant="ghost"
-                                                                        >
-                                                                            <MoreHorizontal className="h-4 w-4" />
-                                                                            <span className="sr-only">
-                                                                                Toggle menu
-                                                                            </span>
-                                                                        </Button>
-                                                                    </DropdownMenuTrigger>
-                                                                    <DropdownMenuContent align="end" >
-                                                                        <DropdownMenuLabel>
-                                                                            Actions
-                                                                        </DropdownMenuLabel>
-                                                                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                                        <DropdownMenuItem>Delete</DropdownMenuItem>
-                                                                    </DropdownMenuContent>
-                                                                </DropdownMenu>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    </DialogTrigger>
-                                                ))}
-
-                                                <DialogContent className="sm:max-w-[625px]">
-                                                    <DialogHeader>
-                                                        <DialogTitle>Internship name</DialogTitle>
-                                                        <DialogDescription>
-                                                            Internship profession
-                                                        </DialogDescription>
-                                                    </DialogHeader>
-
-                                                    <DialogFooter>
-                                                        <Button type="submit">Apply</Button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </Dialog>
-                                        </TableBody>
-                                    </Table>
+                                    <InternshipTable internships={internships} />
                                 </CardContent>
                                 <CardFooter>
                                     <div className="text-xs text-muted-foreground">

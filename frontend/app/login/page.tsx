@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import EmployeeService from "../service/employeeService";
 import CompanyService from "../service/companyService";
 import api from "@/api/api";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const employeeService = new EmployeeService();
 const companyService = new CompanyService()
 export default function Login() {
@@ -48,107 +50,123 @@ export default function Login() {
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-screen">
 
       <div className="flex items-center justify-center py-12">
-
-        {login ? (
-
-          <div className="mx-auto grid w-[350px] gap-6">
-            <div className="grid gap-2 text-center">
-              <Button className="" onClick={() => setLogin(!login)}>Change</Button>
-              <h1 className="text-3xl font-bold">Login</h1>
-              <p className="text-balance text-muted-foreground">Enter your email below to login to your account</p>
-            </div>
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  onChange={(e) => {
-                    setForm({ ...form, email: e.target.value });
-                  }}
-                />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
-                    Forgot your password?
+        <Tabs defaultValue="employee" className="w-[400px]">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="employee">Employee</TabsTrigger>
+            <TabsTrigger value="company">Company</TabsTrigger>
+          </TabsList>
+          <TabsContent value="employee">
+            <Card>
+              <CardHeader>
+                <CardTitle>Login</CardTitle>
+                <CardDescription>
+                  Enter your credentials to access your account.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="m@example.com"
+                      required
+                      onChange={(e) => {
+                        setForm({ ...form, email: e.target.value });
+                      }}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <div className="flex items-center">
+                      <Label htmlFor="password">Password</Label>
+                      <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
+                        Forgot your password?
+                      </Link>
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      required
+                      onChange={(e) => {
+                        setForm({ ...form, password: e.target.value });
+                      }}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" onClick={handleSubmit}>
+                    Login
+                  </Button>
+                  <Button variant="outline" className="w-full">
+                    Login with Google
+                  </Button>
+                </div>
+                <div className="mt-4 text-center text-sm">
+                  Don&apos;t have an account?{" "}
+                  <Link href="#" className="underline">
+                    Sign up
                   </Link>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  onChange={(e) => {
-                    setForm({ ...form, password: e.target.value });
-                  }}
-                />
-              </div>
-              <Button type="submit" className="w-full" onClick={handleSubmit}>
-                Login
-              </Button>
-              <Button variant="outline" className="w-full">
-                Login with Google
-              </Button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="#" className="underline">
-                Sign up
-              </Link>
-            </div>
-          </div>
-        ) : <div className="mx-auto grid w-[350px] gap-6">
-          <div className="grid gap-2 text-center">
-            <Button className="" onClick={() => setLogin(!login)}>Change</Button>
-            <h1 className="text-3xl font-bold">Loginaa</h1>
-            <p className="text-balance text-muted-foreground">Enter your email below to login to your account</p>
-          </div>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                onChange={(e) => {
-                  setForm({ ...form, email: e.target.value });
-                }}
-              />
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
-                  Forgot your password?
-                </Link>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                required
-                onChange={(e) => {
-                  setForm({ ...form, password: e.target.value });
-                }}
-              />
-            </div>
-            <Button type="submit" className="w-full" onClick={handleSubmit}>
-              Login
-            </Button>
-            <Button variant="outline" className="w-full">
-              Login with Google
-            </Button>
-          </div>
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link href="#" className="underline">
-              Sign up
-            </Link>
-          </div>
-        </div>}
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="company">
+            <Card>
+              <CardHeader>
+                <CardTitle>Login</CardTitle>
+                <CardDescription>
+                  Enter your credentials to access your account.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="m@example.com"
+                      required
+                      onChange={(e) => {
+                        setForm({ ...form, email: e.target.value });
+                      }}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <div className="flex items-center">
+                      <Label htmlFor="password">Password</Label>
+                      <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
+                        Forgot your password?
+                      </Link>
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      required
+                      onChange={(e) => {
+                        setForm({ ...form, password: e.target.value });
+                      }}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" onClick={handleSubmit}>
+                    Login
+                  </Button>
+                  <Button variant="outline" className="w-full">
+                    Login with Google
+                  </Button>
+                </div>
+                <div className="mt-4 text-center text-sm">
+                  Don&apos;t have an account?{" "}
+                  <Link href="#" className="underline">
+                    Sign up
+                  </Link>
+                </div>
+              </CardContent>
+
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+
 
 
       </div>

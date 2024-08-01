@@ -3,8 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-import Autocomplete from "@mui/material/Autocomplete";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -17,13 +15,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-hot-toast";
-import CompanyService from "@/app/service/companyService";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import ComboboxDemo from "@/components/combobox";
 import InternshipService from "@/app/service/internshipService";
 import toNewArray from "@/utils/toArray";
 import DatePickerDemo from "@/components/datepicker";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const FormSchema = z.object({
     title: z.string().min(2, {
@@ -32,14 +30,13 @@ const FormSchema = z.object({
     type: z.string().min(2, {
         message: "Name must be at least 2 characters.",
     }),
-    enrollmentEndDate: z.date().optional(),
-    startDate: z.date().optional(),
-    endDate: z.date().optional(),
-    salary: z.string().min(0, {
-        message: "Name must be at least 2 characters.",
+    enrollmentEndDate: z.string().optional(),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
+    salary: z.boolean().refine((val) => val === true, {
+        message: "Please read and accept the terms and conditions",
     }),
 });
-const companyService = new CompanyService();
 
 const internshipService = new InternshipService();
 export default function InputForm() {
@@ -49,16 +46,16 @@ export default function InputForm() {
         defaultValues: {
             title: "",
             type: "",
-            enrollmentEndDate: undefined,
-            startDate: undefined,
-            endDate: undefined,
-            salary: "",
+            enrollmentEndDate: "",
+            startDate: "",
+            endDate: "",
+            salary: false,
         },
     });
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         console.log(form.getValues());
-        const response = await companyService.createCompany(form.getValues());
+        const response = await internshipService.createInternship(form.getValues());
         console.log(response);
         if (response.success) {
             toast.success("You submitted the following values");
@@ -175,8 +172,9 @@ export default function InputForm() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Salary</FormLabel>
+                                    <br />
                                     <FormControl>
-                                        <Input placeholder="shadcn" {...field} />
+                                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                                     </FormControl>
                                     <FormDescription></FormDescription>
                                     <FormMessage />

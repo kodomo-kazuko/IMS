@@ -16,6 +16,7 @@ export default class MajorController {
 		}
 	};
 
+<<<<<<< HEAD
 	public create = async (
 		req: Request,
 		res: Response<ResponseJSON>,
@@ -27,10 +28,24 @@ export default class MajorController {
 			await prisma.major.create({
 				data: { name },
 			});
+=======
+  public create = async (
+    req: Request,
+    res: Response<ResponseJSON>,
+    next: NextFunction
+  ) => {
+    try {
+      const { name } = req.body;
+      validateInput({ name }, res);
+      await prisma.major.create({
+        data: { name },
+      });
+>>>>>>> refs/remotes/origin/master
 
 			await redisClient.del("majors");
 			await this.updateCache();
 
+<<<<<<< HEAD
 			res
 				.status(201)
 				.json({ success: true, message: "Major was added successfully" });
@@ -82,10 +97,64 @@ export default class MajorController {
 				where: { id: Number(id) },
 				data: { name },
 			});
+=======
+      res
+        .status(201)
+        .json({ success: true, message: "Major was added successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public all = async (
+    req: Request,
+    res: Response<ResponseJSON>,
+    next: NextFunction
+  ) => {
+    try {
+      const cachedData = await redisClient.get("majors");
+      if (cachedData) {
+        const majors: Major[] = JSON.parse(cachedData);
+        res.status(200).json({
+          success: true,
+          message: "Majors retrieved from cache",
+          data: majors,
+        });
+        return;
+      }
+      const majors = await prisma.major.findMany();
+      if (majors.length === 0) {
+        res.status(200).json({ success: true, message: "No majors yet" });
+        return;
+      }
+      await redisClient.set("majors", JSON.stringify(majors));
+      res.status(200).json({
+        success: true,
+        message: "Majors retrieved successfully",
+        data: majors,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public edit = async (
+    req: Request,
+    res: Response<ResponseJSON>,
+    next: NextFunction
+  ) => {
+    try {
+      const { id, name } = req.body;
+      await prisma.major.update({
+        where: { id: Number(id) },
+        data: { name },
+      });
+>>>>>>> refs/remotes/origin/master
 
 			await redisClient.del("majors");
 			await this.updateCache();
 
+<<<<<<< HEAD
 			res
 				.status(200)
 				.json({ success: true, message: "Major updated successfully" });
@@ -103,10 +172,30 @@ export default class MajorController {
 			await prisma.major.delete({
 				where: { id: Number(req.params.id) },
 			});
+=======
+      res
+        .status(200)
+        .json({ success: true, message: "Major updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public delete = async (
+    req: Request,
+    res: Response<ResponseJSON>,
+    next: NextFunction
+  ) => {
+    try {
+      await prisma.major.delete({
+        where: { id: Number(req.params.id) },
+      });
+>>>>>>> refs/remotes/origin/master
 
 			await redisClient.del("majors");
 			await this.updateCache();
 
+<<<<<<< HEAD
 			res
 				.status(200)
 				.json({ success: true, message: "Major deleted successfully" });
@@ -114,4 +203,13 @@ export default class MajorController {
 			next(error);
 		}
 	};
+=======
+      res
+        .status(200)
+        .json({ success: true, message: "Major deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+>>>>>>> refs/remotes/origin/master
 }

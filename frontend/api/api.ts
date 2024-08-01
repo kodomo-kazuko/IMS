@@ -1,6 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { Type } from "lucide-react";
+import { Router, Type } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type AccountType = "employee" | "company" | "student" | "mentor";
 type DecodedToken = {
@@ -12,7 +13,6 @@ type DecodedToken = {
 };
 
 const baseURL = process.env.NEXT_PUBLIC_API;
-
 const storedToken = localStorage.getItem("token");
 
 export let decodedToken: DecodedToken;

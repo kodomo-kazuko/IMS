@@ -154,7 +154,7 @@ export default function Dashboard() {
                                                             <Badge variant="outline">{company.email}</Badge>
                                                         </TableCell>
                                                         <TableCell className="hidden md:table-cell">
-                                                            {company.createdAt}
+                                                            {company.createdAt.slice(0, 10)}
                                                         </TableCell>
                                                         <TableCell>
                                                             <DropdownMenu>
