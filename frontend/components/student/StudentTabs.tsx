@@ -4,19 +4,20 @@ import React from 'react';
 import StudentTable from './StudentApplyTable';
 
 
-interface Application {
-    company: string;
-    type: string;
-    status: string;
-    appliedAt: string;
-    startDate: string;
-    endDate: string;
-}
+// interface Application {
+//     company: string;
+//     type: string;
+//     status: string;
+//     appliedAt: string;
+//     startDate: string;
+//     endDate: string;
+// }
 
 // Define the props for the TabsComponent
+import prisma from '@/prisma/prisma';
 interface TabsComponentProps {
-    applied: Application[];
-    accepted: Application[];
+    applied: prisma.Application[];
+    accepted: prisma.Application[];
 }
 
 const StudentTabsComponent: React.FC<TabsComponentProps> = ({ applied, accepted }) => {
@@ -28,12 +29,12 @@ const StudentTabsComponent: React.FC<TabsComponentProps> = ({ applied, accepted 
             </TabsList>
             <TabsContent value="applied">
                 <Card>
-                    <StudentTable headers={["Company", "Type", "Status", "Applied at", "Start Date", "End Date"]} data={applied} />
+                    <StudentTable headers={["Company", "Type", "Status", "Applied at", "Start Date", "End Date"]} data={applied} type='applied' />
                 </Card>
             </TabsContent>
             <TabsContent value="accepted">
                 <Card>
-                    <StudentTable headers={["Company", "Type", "Status", "Applied at", "Start Date", "End Date"]} data={accepted} />
+                    <StudentTable headers={["Company", "Type", "Status", "Applied at", "Start Date", "End Date"]} data={accepted} type='approved' />
                 </Card>
             </TabsContent>
         </Tabs>

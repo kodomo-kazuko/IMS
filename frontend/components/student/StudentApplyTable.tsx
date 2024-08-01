@@ -3,10 +3,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 interface TableProps {
     headers: string[];
     data: any[]
+    type: string
 }
+import prisma from '@/prisma/prisma';
 
-
-const StudentTable: React.FC<TableProps> = ({ headers, data }) => {
+const StudentTable: React.FC<TableProps> = ({ headers, data, type }) => {
+    prisma.ApplicationStatus
     return (
         <Table className="table-auto w-full">
             <TableHeader>
@@ -26,9 +28,7 @@ const StudentTable: React.FC<TableProps> = ({ headers, data }) => {
                         <TableCell className="font-medium px-4 py-2">{application.internship.company.name}</TableCell>
                         <TableCell className="px-4 py-2">{application.type}</TableCell>
                         <TableCell className="px-4 py-2">{application.status}</TableCell>
-                        <TableCell className="px-4 py-2">{application.appliedAt}</TableCell>
-                        <TableCell className="px-4 py-2">{application.startDate}</TableCell>
-                        <TableCell className="px-4 py-2">{application.endDate}</TableCell>
+                        <TableCell className="px-4 py-2">{application.appliedAt.slice(0, 10)}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>
