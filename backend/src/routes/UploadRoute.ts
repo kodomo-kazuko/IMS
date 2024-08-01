@@ -14,20 +14,20 @@
 
 // export default router;
 
+import path from "node:path";
 import express, { Router } from "express";
-import path from "path";
 import accessMiddleware from "../middleware/AccessMiddleware";
 const router = Router();
 
 const FILE_PATH = process.env.FILE_PATH;
 
 router.use(
-  "/",
-  // accessMiddleware("all"),
-  express.static(
-    path.join(__dirname + `../../${FILE_PATH}`)
-    /** #swagger.tags = ['Upload'] #swagger.security = [{"bearerAuth": []}] */
-  )
+	"/",
+	// accessMiddleware("all"),
+	express.static(
+		path.join(`${__dirname}../../${FILE_PATH}`),
+		/** #swagger.tags = ['Upload'] #swagger.security = [{"bearerAuth": []}] */
+	),
 );
 
 export default router;

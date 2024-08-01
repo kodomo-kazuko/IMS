@@ -1,25 +1,26 @@
-import { Request, Response, NextFunction } from "express";
-import { ApplicationStatus } from "@prisma/client";
+import type { ApplicationStatus } from "@prisma/client";
+import type { NextFunction, Request, Response } from "express";
 
 export interface ResponseJSON {
-  success: boolean;
-  message: string;
-  data?: any;
+	success: boolean;
+	message: string;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	data?: any;
 }
 
 export interface Props {
-  req: Request;
-  res: Response<ResponseJSON>;
-  next: NextFunction;
+	req: Request;
+	res: Response<ResponseJSON>;
+	next: NextFunction;
 }
 
 export interface ApplicationDTO {
-  studentId: string;
-  internshipId: string;
-  status: ApplicationStatus;
+	studentId: string;
+	internshipId: string;
+	status: ApplicationStatus;
 }
 
 export type ReturnType = {
-  lastId: Number;
-  list: [];
+	lastId: number;
+	list: [];
 };
