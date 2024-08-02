@@ -15,7 +15,7 @@ export default class ApplicationController {
 			const studentId = req.cookies.id;
 
 			const activeInternship = await prisma.student
-				.findFirst({
+				.findFirstOrThrow({
 					where: {
 						id: studentId,
 					},
@@ -33,7 +33,7 @@ export default class ApplicationController {
 					},
 				});
 
-			if (activeInternship) {
+			if (activeInternship.length > 0) {
 				return res.status(400).json({
 					success: false,
 					message: "you have an active internship already",

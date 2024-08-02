@@ -13,7 +13,7 @@ router.get(
 
 router.post(
 	"/create/:id",
-	accessMiddleware(["student"]),
+	accessMiddleware(["Student"]),
 	applicationController.create /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
@@ -31,13 +31,13 @@ router.get(
 
 router.get(
 	"/count",
-	accessMiddleware(["employee"]),
+	accessMiddleware(["Employee"]),
 	applicationController.count /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.patch(
 	"/approve/:id",
-	accessMiddleware(["company"], 0),
+	accessMiddleware(["Company"], 0),
 	applicationController.approve /** #swagger.tags = ['Application'] #swagger.security = [{"bearerAuth": []}] */,
 );
 

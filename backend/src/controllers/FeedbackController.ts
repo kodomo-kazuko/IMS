@@ -15,13 +15,13 @@ export default class FeedbackController {
 			const internship = await prisma.studentInternship.findFirstOrThrow({
 				where: {
 					studentId:
-						req.cookies.account === AccountType.student
+						req.cookies.account === AccountType.Student
 							? req.cookies.id
 							: undefined,
 					internshipId: Number(internshipId),
 					internship: {
 						companyId:
-							req.cookies.account === AccountType.company
+							req.cookies.account === AccountType.Company
 								? req.cookies.id
 								: undefined,
 					},
@@ -95,6 +95,42 @@ export default class FeedbackController {
 			res
 				.status(200)
 				.json({ success: true, message: "feedback retrieved", data: feedback });
+		} catch (error) {
+			next(error);
+		}
+	}
+	public async score(
+		req: Request,
+		res: Response<ResponseJSON>,
+		next: NextFunction,
+	) {
+		try {
+			const account = req.params.account;
+
+			const averageFeedbackScores = await prisma.$queryRaw`
+				SELECT 
+					c.id AS companyId, 
+					c.name AS companyName, 
+					AVG(f.score) AS averageScore
+				FROM 
+					${account} c
+				JOIN 
+					"Feedback" f 
+				ON 
+					c.id = f."userId"
+				WHERE 
+					f.account = ${account === "Company" ? "Student" : "Company"}
+				GROUP BY 
+					c.id, c.name
+				ORDER BY 
+					averageScore DESC;
+			`;
+
+			res.status(200).json({
+				success: true,
+				message: `${account} scores retrieved`,
+				data: averageFeedbackScores,
+			});
 		} catch (error) {
 			next(error);
 		}

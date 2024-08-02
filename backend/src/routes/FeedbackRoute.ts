@@ -23,4 +23,10 @@ router.get(
 	feedbackController.cursor /** #swagger.tags = ['Feedback'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
+router.get(
+	"/score/:account",
+	accessMiddleware(["Employee"]),
+	feedbackController.score /** #swagger.tags = ['Feedback'] #swagger.security = [{"bearerAuth": []}] */,
+);
+
 export default router;

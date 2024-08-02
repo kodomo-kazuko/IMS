@@ -8,7 +8,7 @@ const router = Router();
 
 router.post(
 	"/create",
-	accessMiddleware(["company"], 0),
+	accessMiddleware(["Company"], 0),
 	requirementController.create /** #swagger.tags = ['Requirement'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
@@ -20,13 +20,13 @@ router.get(
 
 router.patch(
 	"/edit/:id",
-	accessMiddleware(["company"]),
+	accessMiddleware(["Company"]),
 	requirementController.edit /** #swagger.tags = ['Requirement'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.delete(
 	"/delete/:id",
-	accessMiddleware(["company"], 0),
+	accessMiddleware(["Company"], 0),
 	requirementController.delete /** #swagger.tags = ['Requirement'] #swagger.security = [{"bearerAuth": []}] */,
 );
 

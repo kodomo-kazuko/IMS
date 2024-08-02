@@ -244,9 +244,9 @@ export function fakeFeedback() {
 	return {
 		content: faker.lorem.words(5),
 		account: faker.helpers.arrayElement([
-			AccountType.student,
-			AccountType.employee,
-			AccountType.company,
+			AccountType.Student,
+			AccountType.Employee,
+			AccountType.Company,
 		] as const),
 	};
 }
@@ -256,9 +256,9 @@ export function fakeFeedbackComplete() {
 		userId: faker.number.int(),
 		content: faker.lorem.words(5),
 		account: faker.helpers.arrayElement([
-			AccountType.student,
-			AccountType.employee,
-			AccountType.company,
+			AccountType.Student,
+			AccountType.Employee,
+			AccountType.Company,
 		] as const),
 		createdAt: new Date(),
 		updatedAt: new Date(),

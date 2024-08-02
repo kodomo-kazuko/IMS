@@ -12,31 +12,31 @@ router.post(
 
 router.post(
 	"/create",
-	accessMiddleware(["company"], 0),
+	accessMiddleware(["Company"], 0),
 	mentorController.create /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/all/base",
-	accessMiddleware(["employee"]),
+	accessMiddleware(["Employee", "Company"]),
 	mentorController.base /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/all/:id",
-	accessMiddleware(["employee"]),
+	accessMiddleware(["Employee", "Company"]),
 	mentorController.cursor /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.delete(
 	"/delete/:id",
-	accessMiddleware(["company"], 0),
+	accessMiddleware(["Company"], 0),
 	mentorController.delete /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/:id",
-	accessMiddleware(["employee"]),
+	accessMiddleware(["Employee"]),
 	mentorController.single /** #swagger.tags = ['Mentor'] #swagger.security = [{"bearerAuth": []}] */,
 );
 

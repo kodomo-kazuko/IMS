@@ -10,7 +10,7 @@ import { deleteFileOnDisk, saveFileToDisk } from "../utils/fileHandler";
 import notFound from "../utils/not-found";
 import { validateInput } from "../utils/validateInput";
 
-const account: AccountType = "student";
+const account: AccountType = "Student";
 
 export default class StudentController {
 	public async signup(

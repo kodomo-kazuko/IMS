@@ -10,7 +10,7 @@ import { saveFileToDisk } from "../utils/fileHandler";
 import notFound from "../utils/not-found";
 import { validateInput } from "../utils/validateInput";
 
-const account: AccountType = "company";
+const account: AccountType = "Company";
 
 export default class CompanyController {
 	public async signup(
@@ -224,69 +224,6 @@ export default class CompanyController {
 			res
 				.status(200)
 				.json({ success: true, message: "company retrieved", data: company });
-		} catch (error) {
-			next(error);
-		}
-	}
-	public async score(
-		req: Request,
-		res: Response<ResponseJSON>,
-		next: NextFunction,
-	) {
-		try {
-			const companyId = req.query.id ? Number(req.query.id) : undefined;
-			const companies = await prisma.company.findMany({
-				where: { id: companyId },
-				select: {
-					id: true,
-					image: true,
-					name: true,
-					internships: {
-						select: {
-							students: {
-								select: {
-									Feedback: {
-										select: {
-											score: true,
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			});
-
-			const companyScores = companies.map((company) => {
-				let totalScore = 0;
-				let feedbackCount = 0;
-
-				// biome-ignore lint/complexity/noForEach: <explanation>
-				company.internships.forEach((internship) => {
-					// biome-ignore lint/complexity/noForEach: <explanation>
-					internship.students.forEach((student) => {
-						// biome-ignore lint/complexity/noForEach: <explanation>
-						student.Feedback.forEach((feedback) => {
-							totalScore += feedback.score;
-							feedbackCount += 1;
-						});
-					});
-				});
-
-				const averageScore = feedbackCount > 0 ? totalScore / feedbackCount : 0;
-				return {
-					id: company.id,
-					name: company.name,
-					image: company.image,
-					averageScore,
-				};
-			});
-
-			res.status(200).json({
-				success: true,
-				message: "Company scores retrieved",
-				data: companyScores,
-			});
 		} catch (error) {
 			next(error);
 		}

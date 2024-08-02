@@ -13,26 +13,26 @@ router.post(
 
 router.post(
 	"/image",
-	accessMiddleware(["employee"]),
+	accessMiddleware(["Employee"]),
 	upload("images"),
 	employeeController.uploadImage /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.post(
 	"/signup",
-	accessMiddleware(["employee"], 0),
+	accessMiddleware(["Employee"], 0),
 	employeeController.signup /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/all",
-	accessMiddleware(["employee"]),
+	accessMiddleware(["Employee"]),
 	employeeController.all /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/account",
-	accessMiddleware(["employee"]),
+	accessMiddleware(["Employee"]),
 	employeeController.account /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
