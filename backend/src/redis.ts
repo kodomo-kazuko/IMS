@@ -1,5 +1,6 @@
 import Redis from "ioredis";
 
+// redis is setup for future use cases. it is implemented in Major controller
 const createRedisClient = () => {
 	const redisClient = new Redis({
 		host: process.env.REDIS_HOST || "localhost",

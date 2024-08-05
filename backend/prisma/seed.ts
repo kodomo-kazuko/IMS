@@ -35,9 +35,9 @@ const seedDatabase = async () => {
 			},
 		});
 
-		await createStudents(50);
-		await createCompanies(50);
-		// await createInternships(50);
+		await createStudents(2);
+		await createCompanies(2);
+		await createInternships(2);
 	} catch (error) {
 		console.error("Error during seeding:", (error as Error).message);
 	} finally {

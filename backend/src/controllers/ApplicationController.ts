@@ -14,6 +14,7 @@ export default class ApplicationController {
 			const internshipId = Number(req.params.id);
 			const studentId = req.cookies.id;
 
+			// find an active internship if the student has one
 			const activeInternship = await prisma.student
 				.findFirstOrThrow({
 					where: {
@@ -32,14 +33,14 @@ export default class ApplicationController {
 						],
 					},
 				});
-
+			// if there is one we return
 			if (activeInternship.length > 0) {
 				return res.status(400).json({
 					success: false,
 					message: "you have an active internship already",
 				});
 			}
-
+			// find student account to see if they have a document else throw
 			const student = await prisma.student.findUniqueOrThrow({
 				where: {
 					id: studentId,
@@ -48,6 +49,7 @@ export default class ApplicationController {
 
 			notFound(student.document, "document");
 
+			// get the internship requirements to see if the student fit one of them
 			const requirements = await prisma.internship
 				.findUniqueOrThrow({
 					where: {
@@ -61,6 +63,7 @@ export default class ApplicationController {
 			let isEligible = false;
 			let requirementId: number;
 
+			// loop over the requirements to find which one the student fits
 			for (const requirement of requirements) {
 				if (requirement.majorId === req.cookies.access) {
 					const startedCount = await prisma.application.count({
@@ -85,6 +88,7 @@ export default class ApplicationController {
 				});
 			}
 
+			// if all checks are good create the application
 			await prisma.application.create({
 				data: {
 					studentId: studentId,
