@@ -1,13 +1,8 @@
-import api, { decodedToken } from "@/api/api";
+import api from "@/app/token/api";
 
 export default class InternshipService {
   async getInternships() {
-    const response = await api.get("/internship/all/base", {
-      params: {
-        companyId:
-          decodedToken.account === "company" ? decodedToken.id : undefined,
-      },
-    });
+    const response = await api.get("/internship/all/base");
     const data = response.data;
     return data;
   }

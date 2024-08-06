@@ -7,10 +7,11 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import EmployeeService from "../service/employeeService";
-import CompanyService from "../service/companyService";
-import api from "@/api/api";
+import CompanyService from "../dashboard/service/companyService";
+import api from "@/app/token/api";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import prisma from "@/prisma/prisma";
 const employeeService = new EmployeeService();
 const companyService = new CompanyService()
 export default function Login() {
@@ -21,24 +22,14 @@ export default function Login() {
   })
   const [login, setLogin] = useState(true);
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken) {
-      router.push("/dashboard");
-    }
-  }, [router]);
-
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     try {
       const response = login ? await employeeService.signInEmployee(form) : await companyService.signInCompany(form)
-      console.log(`Login successful! Token: ${response.data}`);
-      localStorage.setItem("token", response.data);
-      api.defaults.headers.common['Authorization'] = `Bearer ${response.data}`
-
-      console.log("asdasdasdasd------", localStorage.getItem("token"))
+      const token = localStorage.setItem("token", response.data);
+      api.defaults.headers.common["Authorization"] = `Bearer ${response.data}`;
+      console.log(`Login successful! Token: ${token}`);
       router.push("/dashboard");
 
 
@@ -74,6 +65,7 @@ export default function Login() {
                       required
                       onChange={(e) => {
                         setForm({ ...form, email: e.target.value });
+                        setLogin(true)
                       }}
                     />
                   </div>
@@ -128,6 +120,7 @@ export default function Login() {
                       required
                       onChange={(e) => {
                         setForm({ ...form, email: e.target.value });
+                        setLogin(false)
                       }}
                     />
                   </div>

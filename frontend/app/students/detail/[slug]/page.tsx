@@ -1,5 +1,5 @@
 "use client";
-import api from "@/api/api";
+import api from "@/app/token/api";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,6 @@ const applicationService = new ApplicationService();
 export default function Component({ params }: { params: { slug: string } }) {
     const router = useRouter();
 
-    const [applications, setApplications] = useState<any[]>([]);
     const [student, setStudent] = useState<any>('');
     const [token, setToken] = useState("");
     const [applied, setApplied] = useState<any[]>([]);
@@ -30,19 +29,14 @@ export default function Component({ params }: { params: { slug: string } }) {
                 return;
             }
 
-            const response = await api.get(`/student/${params.slug}`, {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`,
-                },
+            const response = await api.get(`/student/${params.slug}`, {           
                 params: {
                     studentId: params.slug,
                 }
             });
 
             console.log(response.data.data[0]);
-
             setStudent(response.data.data[0]);
-
         } catch (error) {
             console.error("Failed to fetch student application list:", error);
         }
@@ -50,10 +44,9 @@ export default function Component({ params }: { params: { slug: string } }) {
 
     const fetchApplications = useCallback(async () => {
         try {
-            const appliedResponse = await applicationService.getApplications("pending", params.slug);
-            const acceptedResponse = await applicationService.getApplications("approved", params.slug);
-            setApplied(appliedResponse.list);
-            setAccepted(acceptedResponse.list);
+            applicationService.getApplications("pending", params.slug).then(appliedResponse => setApplied(appliedResponse.list));
+            applicationService.getApplications("approved", params.slug).then(acceptedResponse => acceptedResponse.list);
+
             console.log(applied)
             console.log(accepted)
         } catch (error) {

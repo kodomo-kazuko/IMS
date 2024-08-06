@@ -59,7 +59,7 @@ export default function InputForm() {
         console.log(response);
         if (response.success) {
             toast.success("You submitted the following values");
-            router.push("/dashboard");
+            router.push("/internship");
         } else {
             console.log("fuck you its not working go to toilet and touch your self");
         }

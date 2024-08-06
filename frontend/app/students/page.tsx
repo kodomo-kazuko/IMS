@@ -44,7 +44,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import router, { useRouter } from "next/navigation";
-import api from "@/api/api";
+import api from "@/app/token/api";
 import { useCallback, useEffect, useState } from "react";
 import TopNav from "@/components/topNac";
 
