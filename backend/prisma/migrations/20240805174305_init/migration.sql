@@ -2,7 +2,7 @@
 CREATE TYPE "ApplicationStatus" AS ENUM ('pending', 'approved', 'started', 'rejected', 'cancelled');
 
 -- CreateEnum
-CREATE TYPE "AccountType" AS ENUM ('student', 'employee', 'company', 'mentor');
+CREATE TYPE "AccountType" AS ENUM ('Student', 'Employee', 'Company', 'Mentor');
 
 -- CreateEnum
 CREATE TYPE "InternshipType" AS ENUM ('introduction', 'professional', 'volunteer', 'part_time', 'abcc');

@@ -7,33 +7,33 @@ const router = Router();
 const employeeController = new EmployeeController();
 
 router.post(
-  "/signin",
-  employeeController.signin /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */
+	"/signin",
+	employeeController.signin /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.post(
-  "/image",
-  accessMiddleware(["employee"]),
-  upload("images"),
-  employeeController.uploadImage /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */
+	"/image",
+	accessMiddleware([{ account: "Employee" }]),
+	upload("images"),
+	employeeController.uploadImage /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.post(
-  "/signup",
-  accessMiddleware(["employee"], 0),
-  employeeController.signup /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */
+	"/signup",
+	accessMiddleware([{ account: "Employee", access: 0 }]),
+	employeeController.signup /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
-  "/all",
-  accessMiddleware(["employee"]),
-  employeeController.all /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */
+	"/all",
+	accessMiddleware([{ account: "Employee", access: 0 }]),
+	employeeController.all /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
-  "/account",
-  accessMiddleware(["employee"]),
-  employeeController.account /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */
+	"/account",
+	accessMiddleware([{ account: "Employee" }]),
+	employeeController.account /** #swagger.tags = ['Employee'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 export default router;

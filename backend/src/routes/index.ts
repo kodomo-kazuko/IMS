@@ -1,19 +1,19 @@
 import { Router } from "express";
 
-import RootRoute from "./RootRoute";
-import RoleRoute from "./RoleRoute";
-import PostRoute from "./PostRoute";
-import MajorRoute from "./MajorRoute";
-import UploadRoute from "./UploadRoute";
-import MentorRoute from "./MentorRoute";
-import StudentRoute from "./StudentRoute";
-import CompanyRoute from "./CompanyRoute";
-import FeedbackRoute from "./FeedbackRoute";
-import EmployeeRoute from "./EmployeeRoute";
-import InternshipRoute from "./InternshipRoute";
-import RequirementRoute from "./RequirementRoute";
 import ApplicationRoute from "./ApplicationRoute";
+import CompanyRoute from "./CompanyRoute";
+import EmployeeRoute from "./EmployeeRoute";
+import FeedbackRoute from "./FeedbackRoute";
+import InternshipRoute from "./InternshipRoute";
+import MajorRoute from "./MajorRoute";
+import MentorRoute from "./MentorRoute";
+import PostRoute from "./PostRoute";
+import RequirementRoute from "./RequirementRoute";
+import RoleRoute from "./RoleRoute";
+import RootRoute from "./RootRoute";
 import StudentInternshipRoute from "./StudentInternshipRoute";
+import StudentRoute from "./StudentRoute";
+import UploadRoute from "./UploadRoute";
 
 const router = Router();
 
