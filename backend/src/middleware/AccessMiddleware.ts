@@ -12,16 +12,20 @@ interface DecodedToken {
 	access: number;
 }
 
+interface AccessRequirement {
+	account: AccountType;
+	access?: number;
+}
+
 export default function accessMiddleware(
-	requiredAccounts: AccountType[] | "all",
-	requiredAccessLevel?: number,
+	requiredAccess: AccessRequirement[] | "all",
 ) {
 	if (
-		requiredAccounts !== "all" &&
-		(!Array.isArray(requiredAccounts) || requiredAccounts.length === 0)
+		requiredAccess !== "all" &&
+		(!Array.isArray(requiredAccess) || requiredAccess.length === 0)
 	) {
 		throw new Error(
-			"requiredAccounts must be 'all' or a non-empty array of valid account types",
+			"requiredAccess must be 'all' or a non-empty array of objects with valid account types and access levels",
 		);
 	}
 
@@ -44,19 +48,16 @@ export default function accessMiddleware(
 				jwtSecretKey,
 			) as DecodedToken;
 
-			if (
-				requiredAccounts !== "all" &&
-				!requiredAccounts.includes(decoded.account)
-			) {
-				return res.status(403).json({
-					success: false,
-					message: "Access denied",
-				});
-			}
+			if (requiredAccess !== "all") {
+				const matchedRequirement = requiredAccess.find(
+					(req) =>
+						req.account === decoded.account &&
+						(req.access === null ||
+							req.access === undefined ||
+							(decoded.access ?? 100) <= req.access),
+				);
 
-			if (requiredAccessLevel !== undefined) {
-				const userAccessLevel = decoded.access ?? 10;
-				if (userAccessLevel > requiredAccessLevel) {
+				if (!matchedRequirement) {
 					return res.status(403).json({
 						success: false,
 						message: "Access denied",

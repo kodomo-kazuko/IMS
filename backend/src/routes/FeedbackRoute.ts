@@ -25,7 +25,7 @@ router.get(
 
 router.get(
 	"/score/:account",
-	accessMiddleware(["Employee"]),
+	accessMiddleware([{ account: "Employee" }]),
 	feedbackController.score /** #swagger.tags = ['Feedback'] #swagger.security = [{"bearerAuth": []}] */,
 );
 

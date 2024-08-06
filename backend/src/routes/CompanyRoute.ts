@@ -13,50 +13,50 @@ router.post(
 
 router.get(
 	"/all/base",
-	accessMiddleware(["Employee"]),
+	accessMiddleware([{ account: "Employee" }]),
 	companyController.base /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/all/:id",
-	accessMiddleware(["Employee"]),
+	accessMiddleware([{ account: "Employee" }]),
 	companyController.cursor /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.post(
 	"/signup",
-	accessMiddleware(["Employee"], 1),
+	accessMiddleware([{ account: "Employee", access: 1 }]),
 	companyController.signup /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.patch(
 	"/approve/:id",
-	accessMiddleware(["Employee"], 1),
+	accessMiddleware([{ account: "Employee", access: 1 }]),
 	companyController.approve /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/account",
-	accessMiddleware(["Company"], 1),
+	accessMiddleware([{ account: "Company" }]),
 	companyController.account /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.post(
 	"/image",
-	accessMiddleware(["Company"], 1),
+	accessMiddleware([{ account: "Company" }]),
 	upload("images"),
 	companyController.uploadImage /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/count",
-	accessMiddleware(["Employee"]),
+	accessMiddleware([{ account: "Employee" }]),
 	companyController.count /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/:id",
-	accessMiddleware(["Employee"]),
+	accessMiddleware([{ account: "Employee" }]),
 	companyController.single /** #swagger.tags = ['Company'] #swagger.security = [{"bearerAuth": []}] */,
 );
 

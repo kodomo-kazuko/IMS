@@ -9,7 +9,7 @@ const postController = new PostController();
 
 router.post(
 	"/create",
-	accessMiddleware(["Company"], 0),
+	accessMiddleware([{ account: "Company", access: 0 }]),
 	upload("images"),
 	postController.create /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */,
 );
@@ -28,19 +28,19 @@ router.get(
 
 router.patch(
 	"/edit/:id/data",
-	accessMiddleware(["Company"], 0),
+	accessMiddleware([{ account: "Company", access: 0 }]),
 	postController.editData /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.patch(
 	"/edit/:id/image",
-	accessMiddleware(["Company"], 0),
+	accessMiddleware([{ account: "Company", access: 0 }]),
 	postController.editImage /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.delete(
 	"/delete/:id",
-	accessMiddleware(["Company"], 0),
+	accessMiddleware([{ account: "Company", access: 0 }]),
 	postController.delete /** #swagger.tags = ['Post'] #swagger.security = [{"bearerAuth": []}] */,
 );
 

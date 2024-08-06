@@ -25,13 +25,13 @@ router.get(
 
 router.post(
 	"/create/:id",
-	accessMiddleware(["Student"]),
+	accessMiddleware([{ account: "Student" }]),
 	studentInternshipController.create /** #swagger.tags = ['StudentInternship'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.patch(
 	"/start",
-	accessMiddleware(["Company"], 0),
+	accessMiddleware([{ account: "Company", access: 0 }]),
 	studentInternshipController.start /** #swagger.tags = ['StudentInternship'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
