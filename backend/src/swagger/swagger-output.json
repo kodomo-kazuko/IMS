@@ -14,9 +14,9 @@
 		}
 	],
 	"paths": {
-		"/": {
+		"/application/types": {
 			"get": {
-				"tags": ["Root"],
+				"tags": ["Application"],
 				"description": "",
 				"responses": {
 					"200": {
@@ -30,14 +30,60 @@
 				]
 			}
 		},
-		"/check": {
-			"get": {
-				"tags": ["Root"],
+		"/application/create/{id}": {
+			"post": {
+				"tags": ["Application"],
 				"description": "",
 				"parameters": [
 					{
-						"name": "authorization",
-						"in": "header",
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "Created"
+					},
+					"400": {
+						"description": "Bad Request"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/application/all/base": {
+			"get": {
+				"tags": ["Application"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "studentId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "internshipId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "status",
+						"in": "query",
 						"schema": {
 							"type": "string"
 						}
@@ -46,9 +92,6 @@
 				"responses": {
 					"200": {
 						"description": "OK"
-					},
-					"401": {
-						"description": "Unauthorized"
 					}
 				},
 				"security": [
@@ -58,9 +101,56 @@
 				]
 			}
 		},
-		"/test": {
-			"post": {
-				"tags": ["Root"],
+		"/application/all/{id}": {
+			"get": {
+				"tags": ["Application"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "studentId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "internshipId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "status",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/application/count": {
+			"get": {
+				"tags": ["Application"],
 				"description": "",
 				"responses": {
 					"default": {
@@ -74,13 +164,26 @@
 				]
 			}
 		},
-		"/role/all": {
-			"get": {
-				"tags": ["Role"],
+		"/application/approve/{id}": {
+			"patch": {
+				"tags": ["Application"],
 				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
 				"responses": {
 					"200": {
 						"description": "OK"
+					},
+					"400": {
+						"description": "Bad Request"
 					}
 				},
 				"security": [
@@ -90,72 +193,9 @@
 				]
 			}
 		},
-		"/role/create": {
-			"post": {
-				"tags": ["Role"],
-				"description": "",
-				"responses": {
-					"201": {
-						"description": "Created"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"name": {
-										"example": "any"
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/role/edit": {
-			"patch": {
-				"tags": ["Role"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"id": {
-										"example": "any"
-									},
-									"name": {
-										"example": "any"
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/role/delete/{id}": {
-			"delete": {
-				"tags": ["Role"],
+		"/application/{id}": {
+			"get": {
+				"tags": ["Application"],
 				"description": "",
 				"parameters": [
 					{
@@ -179,9 +219,504 @@
 				]
 			}
 		},
-		"/post/create": {
+		"/company/signin": {
 			"post": {
-				"tags": ["Post"],
+				"tags": ["Company"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"example": "any"
+									},
+									"password": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/company/all/base": {
+			"get": {
+				"tags": ["Company"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "name",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/company/all/{id}": {
+			"get": {
+				"tags": ["Company"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "name",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/company/signup": {
+			"post": {
+				"tags": ["Company"],
+				"description": "",
+				"responses": {
+					"201": {
+						"description": "Created"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"example": "any"
+									},
+									"email": {
+										"example": "any"
+									},
+									"password": {
+										"example": "any"
+									},
+									"phone": {
+										"example": "any"
+									},
+									"address": {
+										"example": "any"
+									},
+									"weburl": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/company/approve/{id}": {
+			"patch": {
+				"tags": ["Company"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/company/account": {
+			"get": {
+				"tags": ["Company"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/company/image": {
+			"post": {
+				"tags": ["Company"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/company/count": {
+			"get": {
+				"tags": ["Company"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/company/{id}": {
+			"get": {
+				"tags": ["Company"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/employee/signin": {
+			"post": {
+				"tags": ["Employee"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"example": "any"
+									},
+									"password": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/employee/image": {
+			"post": {
+				"tags": ["Employee"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/employee/signup": {
+			"post": {
+				"tags": ["Employee"],
+				"description": "",
+				"responses": {
+					"201": {
+						"description": "Created"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"example": "any"
+									},
+									"email": {
+										"example": "any"
+									},
+									"password": {
+										"example": "any"
+									},
+									"roleId": {
+										"example": "any"
+									},
+									"phone": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/employee/all": {
+			"get": {
+				"tags": ["Employee"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/employee/account": {
+			"get": {
+				"tags": ["Employee"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/feedback/create": {
+			"post": {
+				"tags": ["Feedback"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"content": {
+										"example": "any"
+									},
+									"score": {
+										"example": "any"
+									},
+									"internshipId": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/feedback/all/base": {
+			"get": {
+				"tags": ["Feedback"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "companyId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/feedback/all/{id}": {
+			"get": {
+				"tags": ["Feedback"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "companyId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/feedback/score/{account}": {
+			"get": {
+				"tags": ["Feedback"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "account",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/internship/types": {
+			"get": {
+				"tags": ["Internship"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/internship/create": {
+			"post": {
+				"tags": ["Internship"],
 				"description": "",
 				"responses": {
 					"201": {
@@ -202,10 +737,19 @@
 									"title": {
 										"example": "any"
 									},
-									"content": {
+									"type": {
 										"example": "any"
 									},
-									"internshipId": {
+									"enrollmentEndDate": {
+										"example": "any"
+									},
+									"startDate": {
+										"example": "any"
+									},
+									"endDate": {
+										"example": "any"
+									},
+									"salary": {
 										"example": "any"
 									}
 								}
@@ -215,13 +759,13 @@
 				}
 			}
 		},
-		"/post/all/base": {
+		"/internship/all/base": {
 			"get": {
-				"tags": ["Post"],
+				"tags": ["Internship"],
 				"description": "",
 				"parameters": [
 					{
-						"name": "comapnyId",
+						"name": "companyId",
 						"in": "query",
 						"schema": {
 							"type": "string"
@@ -247,9 +791,9 @@
 				]
 			}
 		},
-		"/post/all/{id}": {
+		"/internship/all/{id}": {
 			"get": {
-				"tags": ["Post"],
+				"tags": ["Internship"],
 				"description": "",
 				"parameters": [
 					{
@@ -261,7 +805,7 @@
 						}
 					},
 					{
-						"name": "comapnyId",
+						"name": "companyId",
 						"in": "query",
 						"schema": {
 							"type": "string"
@@ -287,41 +831,10 @@
 				]
 			}
 		},
-		"/post/edit/{id}/data": {
-			"patch": {
-				"tags": ["Post"],
+		"/internship/count": {
+			"get": {
+				"tags": ["Internship"],
 				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "title",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "content",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "internshipId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
 				"responses": {
 					"200": {
 						"description": "OK"
@@ -334,35 +847,9 @@
 				]
 			}
 		},
-		"/post/edit/{id}/image": {
-			"patch": {
-				"tags": ["Post"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/post/delete/{id}": {
+		"/internship/delete/{id}": {
 			"delete": {
-				"tags": ["Post"],
+				"tags": ["Internship"],
 				"description": "",
 				"parameters": [
 					{
@@ -386,9 +873,9 @@
 				]
 			}
 		},
-		"/post/{id}": {
+		"/internship/{id}": {
 			"get": {
-				"tags": ["Post"],
+				"tags": ["Internship"],
 				"description": "",
 				"parameters": [
 					{
@@ -702,6 +1189,691 @@
 				]
 			}
 		},
+		"/post/create": {
+			"post": {
+				"tags": ["Post"],
+				"description": "",
+				"responses": {
+					"201": {
+						"description": "Created"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"title": {
+										"example": "any"
+									},
+									"content": {
+										"example": "any"
+									},
+									"internshipId": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/post/all/base": {
+			"get": {
+				"tags": ["Post"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "comapnyId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "title",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/post/all/{id}": {
+			"get": {
+				"tags": ["Post"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "comapnyId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "title",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/post/edit/{id}/data": {
+			"patch": {
+				"tags": ["Post"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "title",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "content",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "internshipId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/post/edit/{id}/image": {
+			"patch": {
+				"tags": ["Post"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/post/delete/{id}": {
+			"delete": {
+				"tags": ["Post"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/post/{id}": {
+			"get": {
+				"tags": ["Post"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/requirement/create": {
+			"post": {
+				"tags": ["Requirement"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"majorId": {
+										"example": "any"
+									},
+									"internshipId": {
+										"example": "any"
+									},
+									"studentLimit": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/requirement/internship/{id}": {
+			"get": {
+				"tags": ["Requirement"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/requirement/edit/{id}": {
+			"patch": {
+				"tags": ["Requirement"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "studentLimit",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "majorId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/requirement/delete/{id}": {
+			"delete": {
+				"tags": ["Requirement"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/role/all": {
+			"get": {
+				"tags": ["Role"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/role/create": {
+			"post": {
+				"tags": ["Role"],
+				"description": "",
+				"responses": {
+					"201": {
+						"description": "Created"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/role/edit": {
+			"patch": {
+				"tags": ["Role"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"example": "any"
+									},
+									"name": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/role/delete/{id}": {
+			"delete": {
+				"tags": ["Role"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/": {
+			"get": {
+				"tags": ["Root"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/check": {
+			"get": {
+				"tags": ["Root"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "authorization",
+						"in": "header",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"401": {
+						"description": "Unauthorized"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/test": {
+			"post": {
+				"tags": ["Root"],
+				"description": "",
+				"responses": {
+					"default": {
+						"description": ""
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/student-internship/types": {
+			"get": {
+				"tags": ["StudentInternship"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/student-internship/all/base": {
+			"get": {
+				"tags": ["StudentInternship"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "studentId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "internshipId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/student-internship/all/{id}": {
+			"get": {
+				"tags": ["StudentInternship"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "studentId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "internshipId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/student-internship/create/{id}": {
+			"post": {
+				"tags": ["StudentInternship"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"400": {
+						"description": "Bad Request"
+					},
+					"409": {
+						"description": "Conflict"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/student-internship/start": {
+			"patch": {
+				"tags": ["StudentInternship"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"400": {
+						"description": "Bad Request"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"example": "any"
+									},
+									"mentorId": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		"/student/signin": {
 			"post": {
 				"tags": ["Student"],
@@ -957,954 +2129,9 @@
 				]
 			}
 		},
-		"/company/signin": {
+		"/survey/test": {
 			"post": {
-				"tags": ["Company"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"email": {
-										"example": "any"
-									},
-									"password": {
-										"example": "any"
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/company/all/base": {
-			"get": {
-				"tags": ["Company"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "name",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/company/all/{id}": {
-			"get": {
-				"tags": ["Company"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "name",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/company/signup": {
-			"post": {
-				"tags": ["Company"],
-				"description": "",
-				"responses": {
-					"201": {
-						"description": "Created"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"name": {
-										"example": "any"
-									},
-									"email": {
-										"example": "any"
-									},
-									"password": {
-										"example": "any"
-									},
-									"phone": {
-										"example": "any"
-									},
-									"address": {
-										"example": "any"
-									},
-									"weburl": {
-										"example": "any"
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/company/approve/{id}": {
-			"patch": {
-				"tags": ["Company"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/company/account": {
-			"get": {
-				"tags": ["Company"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/company/image": {
-			"post": {
-				"tags": ["Company"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/company/count": {
-			"get": {
-				"tags": ["Company"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/company/{id}": {
-			"get": {
-				"tags": ["Company"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/feedback/create": {
-			"post": {
-				"tags": ["Feedback"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"content": {
-										"example": "any"
-									},
-									"score": {
-										"example": "any"
-									},
-									"internshipId": {
-										"example": "any"
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/feedback/all/base": {
-			"get": {
-				"tags": ["Feedback"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "companyId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/feedback/all/{id}": {
-			"get": {
-				"tags": ["Feedback"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "companyId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/feedback/score/{account}": {
-			"get": {
-				"tags": ["Feedback"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "account",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/employee/signin": {
-			"post": {
-				"tags": ["Employee"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"email": {
-										"example": "any"
-									},
-									"password": {
-										"example": "any"
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/employee/image": {
-			"post": {
-				"tags": ["Employee"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/employee/signup": {
-			"post": {
-				"tags": ["Employee"],
-				"description": "",
-				"responses": {
-					"201": {
-						"description": "Created"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"name": {
-										"example": "any"
-									},
-									"email": {
-										"example": "any"
-									},
-									"password": {
-										"example": "any"
-									},
-									"roleId": {
-										"example": "any"
-									},
-									"phone": {
-										"example": "any"
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/employee/all": {
-			"get": {
-				"tags": ["Employee"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/employee/account": {
-			"get": {
-				"tags": ["Employee"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/internship/types": {
-			"get": {
-				"tags": ["Internship"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/internship/create": {
-			"post": {
-				"tags": ["Internship"],
-				"description": "",
-				"responses": {
-					"201": {
-						"description": "Created"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"title": {
-										"example": "any"
-									},
-									"type": {
-										"example": "any"
-									},
-									"enrollmentEndDate": {
-										"example": "any"
-									},
-									"startDate": {
-										"example": "any"
-									},
-									"endDate": {
-										"example": "any"
-									},
-									"salary": {
-										"example": "any"
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/internship/all/base": {
-			"get": {
-				"tags": ["Internship"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "companyId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "title",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/internship/all/{id}": {
-			"get": {
-				"tags": ["Internship"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "companyId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "title",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/internship/count": {
-			"get": {
-				"tags": ["Internship"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/internship/delete/{id}": {
-			"delete": {
-				"tags": ["Internship"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/internship/{id}": {
-			"get": {
-				"tags": ["Internship"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/requirement/create": {
-			"post": {
-				"tags": ["Requirement"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"majorId": {
-										"example": "any"
-									},
-									"internshipId": {
-										"example": "any"
-									},
-									"studentLimit": {
-										"example": "any"
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/requirement/internship/{id}": {
-			"get": {
-				"tags": ["Requirement"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/requirement/edit/{id}": {
-			"patch": {
-				"tags": ["Requirement"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "studentLimit",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "majorId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					},
-					"404": {
-						"description": "Not Found"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/requirement/delete/{id}": {
-			"delete": {
-				"tags": ["Requirement"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/application/types": {
-			"get": {
-				"tags": ["Application"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/application/create/{id}": {
-			"post": {
-				"tags": ["Application"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"201": {
-						"description": "Created"
-					},
-					"400": {
-						"description": "Bad Request"
-					},
-					"403": {
-						"description": "Forbidden"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/application/all/base": {
-			"get": {
-				"tags": ["Application"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "studentId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "internshipId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "status",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/application/all/{id}": {
-			"get": {
-				"tags": ["Application"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "studentId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "internshipId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "status",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/application/count": {
-			"get": {
-				"tags": ["Application"],
+				"tags": ["Survey"],
 				"description": "",
 				"responses": {
 					"default": {
@@ -1916,217 +2143,6 @@
 						"bearerAuth": []
 					}
 				]
-			}
-		},
-		"/application/approve/{id}": {
-			"patch": {
-				"tags": ["Application"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					},
-					"400": {
-						"description": "Bad Request"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/application/{id}": {
-			"get": {
-				"tags": ["Application"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/student-internship/types": {
-			"get": {
-				"tags": ["StudentInternship"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/student-internship/all/base": {
-			"get": {
-				"tags": ["StudentInternship"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "studentId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "internshipId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/student-internship/all/{id}": {
-			"get": {
-				"tags": ["StudentInternship"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "studentId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "internshipId",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/student-internship/create/{id}": {
-			"post": {
-				"tags": ["StudentInternship"],
-				"description": "",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					},
-					"400": {
-						"description": "Bad Request"
-					},
-					"409": {
-						"description": "Conflict"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				]
-			}
-		},
-		"/student-internship/start": {
-			"patch": {
-				"tags": ["StudentInternship"],
-				"description": "",
-				"responses": {
-					"200": {
-						"description": "OK"
-					},
-					"400": {
-						"description": "Bad Request"
-					}
-				},
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"id": {
-										"example": "any"
-									},
-									"mentorId": {
-										"example": "any"
-									}
-								}
-							}
-						}
-					}
-				}
 			}
 		}
 	},

@@ -11,6 +11,8 @@ cron.schedule("0 0 * * *", async () => {
 		await updateInternshipStatusToActive();
 		await updateInternshipStatusToFinished();
 	} catch (error) {
-		logger.error("Error in cron job execution:", error);
+		process.env.NODE_ENV === "production"
+			? logger.error("Error in cron job execution:", error)
+			: console.log(error);
 	}
 });

@@ -39,10 +39,12 @@ export async function updateInternshipStatusToActive() {
 			}
 		});
 	} catch (error) {
-		logger.error(
-			"Error updating student internship statuses to ACTIVE:",
-			error,
-		);
+		process.env.NODE_ENV === "production"
+			? logger.error(
+					"Error updating student internship statuses to ACTIVE:",
+					error,
+				)
+			: console.log(error);
 	}
 }
 
@@ -83,9 +85,11 @@ export async function updateInternshipStatusToFinished() {
 			}
 		});
 	} catch (error) {
-		logger.error(
-			"Error updating student internship statuses to FINISHED:",
-			error,
-		);
+		process.env.NODE_ENV === "production"
+			? logger.error(
+					"Error updating student internship statuses to FINISHED:",
+					error,
+				)
+			: console.log(error);
 	}
 }

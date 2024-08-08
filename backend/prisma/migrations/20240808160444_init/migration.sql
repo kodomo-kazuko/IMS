@@ -10,6 +10,12 @@ CREATE TYPE "InternshipType" AS ENUM ('introduction', 'professional', 'volunteer
 -- CreateEnum
 CREATE TYPE "InternshipStatus" AS ENUM ('pending', 'started', 'finished', 'cancelled', 'ready');
 
+-- CreateEnum
+CREATE TYPE "QuestionType" AS ENUM ('number', 'text');
+
+-- CreateEnum
+CREATE TYPE "SurveyStatus" AS ENUM ('active', 'finished');
+
 -- CreateTable
 CREATE TABLE "Application" (
     "id" SERIAL NOT NULL,
@@ -179,6 +185,44 @@ CREATE TABLE "Student" (
     CONSTRAINT "Student_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Survey" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "status" "SurveyStatus" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Survey_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Question" (
+    "id" SERIAL NOT NULL,
+    "question" TEXT NOT NULL,
+    "type" "QuestionType" NOT NULL,
+    "order" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "surveyId" INTEGER NOT NULL,
+
+    CONSTRAINT "Question_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Answer" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "account" "AccountType" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "questionId" INTEGER NOT NULL,
+    "intValue" INTEGER,
+    "stringValue" TEXT,
+
+    CONSTRAINT "Answer_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Application_studentId_internshipId_key" ON "Application"("studentId", "internshipId");
 
@@ -239,6 +283,9 @@ CREATE UNIQUE INDEX "Student_email_key" ON "Student"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "Student_phone_key" ON "Student"("phone");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Answer_account_userId_questionId_key" ON "Answer"("account", "userId", "questionId");
+
 -- AddForeignKey
 ALTER TABLE "Application" ADD CONSTRAINT "Application_internshipId_fkey" FOREIGN KEY ("internshipId") REFERENCES "Internship"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -289,3 +336,15 @@ ALTER TABLE "StudentInternship" ADD CONSTRAINT "StudentInternship_studentId_fkey
 
 -- AddForeignKey
 ALTER TABLE "Student" ADD CONSTRAINT "Student_majorId_fkey" FOREIGN KEY ("majorId") REFERENCES "Major"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Question" ADD CONSTRAINT "Question_surveyId_fkey" FOREIGN KEY ("surveyId") REFERENCES "Survey"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Answer" ADD CONSTRAINT "Answer_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "Question"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Answer" ADD CONSTRAINT "Feedback_student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Answer" ADD CONSTRAINT "Feedback_company_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,0 +1,52 @@
+// Survey model has many questions
+model Survey {
+  id        Int          @id @default(autoincrement())
+  title     String
+  questions Question[]
+  status    SurveyStatus
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+// Question model belongs to a single survey but can have many answers
+model Question {
+  id        Int          @id @default(autoincrement())
+  question  String
+  answers   Answer[]
+  type      QuestionType
+  order     Int
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  survey    Survey       @relation(fields: [surveyId], references: [id])
+  surveyId  Int
+}
+
+// Answer model belongs to a single question and a single owner
+model Answer {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  account     AccountType
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  question    Question    @relation(fields: [questionId], references: [id])
+  questionId  Int
+  student     Student?    @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
+  company     Company?    @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
+  // Add value fields for answers
+  intValue    Int?
+  stringValue String?
+
+  @@unique([account, userId, questionId])
+}
+
+// Enum for question types
+enum QuestionType {
+  number
+  text
+}
+
+// Enum for survey status
+enum SurveyStatus {
+  active
+  finished
+}

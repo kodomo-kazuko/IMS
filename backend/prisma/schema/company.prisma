@@ -15,4 +15,5 @@ model Company {
     posts       Post[]
 
     Feedback Feedback[] @relation(map: "Feedback_company_userId_fkey")
+    Answer   Answer[]   @relation(map: "Feedback_company_userId_fkey")
 }
