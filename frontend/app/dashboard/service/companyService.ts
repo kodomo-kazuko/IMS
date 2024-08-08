@@ -1,4 +1,5 @@
-import api from "@/api/api";
+import api from "@/app/token/api";
+import prisma from "@/prisma/prisma";
 
 export default class CompanyService {
   async getCompanies() {
@@ -19,7 +20,9 @@ export default class CompanyService {
     return data;
   }
   async signInCompany(company: any) {
-    const response = await api.post("/company/signin", company);
+    console.log(company);
+    const response = await api.post("/company/signin", {email:company.email, password:company.password});
+    
     const data = response.data;
     return data;
   }

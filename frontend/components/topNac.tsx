@@ -1,4 +1,5 @@
 "use client";
+import ROUTES from "@/app/routes/route";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -16,8 +17,8 @@ import { useRouter } from "next/navigation";
 export default function TopNav() {
     const handleLogOut = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
-
         localStorage.clear();
+        router.push(ROUTES.LOGIN);
     };
     const router = useRouter();
     return (

@@ -1,4 +1,4 @@
-import api from "@/api/api";
+import api from "@/app/token/api";
 
 export default class EmployeeService {
   async getEmployees() {

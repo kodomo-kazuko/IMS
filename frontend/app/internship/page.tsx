@@ -12,43 +12,21 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import api from "@/api/api";
+import api from "@/app/token/api";
 import TopNav from "@/components/topNac";
 import toast from "react-hot-toast";
 import InternshipService from "../service/internshipService";
 import InternshipTable from "@/components/internship/InternshipTable";
+import useAuth from "../auth/useAuth";
 
 const internshipService = new InternshipService();
 
 export default function Internship() {
+    useAuth()
     const router = useRouter();
     const [internships, setInternships] = useState<any[]>([]);
     const [token, setToken] = useState("");
-    const [formData, setFormData] = useState({
-        title: "",
-        type: "",
-        enrollmentEndDate: "",
-        startDate: "",
-        endDate: "",
-    });
 
-    const handleChange = (e: any) => {
-        const { id, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [id]: value,
-        }));
-    };
-
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
-        try {
-            const response = await api.post("/internship/create", formData);
-            console.log(response.data);
-        } catch (error) {
-            console.error("Error submitting form", error);
-        }
-    };
 
     const fetchInternshipList = useCallback(async () => {
         try {
@@ -62,7 +40,15 @@ export default function Internship() {
     }, [router]);
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+        console.log(localStorage);
+        if (!token) {
+            console.log("no token");
+        } else {
+            console.log("yes token");
+        }
         fetchInternshipList();
+        
     }, [router, fetchInternshipList, token]);
 
     return (

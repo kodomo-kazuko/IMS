@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import CompanyService from "@/app/service/companyService"
+import CompanyService from "@/app/dashboard/service/companyService"
 import { fromJSON } from "postcss"
 import { useRouter } from "next/navigation"
 

@@ -1,4 +1,4 @@
-import api from "@/api/api";
+import api from "@/app/token/api";
 import prisma from "@/prisma/prisma";
 
 export default class ApplicationService {
