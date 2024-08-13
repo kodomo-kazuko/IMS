@@ -1,16 +1,16 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-import  ROUTES from '../routes/route';
+import  ROUTES from '../../lib/routes/route';
 
 function useAuth() {
   const router: any = useRouter();
 
   useEffect(() => {
-    const token: string | null = localStorage.getItem('token'); // Token might be null
+    const token: string | null = localStorage.getItem('token');
 
     if (!token) {
-      router.push(ROUTES.LOGIN); // Redirect to login if no token found
+      router.push(ROUTES.LOGIN); 
     }
   }, [router]);
 }

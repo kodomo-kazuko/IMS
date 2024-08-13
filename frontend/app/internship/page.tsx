@@ -12,7 +12,7 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import api from "@/app/token/api";
+import api from "@/lib/axios/api";
 import TopNav from "@/components/topNac";
 import toast from "react-hot-toast";
 import InternshipService from "../service/internshipService";

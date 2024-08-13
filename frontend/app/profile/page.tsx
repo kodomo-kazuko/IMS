@@ -1,5 +1,5 @@
 "use client";
-import api from "@/app/token/api";
+import api from "@/lib/axios/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"

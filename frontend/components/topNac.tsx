@@ -1,5 +1,5 @@
 "use client";
-import ROUTES from "@/app/routes/route";
+import ROUTES from "@/lib/routes/route";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,

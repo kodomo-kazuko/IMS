@@ -3,45 +3,52 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-
 import { Textarea } from "@/components/ui/textarea"
-// import { RadioGroup, RadioGroup.Option, RadioGroup.Option.Label, RadioGroup.Option.Input } from "@/components/ui/radio-group"
+import api from "@/lib/axios/api";
+import { useEffect, useState } from "react";
 
-export default function Component() {
+
+export default function Component({ params }: { params: { slug: string } }) {
+
+    const [internship, setInternship] = useState<any>({});
+    const fetchInternship = async () => {
+        
+        try {
+            const response = await api.get(`/internship/${params.slug}`);
+            console.log(response.data.data);
+            setInternship(response.data.data);
+        } catch (error) {
+            console.error("Failed to fetch internship list:", error);
+        }
+    }
+
+    useEffect(() => {
+        fetchInternship();
+    }, []);
     return (
         <div className="mx-auto max-w-4xl my-10">
             <div className="px-4 space-y-6 sm:px-6">
-                <header className="space-y-2">
-                    <div className="flex items-center space-x-3">
-                        <img src="/placeholder.svg" alt="Avatar" width="96" height="96" className="rounded-full" />
-                        <div className="space-y-1">
-                            <h1 className="text-2xl font-bold">Meadow Richardson</h1>
-                            <Button size="sm">Change photo</Button>
-                        </div>
-                    </div>
-                </header>
+                
                 <div className="space-y-8">
                     <Card>
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
-                                <Label htmlFor="name">Name</Label>
-                                <Input id="name" placeholder="E.g. Jane Doe" defaultValue="Meadow Richardson" />
+                                <Label htmlFor="name">Title</Label>
+                                <p>{internship?.title}</p>
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input id="email" placeholder="E.g. jane@example.com" />
+                                <Label htmlFor="name">Type</Label>
+                                <p>{internship?.type}</p>
                             </div>
                             <div className="space-y-2">
-                                <Label>Biography</Label>
-                                <Textarea id="bio" placeholder="Enter your bio" className="mt-1" style={{ minHeight: "100px" }} />
+                                <Label htmlFor="name">Salary</Label>
+                                <p>{(internship?.salary) ? "PAID": "FREE"}</p>
                             </div>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader>
                             <div>Language</div>
-                            <div>Choose your preferred language</div>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2">
@@ -57,15 +64,7 @@ export default function Component() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="current-password">Current Password</Label>
-                                <Input type="password" id="current-password" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="new-password">New Password</Label>
-                                <Input type="password" id="new-password" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="confirm-password">Confirm Password</Label>
-                                <Input type="password" id="confirm-password" />
+                                
                             </div>
                         </CardContent>
                     </Card>
