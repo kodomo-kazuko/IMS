@@ -1,4 +1,4 @@
-import api from "@/app/token/api";
+import api from "@/lib/axios/api";
 
 export default class InternshipService {
   async getInternships() {

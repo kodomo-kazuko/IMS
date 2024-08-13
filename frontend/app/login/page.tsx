@@ -8,38 +8,52 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import EmployeeService from "../service/employeeService";
 import CompanyService from "../dashboard/service/companyService";
-import api from "@/app/token/api";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import api from "@/lib/axios/api";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import prisma from "@/prisma/prisma";
 const employeeService = new EmployeeService();
-const companyService = new CompanyService()
+const companyService = new CompanyService();
 export default function Login() {
   const router = useRouter();
   const [form, setForm] = useState({
-    email: '',
-    password: '',
-  })
+    email: "",
+    password: "",
+  });
   const [login, setLogin] = useState(true);
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     try {
-      const response = login ? await employeeService.signInEmployee(form) : await companyService.signInCompany(form)
-      const token = localStorage.setItem("token", response.data);
-      api.defaults.headers.common["Authorization"] = `Bearer ${response.data}`;
+      const response = login
+        ? await employeeService.signInEmployee(form)
+        : await companyService.signInCompany(form);
+
+      const token = response.data;
+
+      localStorage.setItem("token", token);
+
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      console.log(api.defaults.headers);
+
       console.log(`Login successful! Token: ${token}`);
+
       router.push("/dashboard");
-
-
     } catch (error) {
-      console.log(`Login failed`);
+      console.log(`Login failed:`, error);
     }
   };
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-screen">
-
       <div className="flex items-center justify-center py-12">
         <Tabs defaultValue="employee" className="w-[400px]">
           <TabsList className="grid w-full grid-cols-2">
@@ -65,14 +79,17 @@ export default function Login() {
                       required
                       onChange={(e) => {
                         setForm({ ...form, email: e.target.value });
-                        setLogin(true)
+                        setLogin(true);
                       }}
                     />
                   </div>
                   <div className="grid gap-2">
                     <div className="flex items-center">
                       <Label htmlFor="password">Password</Label>
-                      <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
+                      <Link
+                        href="/forgot-password"
+                        className="ml-auto inline-block text-sm underline"
+                      >
                         Forgot your password?
                       </Link>
                     </div>
@@ -85,7 +102,11 @@ export default function Login() {
                       }}
                     />
                   </div>
-                  <Button type="submit" className="w-full" onClick={handleSubmit}>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    onClick={handleSubmit}
+                  >
                     Login
                   </Button>
                   <Button variant="outline" className="w-full">
@@ -120,14 +141,17 @@ export default function Login() {
                       required
                       onChange={(e) => {
                         setForm({ ...form, email: e.target.value });
-                        setLogin(false)
+                        setLogin(false);
                       }}
                     />
                   </div>
                   <div className="grid gap-2">
                     <div className="flex items-center">
                       <Label htmlFor="password">Password</Label>
-                      <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
+                      <Link
+                        href="/forgot-password"
+                        className="ml-auto inline-block text-sm underline"
+                      >
                         Forgot your password?
                       </Link>
                     </div>
@@ -140,7 +164,11 @@ export default function Login() {
                       }}
                     />
                   </div>
-                  <Button type="submit" className="w-full" onClick={handleSubmit}>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    onClick={handleSubmit}
+                  >
                     Login
                   </Button>
                   <Button variant="outline" className="w-full">
@@ -154,14 +182,9 @@ export default function Login() {
                   </Link>
                 </div>
               </CardContent>
-
             </Card>
           </TabsContent>
         </Tabs>
-
-
-
-
       </div>
       <div className="hidden bg-muted lg:block">
         {/* <Image

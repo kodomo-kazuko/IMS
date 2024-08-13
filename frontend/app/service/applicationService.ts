@@ -1,4 +1,4 @@
-import api from "@/app/token/api";
+import api from "@/lib/axios/api";
 import prisma from "@/prisma/prisma";
 
 export default class ApplicationService {

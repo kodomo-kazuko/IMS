@@ -1,8 +1,7 @@
 "use client";
 import Image from "next/image";
 
-import { ListFilter, MoreHorizontal, PlusCircle, Search } from "lucide-react";
-import { Label } from "@/components/ui/label";
+import { MoreHorizontal, PlusCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -11,7 +10,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,36 +22,31 @@ import {
 } from "@/components/ui/card";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import router, { useRouter } from "next/navigation";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import axios from "axios";
-import api from "@/app/token/api";
+
 import TopNav from "@/components/topNac";
 import CompanyService from "./service/companyService";
 const companyService = new CompanyService();
-export default function Dashboard() {
+function Dashboard() {
   const router = useRouter();
   const [companies, setCompanies] = useState<any[]>([]);
-  const [token, setToken] = useState("");
+
+  console.log(localStorage.getItem("token"));
 
   const fetchCompanyList = useCallback(async () => {
     try {
@@ -66,7 +59,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchCompanyList();
-  }, [router, fetchCompanyList, token]);
+  }, [router, fetchCompanyList]);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -195,3 +188,4 @@ export default function Dashboard() {
     </div>
   );
 }
+export default Dashboard;

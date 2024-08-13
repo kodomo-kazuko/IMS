@@ -2,14 +2,9 @@ import React from 'react';
 import { Badge } from "@/components/ui/badge";
 import {
     Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+
 import {
     Table,
     TableBody,
@@ -18,6 +13,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { useRouter } from 'next/navigation';
 interface Internship {
     id: string;
     title: string;
@@ -35,6 +31,7 @@ interface InternshipTableProps {
 }
 
 const InternshipTable: React.FC<InternshipTableProps> = ({ internships }) => {
+    const router = useRouter();
     return (
         <Table>
             <TableHeader>
@@ -52,7 +49,7 @@ const InternshipTable: React.FC<InternshipTableProps> = ({ internships }) => {
             <TableBody>
                 <Dialog>
                     {internships?.map((internship) => (
-                        <DialogTrigger asChild key={internship.id}>
+                        <DialogTrigger asChild key={internship.id} onClick={() => router.push(`/internship/detail/${internship.id}`)}>
                             <TableRow key={internship.id}>
                                 <TableCell className="font-medium">{internship.title}</TableCell>
                                 <TableCell>
@@ -81,7 +78,7 @@ const InternshipTable: React.FC<InternshipTableProps> = ({ internships }) => {
                             </TableRow>
                         </DialogTrigger>
                     ))}
-                    <DialogContent className="sm:max-w-[625px]">
+                    {/* <DialogContent className="sm:max-w-[625px]">
                         <DialogHeader>
                             <DialogTitle>Internship name</DialogTitle>
                             <DialogDescription>Internship profession</DialogDescription>
@@ -89,7 +86,7 @@ const InternshipTable: React.FC<InternshipTableProps> = ({ internships }) => {
                         <DialogFooter>
                             <Button type="submit">Apply</Button>
                         </DialogFooter>
-                    </DialogContent>
+                    </DialogContent> */}
                 </Dialog>
             </TableBody>
         </Table>

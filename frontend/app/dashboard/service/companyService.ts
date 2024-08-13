@@ -1,5 +1,4 @@
-import api from "@/app/token/api";
-import prisma from "@/prisma/prisma";
+import api from "@/lib/axios/api";
 
 export default class CompanyService {
   async getCompanies() {

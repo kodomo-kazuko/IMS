@@ -1,5 +1,5 @@
 "use client";
-import api from "@/app/token/api";
+import api from "@/lib/axios/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -17,50 +17,27 @@ import { useCallback, useEffect, useState } from "react";
 
 export default function Component({ params }: { params: { slug: string } }) {
     const router = useRouter();
-
     const [applications, setApplications] = useState<any[]>([]);
     const [student, setStudent] = useState<any>('');
     const [token, setToken] = useState("");
     const fetchStudent = useCallback(async () => {
         try {
-            const storedToken = localStorage.getItem("token");
-            console.log(storedToken);
-            if (!storedToken) {
-                router.push("/login");
-                return; // Exit function if no token
-            }
 
             const response = await api.get(`/company/${params.slug}`, {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`,
-                },
                 params: {
                     studentId: params.slug,
                 }
             });
 
-            console.log(response.data.data[0]);
-
             setStudent(response.data.data[0]);
 
         } catch (error) {
             console.error("Failed to fetch student application list:", error);
-            // Handle error as needed
         }
     }, [router]);
     const fetchStudentApplicationList = useCallback(async () => {
         try {
-            const storedToken = localStorage.getItem("token");
-            console.log(storedToken);
-            if (!storedToken) {
-                router.push("/login");
-                return;
-            }
-
             const response = await api.get("/application/all/base", {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`,
-                },
                 params: {
                     studentId: params.slug,
                 }
@@ -75,15 +52,9 @@ export default function Component({ params }: { params: { slug: string } }) {
     }, [router]);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        console.log(params.slug)
-        if (!token) {
-            router.push("/login");
-        } else {
             fetchStudentApplicationList();
             fetchStudent();
-        }
-    }, [router, fetchStudentApplicationList, token]);
+    }, [router, fetchStudentApplicationList]);
     return (
         <div className="mx-auto max-w-4xl my-10">
             <div className="px-4 space-y-6 sm:px-6">
