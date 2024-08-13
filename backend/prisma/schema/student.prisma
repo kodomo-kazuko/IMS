@@ -15,4 +15,5 @@ model Student {
     internships  StudentInternship[]
 
     Feedback Feedback[] @relation(map: "Feedback_student_userId_fkey")
+    Answer   Answer[]   @relation(map: "Feedback_student_userId_fkey")
 }

@@ -24,7 +24,9 @@ const ErrorMiddleware = (
 	const status = 500;
 	const message = error.message || "Something went wrong";
 
-	logger.error(error);
+	process.env.NODE_ENV === "production"
+		? logger.error(error)
+		: console.log(error);
 
 	res.status(status).json({
 		success: false,

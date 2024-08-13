@@ -11,6 +11,7 @@ import "./cron/cron";
 
 const IP = process.env.IP || "localhost";
 const PORT = Number.parseInt(process.env.PORT || "8080", 10);
+const ENV = process.env.NODE_ENV || "development";
 
 const app = express();
 
@@ -19,7 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 app.use("/", routes);
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+if (ENV !== "production") {
+	app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+}
 
 app.use(ErrorMiddleware);
 
