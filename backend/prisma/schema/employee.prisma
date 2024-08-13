@@ -9,4 +9,6 @@ model Employee {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role      Role     @relation(fields: [roleId], references: [id], onDelete: NoAction)
+
+  Survey Survey[]
 }

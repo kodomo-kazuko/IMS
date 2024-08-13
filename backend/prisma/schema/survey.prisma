@@ -2,47 +2,56 @@
 model Survey {
   id        Int          @id @default(autoincrement())
   title     String
+  creatorId Int
+  visible   Boolean      @default(false)
   questions Question[]
-  status    SurveyStatus
+  status    SurveyStatus @default(active)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
+
+  creator   Employee   @relation(fields: [creatorId], references: [id])
+  responses Response[]
 }
 
 // Question model belongs to a single survey but can have many answers
 model Question {
-  id        Int          @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   question  String
   answers   Answer[]
-  type      QuestionType
   order     Int
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  survey    Survey       @relation(fields: [surveyId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  survey    Survey   @relation(fields: [surveyId], references: [id])
   surveyId  Int
 }
 
-// Answer model belongs to a single question and a single owner
+// Answer model belongs to a single question and a single response
 model Answer {
-  id          Int         @id @default(autoincrement())
-  userId      Int
-  account     AccountType
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  question    Question    @relation(fields: [questionId], references: [id])
-  questionId  Int
-  student     Student?    @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
-  company     Company?    @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
-  // Add value fields for answers
-  intValue    Int?
-  stringValue String?
+  id         Int      @id @default(autoincrement())
+  questionId Int
+  responseId Int
+  value      Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  @@unique([account, userId, questionId])
+  question Question @relation(fields: [questionId], references: [id])
+  response Response @relation(fields: [responseId], references: [id])
+
+  @@unique([responseId, questionId])
 }
 
-// Enum for question types
-enum QuestionType {
-  number
-  text
+// Response model belongs to a single survey and a single user
+model Response {
+  id        Int      @id @default(autoincrement())
+  surveyId  Int
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  answers   Answer[]
+
+  survey  Survey   @relation(fields: [surveyId], references: [id])
+  student Student? @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
+  company Company? @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
 }
 
 // Enum for survey status

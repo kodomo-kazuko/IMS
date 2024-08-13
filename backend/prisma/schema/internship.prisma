@@ -1,19 +1,19 @@
 model Internship {
-    id                Int                 @id @default(autoincrement())
-    title             String
-    type              InternshipType
-    companyId         Int
-    salary            Boolean
-    createdAt         DateTime            @default(now())
-    enrollmentEndDate DateTime
-    startDate         DateTime
-    endDate           DateTime
-    updatedAt         DateTime            @default(now()) @updatedAt
-    applications      Application[]
-    company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    posts             Post[]
-    students          StudentInternship[]
-    requirements      Requirement[]
+  id                Int                 @id @default(autoincrement())
+  title             String
+  type              InternshipType
+  companyId         Int
+  salary            Boolean
+  createdAt         DateTime            @default(now())
+  enrollmentEndDate DateTime
+  startDate         DateTime
+  endDate           DateTime
+  updatedAt         DateTime            @default(now()) @updatedAt
+  applications      Application[]
+  company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  posts             Post[]
+  students          StudentInternship[]
+  requirements      Requirement[]
 
-    @@index([companyId])
+  @@index([companyId])
 }

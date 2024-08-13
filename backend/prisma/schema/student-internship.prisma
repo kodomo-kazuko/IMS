@@ -1,16 +1,16 @@
 model StudentInternship {
-    id           Int              @id @default(autoincrement())
-    studentId    Int
-    internshipId Int
-    mentorId     Int?
-    status       InternshipStatus @default(pending)
-    internship   Internship       @relation(fields: [internshipId], references: [id], onDelete: Cascade)
-    mentor       Mentor?          @relation(fields: [mentorId], references: [id])
-    student      Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
-    createdAt    DateTime         @default(now())
-    updatedAt    DateTime         @default(now()) @updatedAt
-    Feedback     Feedback[]
+  id           Int              @id @default(autoincrement())
+  studentId    Int
+  internshipId Int
+  mentorId     Int?
+  status       InternshipStatus @default(pending)
+  internship   Internship       @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+  mentor       Mentor?          @relation(fields: [mentorId], references: [id])
+  student      Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @default(now()) @updatedAt
+  Feedback     Feedback[]
 
-    @@unique([studentId, internshipId])
-    @@index([internshipId, studentId])
+  @@unique([studentId, internshipId])
+  @@index([internshipId, studentId])
 }

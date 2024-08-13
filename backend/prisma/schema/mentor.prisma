@@ -1,16 +1,16 @@
 model Mentor {
-    id          Int                 @id @default(autoincrement())
-    name        String
-    image       String?
-    position    String
-    password    String
-    email       String              @unique
-    phone       String              @unique
-    companyId   Int
-    createdAt   DateTime            @default(now())
-    updatedAt   DateTime            @default(now()) @updatedAt
-    company     Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    internships StudentInternship[]
+  id          Int                 @id @default(autoincrement())
+  name        String
+  image       String?
+  position    String
+  password    String
+  email       String              @unique
+  phone       String              @unique
+  companyId   Int
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @default(now()) @updatedAt
+  company     Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  internships StudentInternship[]
 
-    @@index([companyId])
+  @@index([companyId])
 }

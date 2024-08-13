@@ -2129,13 +2129,111 @@
 				]
 			}
 		},
-		"/survey/test": {
+		"/survey/create": {
 			"post": {
 				"tags": ["Survey"],
 				"description": "",
 				"responses": {
-					"default": {
-						"description": ""
+					"201": {
+						"description": "Created"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"title": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/survey/all/base": {
+			"get": {
+				"tags": ["Survey"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "title",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/survey/all/{id}": {
+			"get": {
+				"tags": ["Survey"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "title",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/survey/{id}": {
+			"get": {
+				"tags": ["Survey"],
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
 					}
 				},
 				"security": [

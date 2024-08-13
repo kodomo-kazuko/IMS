@@ -1,15 +1,15 @@
 model Feedback {
-    id                Int               @id @default(autoincrement())
-    userId            Int
-    content           String
-    score             Int
-    internshipId      Int
-    account           AccountType
-    createdAt         DateTime          @default(now())
-    updatedAt         DateTime          @default(now()) @updatedAt
-    studentinternship StudentInternship @relation(fields: [internshipId], references: [id])
-    student           Student?          @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
-    company           Company?          @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
+  id                Int               @id @default(autoincrement())
+  userId            Int
+  content           String
+  score             Int
+  internshipId      Int
+  account           AccountType
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @default(now()) @updatedAt
+  studentinternship StudentInternship @relation(fields: [internshipId], references: [id])
+  student           Student?          @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
+  company           Company?          @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
 
-    @@unique([account, internshipId, userId])
+  @@unique([account, internshipId, userId])
 }

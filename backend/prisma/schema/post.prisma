@@ -1,16 +1,16 @@
 model Post {
-    id           Int        @id @default(autoincrement())
-    title        String
-    content      String
-    image        String
-    companyId    Int
-    internshipId Int
-    views        Int        @default(0)
-    createdAt    DateTime   @default(now())
-    updatedAt    DateTime   @default(now()) @updatedAt
-    company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    internship   Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+  id           Int        @id @default(autoincrement())
+  title        String
+  content      String
+  image        String
+  companyId    Int
+  internshipId Int
+  views        Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  internship   Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
 
-    @@unique([internshipId, companyId])
-    @@index([companyId])
+  @@unique([internshipId, companyId])
+  @@index([companyId])
 }
