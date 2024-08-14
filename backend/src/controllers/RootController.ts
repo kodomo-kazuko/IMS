@@ -1,7 +1,14 @@
+import { type AccountType, Prisma } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { prisma } from "../middleware/PrismMiddleware";
 import type { Props, ResponseJSON } from "../types/response";
 import { jwtSecretKey } from "../utils/const";
+
+const IP = process.env.IP;
+const PORT = process.env.PORT;
+const FILEPATH = process.env.FILE_PATH;
+const FILETYPE = "images";
 
 export default class RootController {
 	public async tokenRenew(
@@ -54,6 +61,33 @@ export default class RootController {
 	public async test({ req, res, next }: Props) {
 		try {
 			res.status(200).json({ success: true, message: "it worked" });
+		} catch (error) {
+			next(error);
+		}
+	}
+	public async account(
+		req: Request,
+		res: Response<ResponseJSON>,
+		next: NextFunction,
+	) {
+		try {
+			const accountType: AccountType = req.cookies.account;
+			const id = req.cookies.id;
+			const query = `SELECT * FROM "${accountType}" WHERE id = ${id}`;
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const result: Array<any> = await prisma.$queryRawUnsafe(query);
+
+			if (result.length > 0) {
+				result[0].password = undefined;
+				const image = result[0].image;
+				result[0].image = `http://${IP}:${PORT}/${FILEPATH}/${FILETYPE}/${image}`;
+			}
+
+			res.json({
+				success: true,
+				message: "account data retrieved",
+				data: result,
+			});
 		} catch (error) {
 			next(error);
 		}

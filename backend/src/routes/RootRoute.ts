@@ -22,4 +22,10 @@ router.post(
 	/** #swagger.tags = ['Root']  #swagger.security = [{"bearerAuth": []}] */
 );
 
+router.get(
+	"/account",
+	accessMiddleware("all"),
+	rootController.account /** #swagger.tags = ['Root']  #swagger.security = [{"bearerAuth": []}] */,
+);
+
 export default router;

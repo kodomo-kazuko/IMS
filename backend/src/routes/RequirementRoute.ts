@@ -7,9 +7,9 @@ const requirementController = new RequirementController();
 const router = Router();
 
 router.post(
-	"/create",
+	"/createMany",
 	accessMiddleware([{ account: "Company", access: 0 }]),
-	requirementController.create /** #swagger.tags = ['Requirement'] #swagger.security = [{"bearerAuth": []}] */,
+	requirementController.createMany /** #swagger.tags = ['Requirement'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(

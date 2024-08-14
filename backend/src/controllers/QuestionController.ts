@@ -1,5 +1,8 @@
+import type { NextFunction, Request, Response } from "express";
+import type { ResponseJSON } from "../types/response";
+
 export default class QuestionController {
-	public async create(
+	public async createMany(
 		req: Request,
 		res: Response<ResponseJSON>,
 		next: NextFunction,

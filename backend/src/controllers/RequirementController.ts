@@ -4,37 +4,66 @@ import type { ResponseJSON } from "../types/response";
 import notFound from "../utils/not-found";
 import { validateInput } from "../utils/validateInput";
 
+interface RequirementTypes {
+	majorId: number;
+	internshipId: number;
+	studentLimit: number;
+}
+
 export default class RequirementController {
-	public async create(
+	public async createMany(
 		req: Request,
 		res: Response<ResponseJSON>,
 		next: NextFunction,
 	) {
 		try {
-			const { majorId, internshipId, studentLimit } = req.body;
+			const { requirements }: { requirements: RequirementTypes[] } = req.body;
 
-			validateInput({ majorId, internshipId, studentLimit }, res);
+			// Validate input using a for loop
+			for (let i = 0; i < requirements.length; i++) {
+				const { majorId, internshipId, studentLimit } = requirements[i];
+				validateInput(
+					{
+						majorId: Number(majorId),
+						internshipId: Number(internshipId),
+						studentLimit: Number(studentLimit),
+					},
+					res,
+				);
+			}
 
+			// Check if internship exists and belongs to the company
 			await prisma.internship.findUniqueOrThrow({
 				where: {
-					id: Number(internshipId),
+					id: Number(requirements[0].internshipId),
 					companyId: req.cookies.id,
 				},
 			});
-			await prisma.requirement.create({
-				data: {
+
+			// Prepare data for creating multiple requirements
+			const requirementData = requirements.map(
+				({ majorId, internshipId, studentLimit }) => ({
 					internshipId: Number(internshipId),
 					majorId: Number(majorId),
 					studentLimit: Number(studentLimit),
-				},
+				}),
+			);
+
+			// Create multiple requirements
+			await prisma.requirement.createMany({
+				data: requirementData,
 			});
-			return res
-				.status(200)
-				.json({ success: true, message: "internship Requirement created" });
+
+			// Send success response
+			return res.status(200).json({
+				success: true,
+				message: "Internship requirements created successfully",
+			});
 		} catch (error) {
 			next(error);
 		}
 	}
+
 	public async internship(
 		req: Request,
 		res: Response<ResponseJSON>,

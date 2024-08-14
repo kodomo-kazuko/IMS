@@ -11,16 +11,29 @@ export default class InternshipController {
 		next: NextFunction,
 	) {
 		try {
-			const { title, type, enrollmentEndDate, startDate, endDate, salary } =
-				req.body;
+			const {
+				title,
+				type,
+				enrollmentEndDate,
+				startDate,
+				endDate,
+				salary,
+				requirements,
+			} = req.body;
+
+			// Validate input
 			validateInput(
 				{ title, type, enrollmentEndDate, startDate, endDate, salary },
 				res,
 			);
+
+			// Convert dates to ISO strings
 			const enrollISO = new Date(enrollmentEndDate).toISOString();
 			const startISO = new Date(startDate).toISOString();
 			const endISO = new Date(endDate).toISOString();
-			await prisma.internship.create({
+
+			// Create internship entry
+			const internship = await prisma.internship.create({
 				data: {
 					title,
 					type,
@@ -31,6 +44,22 @@ export default class InternshipController {
 					salary,
 				},
 			});
+
+			// Check if requirements are provided
+			if (requirements && Array.isArray(requirements)) {
+				const requirementData = requirements.map((req) => ({
+					internshipId: internship.id,
+					majorId: Number(req.majorId),
+					studentLimit: Number(req.studentLimit),
+				}));
+
+				// Create multiple requirements
+				await prisma.requirement.createMany({
+					data: requirementData,
+				});
+			}
+
+			// Send success response
 			res
 				.status(201)
 				.json({ success: true, message: "Internship created successfully" });

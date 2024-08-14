@@ -23,6 +23,8 @@ model Question {
   updatedAt DateTime @updatedAt
   survey    Survey   @relation(fields: [surveyId], references: [id])
   surveyId  Int
+
+  @@unique([order, surveyId])
 }
 
 // Answer model belongs to a single question and a single response

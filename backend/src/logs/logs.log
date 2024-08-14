@@ -1,0 +1,6 @@
+{"level":"info","message":"Running cron job to update student internship statuses to ACTIVE"}
+{"level":"info","message":"Updated 0 internships to ACTIVE"}
+{"level":"warn","message":"No internships were updated to ACTIVE. There might be no internships with today's date within the start and end dates."}
+{"level":"info","message":"Running cron job to update student internship statuses to FINISHED"}
+{"level":"info","message":"Updated 0 internships to FINISHED"}
+{"level":"warn","message":"No internships were updated to FINISHED. There might be no active internships with yesterday's end date."}

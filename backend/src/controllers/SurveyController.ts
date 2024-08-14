@@ -56,14 +56,26 @@ export default class SurveyController {
 		next: NextFunction,
 	) {
 		try {
-			const { title } = req.body;
+			const { title, questions } = req.body;
+
 			validateInput({ title }, res);
-			await prisma.survey.create({
+			const survey = await prisma.survey.create({
 				data: {
 					title,
 					creatorId: req.cookies.id,
 				},
 			});
+
+			if (questions && Array.isArray(questions)) {
+				const questionData = questions.map((req) => ({
+					surveyId: survey.id,
+					question: String(req.question),
+					order: Number(req.order),
+				}));
+				await prisma.question.createMany({
+					data: questionData,
+				});
+			}
 			res
 				.status(201)
 				.json({ success: true, message: "survey created successfully" });
@@ -81,6 +93,13 @@ export default class SurveyController {
 			const survey = await prisma.survey.findUniqueOrThrow({
 				where: {
 					id: Number(id),
+				},
+				include: {
+					questions: {
+						orderBy: {
+							order: "asc",
+						},
+					},
 				},
 			});
 			res

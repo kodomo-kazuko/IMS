@@ -751,6 +751,9 @@
 									},
 									"salary": {
 										"example": "any"
+									},
+									"requirements": {
+										"example": "any"
 									}
 								}
 							}
@@ -1422,7 +1425,23 @@
 				]
 			}
 		},
-		"/requirement/create": {
+		"/question/test": {
+			"get": {
+				"tags": ["Question"],
+				"description": "",
+				"responses": {
+					"default": {
+						"description": ""
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/requirement/createMany": {
 			"post": {
 				"tags": ["Requirement"],
 				"description": "",
@@ -1442,13 +1461,7 @@
 							"schema": {
 								"type": "object",
 								"properties": {
-									"majorId": {
-										"example": "any"
-									},
-									"internshipId": {
-										"example": "any"
-									},
-									"studentLimit": {
+									"requirements": {
 										"example": "any"
 									}
 								}
