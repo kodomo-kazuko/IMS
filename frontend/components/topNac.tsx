@@ -28,7 +28,7 @@ export default function TopNav() {
 
     const getProfile = async () => {
         try {
-            const response = await api.get("/employee/account");
+            const response = await api.get("/profile");
             setProfile(response.data.data[0]);
         } catch (error) {
             console.error("Failed to fetch profile:", error);
