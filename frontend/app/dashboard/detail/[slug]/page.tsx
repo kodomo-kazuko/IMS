@@ -1,25 +1,18 @@
 "use client";
 import api from "@/lib/axios/api";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Card, CardContent} from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useParams } from "next/navigation";
-
 import { Textarea } from "@/components/ui/textarea"
-import { MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-// import { RadioGroup, RadioGroup.Option, RadioGroup.Option.Label, RadioGroup.Option.Input } from "@/components/ui/radio-group"
 
 export default function Component({ params }: { params: { slug: string } }) {
     const router = useRouter();
     const [applications, setApplications] = useState<any[]>([]);
     const [student, setStudent] = useState<any>('');
-    const [token, setToken] = useState("");
     const fetchStudent = useCallback(async () => {
         try {
 

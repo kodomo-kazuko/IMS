@@ -1,6 +1,7 @@
 import api from "@/lib/axios/api";
 
 export default class CompanyService {
+
   async getCompanies() {
     const response = await api.get("/company/all/base");
     const data = response.data;
