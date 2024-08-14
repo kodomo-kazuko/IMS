@@ -38,43 +38,6 @@ export default function Dashboard() {
     const [companies, setCompanies] = useState<any[]>([]);
     const [token, setToken] = useState("");
 
-    const handleLogOut = async (e: { preventDefault: () => void }) => {
-        e.preventDefault();
-
-        localStorage.clear();
-    };
-
-    const fetchCompanyList = useCallback(async () => {
-        try {
-            const storedToken = localStorage.getItem("token");
-            console.log(storedToken);
-            if (!storedToken) {
-                router.push("/login");
-                return; // Exit function if no token
-            }
-
-            const response = await api.get("/company/all/base", {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`,
-                },
-            });
-            console.log(response.data.data.list);
-            setCompanies(response.data.data.list);
-        } catch (error) {
-            console.error("Failed to fetch company list:", error);
-            // Handle error as needed
-        }
-    }, [router]);
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            router.push("/login");
-        } else {
-            fetchCompanyList();
-        }
-    }, [router, fetchCompanyList, token]);
-
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">

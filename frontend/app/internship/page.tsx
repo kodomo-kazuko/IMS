@@ -25,31 +25,16 @@ export default function Internship() {
     useAuth()
     const router = useRouter();
     const [internships, setInternships] = useState<any[]>([]);
-    const [token, setToken] = useState("");
-
 
     const fetchInternshipList = useCallback(async () => {
-        try {
-            const response = await internshipService.getInternships();
-            console.log(response.data.list);
-            setInternships(response.data.list);
-        } catch (error: any) {
-            console.error("Failed to fetch internship list:", error);
-            toast.error(error.response.data.message);
-        }
+        const response = await internshipService.getInternships();
+        console.log(response.data.list);
+        setInternships(response.data.list);
     }, [router]);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        console.log(localStorage);
-        if (!token) {
-            console.log("no token");
-        } else {
-            console.log("yes token");
-        }
-        fetchInternshipList();
-        
-    }, [router, fetchInternshipList, token]);
+        fetchInternshipList(); 
+    }, [router, fetchInternshipList]);
 
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">

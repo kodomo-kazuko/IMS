@@ -1,10 +1,12 @@
 "use client";
 
 import axios from "axios";
+import { LocalRepo } from "../core/local.repo";
 
 const getAPIToken = () => {
-  if (localStorage.getItem("token")) {
-    return localStorage.getItem("token") || "";
+
+  if (LocalRepo.getToken()) {
+    return LocalRepo.getToken() || "";
   }
   return "";
 };

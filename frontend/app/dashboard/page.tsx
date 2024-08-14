@@ -41,12 +41,13 @@ import { useCallback, useEffect, useState } from "react";
 
 import TopNav from "@/components/topNac";
 import CompanyService from "./service/companyService";
+import { LocalRepo } from "@/lib/core/local.repo";
 const companyService = new CompanyService();
 function Dashboard() {
   const router = useRouter();
   const [companies, setCompanies] = useState<any[]>([]);
 
-  console.log(localStorage.getItem("token"));
+  console.log(LocalRepo.getToken());
 
   const fetchCompanyList = useCallback(async () => {
     try {

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import prisma from "@/prisma/prisma";
+import { LocalRepo } from "@/lib/core/local.repo";
 const employeeService = new EmployeeService();
 const companyService = new CompanyService();
 export default function Login() {
@@ -39,11 +40,9 @@ export default function Login() {
 
       const token = response.data;
 
-      localStorage.setItem("token", token);
+      LocalRepo.setToken(token);
 
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-      console.log(api.defaults.headers);
 
       console.log(`Login successful! Token: ${token}`);
 
