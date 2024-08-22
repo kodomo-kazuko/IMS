@@ -32,32 +32,35 @@ export default class InternshipController {
 			const startISO = new Date(startDate).toISOString();
 			const endISO = new Date(endDate).toISOString();
 
-			// Create internship entry
-			const internship = await prisma.internship.create({
-				data: {
-					title,
-					type,
-					enrollmentEndDate: enrollISO,
-					startDate: startISO,
-					endDate: endISO,
-					companyId: req.cookies.id,
-					salary,
-				},
-			});
-
-			// Check if requirements are provided
-			if (requirements && Array.isArray(requirements)) {
-				const requirementData = requirements.map((req) => ({
-					internshipId: internship.id,
-					majorId: Number(req.majorId),
-					studentLimit: Number(req.studentLimit),
-				}));
-
-				// Create multiple requirements
-				await prisma.requirement.createMany({
-					data: requirementData,
+			// Use Prisma transaction
+			await prisma.$transaction(async (prisma) => {
+				// Create internship entry
+				const internship = await prisma.internship.create({
+					data: {
+						title,
+						type,
+						enrollmentEndDate: enrollISO,
+						startDate: startISO,
+						endDate: endISO,
+						companyId: req.cookies.id,
+						salary,
+					},
 				});
-			}
+
+				// Check if requirements are provided
+				if (requirements && Array.isArray(requirements)) {
+					const requirementData = requirements.map((req) => ({
+						internshipId: internship.id,
+						majorId: Number(req.majorId),
+						studentLimit: Number(req.studentLimit),
+					}));
+
+					// Create multiple requirements
+					await prisma.requirement.createMany({
+						data: requirementData,
+					});
+				}
+			});
 
 			// Send success response
 			res
@@ -146,16 +149,25 @@ export default class InternshipController {
 		next: NextFunction,
 	) {
 		try {
+			// Assuming InternshipType is an enum or object
 			const internshipTypes = Object.values(InternshipType);
+
+			// Transform the array into an array of objects
+			const formattedTypes = internshipTypes.map((type, index) => ({
+				id: index,
+				name: type,
+			}));
+
 			res.status(200).json({
 				success: true,
-				message: "retrieved internship types",
-				data: internshipTypes,
+				message: "Retrieved internship types",
+				data: formattedTypes,
 			});
 		} catch (error) {
 			next(error);
 		}
 	}
+
 	public async single(
 		req: Request,
 		res: Response<ResponseJSON>,

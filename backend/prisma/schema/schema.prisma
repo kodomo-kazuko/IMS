@@ -9,9 +9,9 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-generator erd {
-  provider = "prisma-erd-generator"
-}
+// generator erd {
+//   provider = "prisma-erd-generator"
+// }
 
 // generator DataGenerator {
 //   provider = "prisma-generator-fake-data"

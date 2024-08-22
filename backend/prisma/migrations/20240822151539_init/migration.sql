@@ -212,7 +212,7 @@ CREATE TABLE "Answer" (
     "id" SERIAL NOT NULL,
     "questionId" INTEGER NOT NULL,
     "responseId" INTEGER NOT NULL,
-    "value" INTEGER NOT NULL,
+    "rating" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -224,6 +224,7 @@ CREATE TABLE "Response" (
     "id" SERIAL NOT NULL,
     "surveyId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
+    "account" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -295,6 +296,9 @@ CREATE UNIQUE INDEX "Question_order_surveyId_key" ON "Question"("order", "survey
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Answer_responseId_questionId_key" ON "Answer"("responseId", "questionId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Response_userId_account_surveyId_key" ON "Response"("userId", "account", "surveyId");
 
 -- AddForeignKey
 ALTER TABLE "Application" ADD CONSTRAINT "Application_internshipId_fkey" FOREIGN KEY ("internshipId") REFERENCES "Internship"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -5,8 +5,8 @@ const router = Router();
 
 const questionController = new QuestionController();
 
-router.get(
-	"/createMany",
+router.post(
+	"/create-many",
 	accessMiddleware("all"),
 	questionController.createMany /** #swagger.tags = ['Question'] #swagger.security = [{"bearerAuth": []}] */,
 );

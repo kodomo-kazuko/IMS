@@ -1425,20 +1425,40 @@
 				]
 			}
 		},
-		"/question/test": {
-			"get": {
+		"/question/create-many": {
+			"post": {
 				"tags": ["Question"],
 				"description": "",
 				"responses": {
-					"default": {
-						"description": ""
+					"200": {
+						"description": "OK"
+					},
+					"400": {
+						"description": "Bad Request"
 					}
 				},
 				"security": [
 					{
 						"bearerAuth": []
 					}
-				]
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"questions": {
+										"example": "any"
+									},
+									"surveyId": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		},
 		"/requirement/createMany": {
@@ -1564,6 +1584,39 @@
 						"bearerAuth": []
 					}
 				]
+			}
+		},
+		"/response/create-survey": {
+			"post": {
+				"tags": ["Response"],
+				"description": "",
+				"responses": {
+					"default": {
+						"description": ""
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"answers": {
+										"example": "any"
+									},
+									"surveyId": {
+										"example": "any"
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		},
 		"/role/all": {
@@ -1722,6 +1775,22 @@
 				"responses": {
 					"default": {
 						"description": ""
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/account": {
+			"get": {
+				"tags": ["Root"],
+				"description": "",
+				"responses": {
+					"200": {
+						"description": "OK"
 					}
 				},
 				"security": [
@@ -2163,6 +2232,9 @@
 								"type": "object",
 								"properties": {
 									"title": {
+										"example": "any"
+									},
+									"questions": {
 										"example": "any"
 									}
 								}

@@ -13,19 +13,19 @@ router.post(
 
 router.get(
 	"/all/base",
-	accessMiddleware([{ account: "Employee" }]),
+	accessMiddleware("all"),
 	surveyController.base /** #swagger.tags = ['Survey'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/all/:id",
-	accessMiddleware([{ account: "Employee" }]),
+	accessMiddleware("all"),
 	surveyController.cursor /** #swagger.tags = ['Survey'] #swagger.security = [{"bearerAuth": []}] */,
 );
 
 router.get(
 	"/:id",
-	accessMiddleware([{ account: "Employee", access: 1 }]),
+	accessMiddleware("all"),
 	surveyController.single /** #swagger.tags = ['Survey'] #swagger.security = [{"bearerAuth": []}] */,
 );
 

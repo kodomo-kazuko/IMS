@@ -1,3 +1,4 @@
+import { AccountType } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 import { prisma } from "../middleware/PrismMiddleware";
 import type { ResponseJSON } from "../types/response";
@@ -13,11 +14,18 @@ export default class SurveyController {
 			const { title } = req.query;
 			const survey = await prisma.survey.findMany({
 				where: {
+					OR: [
+						{
+							visible:
+								req.cookies.account === AccountType.Employee ? undefined : true,
+						},
+					],
 					title: {
 						search: title ? String(title) : undefined,
 					},
 				},
 			});
+
 			res
 				.status(200)
 				.json({ success: true, message: "survey retrieved", data: survey });
@@ -34,6 +42,12 @@ export default class SurveyController {
 			const { title } = req.query;
 			const survey = await prisma.survey.findMany({
 				where: {
+					OR: [
+						{
+							visible:
+								req.cookies.account === AccountType.Employee ? undefined : true,
+						},
+					],
 					title: {
 						search: title ? String(title) : undefined,
 					},
@@ -93,6 +107,12 @@ export default class SurveyController {
 			const survey = await prisma.survey.findUniqueOrThrow({
 				where: {
 					id: Number(id),
+					OR: [
+						{
+							visible:
+								req.cookies.account === AccountType.Employee ? undefined : true,
+						},
+					],
 				},
 				include: {
 					questions: {

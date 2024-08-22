@@ -32,7 +32,7 @@ model Answer {
   id         Int      @id @default(autoincrement())
   questionId Int
   responseId Int
-  value      Int
+  rating     Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -47,6 +47,7 @@ model Response {
   id        Int      @id @default(autoincrement())
   surveyId  Int
   userId    Int
+  account   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   answers   Answer[]
@@ -54,6 +55,8 @@ model Response {
   survey  Survey   @relation(fields: [surveyId], references: [id])
   student Student? @relation(fields: [userId], references: [id], map: "Feedback_student_userId_fkey")
   company Company? @relation(fields: [userId], references: [id], map: "Feedback_company_userId_fkey")
+
+  @@unique([userId, account, surveyId])
 }
 
 // Enum for survey status

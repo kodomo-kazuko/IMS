@@ -4,6 +4,7 @@ import type { NextFunction, Request, Response } from "express";
 export interface ResponseJSON {
 	success: boolean;
 	message: string;
+	lastId?: number;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	data?: any;
 }

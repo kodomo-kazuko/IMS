@@ -114,7 +114,8 @@ export default class ApplicationController {
 		try {
 			const { studentId, internshipId, status } =
 				req.query as unknown as ApplicationDTO;
-			const applications = await prisma.application.findMany({
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const applications: any = await prisma.application.findMany({
 				where: {
 					studentId: studentId ? Number(studentId) : undefined,
 					internshipId: internshipId ? Number(internshipId) : undefined,
